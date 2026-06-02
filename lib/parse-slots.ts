@@ -10,11 +10,11 @@ export function parseSlots(html: string): { slots: SlotCard[]; inventory: Invent
     const name = ($(el).attr('data-name') ?? '').trim()
     const growthLabel = $(el).find('.inv_grow').text().trim()
     const chillStyle = $(el).find('.inv_chill').attr('style') ?? ''
-    inventory.push({ id, name, growthLabel, onCooldown: chillStyle.includes('color: red') })
+    inventory.push({ id, name, growthLabel, onCooldown: /color:\s*red/i.test(chillStyle) })
   })
 
   const slots: SlotCard[] = []
-  $('[id^="card"]').each((_, el) => {
+  $('.slots_grid .card').each((_, el) => {
     const slotText = $(el).find('.slotNumber').text()
     const match = slotText.match(/\d+/)
     if (!match) return

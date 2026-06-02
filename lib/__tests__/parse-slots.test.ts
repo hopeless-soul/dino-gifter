@@ -11,7 +11,7 @@ const HTML = `
     </div>
     <div data-inv="345" data-name="Стегозавр" class="inv_slot">
       <span class="inv_name">Стегозавр&nbsp;<span class="inv_grow">адолт 1.0</span></span>
-      <div><span class="inv_chill">100% </span></div>
+      <div><span class="inv_chill" style="color: green;">100% </span></div>
     </div>
   </div></div>
 </div>
