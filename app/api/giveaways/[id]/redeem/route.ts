@@ -15,9 +15,11 @@ export async function POST(
     return Response.json({ error: 'Giveaway is not yet active' }, { status: 403 })
   }
 
+  // Mark redeemed BEFORE the network call to prevent double-spend
+  markRedeemed(id)
+
   const result = await moveAndGift(g.session, g.invId, g.dinoName, g.recipientFriendId)
   if (!result.ok) return Response.json({ error: result.error }, { status: 502 })
 
-  markRedeemed(id)
   return Response.json({ ok: true })
 }
