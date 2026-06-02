@@ -3,6 +3,8 @@ import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'next/navigation'
 import { CountdownTimer } from '@/components/CountdownTimer'
 import { TypingTrial } from '@/components/TypingTrial'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import type { PublicGiveaway } from '@/lib/types'
 
 export default function GiveawayPage() {
@@ -56,7 +58,7 @@ export default function GiveawayPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-400 text-sm">
+      <div className="min-h-screen flex items-center justify-center text-muted-foreground text-sm">
         Loading…
       </div>
     )
@@ -65,7 +67,7 @@ export default function GiveawayPage() {
   if (fetchError) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-red-500 text-sm">{fetchError}</p>
+        <p className="text-destructive text-sm">{fetchError}</p>
       </div>
     )
   }
@@ -73,65 +75,66 @@ export default function GiveawayPage() {
   if (!giveaway) return null
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl border border-gray-200 p-8 flex flex-col gap-6 text-center shadow-sm">
-        {/* Header */}
-        <div>
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4">
+      <Card className="w-full max-w-sm">
+        <CardHeader className="text-center pb-2">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
             Dino Giveaway
           </p>
-          <h1 className="text-2xl font-bold text-gray-800">{giveaway.dinoName}</h1>
-          <p className="text-gray-500 mt-1">{giveaway.growthLabel}</p>
-        </div>
+          <h1 className="text-2xl font-bold text-foreground">{giveaway.dinoName}</h1>
+          <p className="text-muted-foreground mt-1">{giveaway.growthLabel}</p>
+        </CardHeader>
 
-        {/* Body */}
-        {redeemed ? (
-          <p className="text-green-600 font-medium text-sm">
-            This giveaway has already been claimed.
-          </p>
-        ) : (
-          <>
-            {giveaway.activeAt && !active && (
-              <CountdownTimer activeAt={giveaway.activeAt} onActive={handleActive} />
-            )}
+        <CardContent className="flex flex-col gap-6 items-center text-center">
+          {redeemed ? (
+            <p className="text-success font-medium text-sm">
+              This giveaway has already been claimed.
+            </p>
+          ) : (
+            <>
+              {giveaway.activeAt && !active && (
+                <CountdownTimer activeAt={giveaway.activeAt} onActive={handleActive} />
+              )}
 
-            {active && giveaway.trial && !trialPassed && (
-              <TypingTrial
-                phrase={giveaway.trial.phrase}
-                onSuccess={() => setTrialPassed(true)}
-              />
-            )}
+              {active && giveaway.trial && !trialPassed && (
+                <TypingTrial
+                  phrase={giveaway.trial.phrase}
+                  onSuccess={() => setTrialPassed(true)}
+                />
+              )}
 
-            {showRedeemButton && (
+              {showRedeemButton && (
+                <Button
+                  onClick={redeem}
+                  disabled={redeeming}
+                  variant="success"
+                  size="lg"
+                  className="px-8"
+                >
+                  {redeeming ? 'Sending…' : '🎁 Redeem'}
+                </Button>
+              )}
+
+              {redeemError && (
+                <p className="text-destructive text-sm">{redeemError}</p>
+              )}
+            </>
+          )}
+
+          {shareUrl && (
+            <div className="border-t border-border pt-4 w-full">
+              <p className="text-xs text-muted-foreground mb-1">Share this link</p>
               <button
-                onClick={redeem}
-                disabled={redeeming}
-                className="py-3 px-8 bg-green-600 text-white rounded-xl font-semibold text-base hover:bg-green-700 disabled:opacity-50 transition-colors"
+                onClick={() => navigator.clipboard.writeText(shareUrl)}
+                className="font-mono text-xs break-all text-muted-foreground hover:text-primary transition-colors"
+                title="Click to copy"
               >
-                {redeeming ? 'Sending…' : '🎁 Redeem'}
+                {shareUrl}
               </button>
-            )}
-
-            {redeemError && (
-              <p className="text-red-500 text-sm">{redeemError}</p>
-            )}
-          </>
-        )}
-
-        {/* Share URL */}
-        {shareUrl && (
-          <div className="border-t border-gray-100 pt-4">
-            <p className="text-xs text-gray-400 mb-1">Share this link</p>
-            <button
-              onClick={() => navigator.clipboard.writeText(shareUrl)}
-              className="font-mono text-xs break-all text-gray-500 hover:text-blue-600 transition-colors"
-              title="Click to copy"
-            >
-              {shareUrl}
-            </button>
-          </div>
-        )}
-      </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }

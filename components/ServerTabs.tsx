@@ -1,4 +1,5 @@
 'use client'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const SERVERS = [
   { id: '1', label: 'Survival 1' },
@@ -13,20 +14,14 @@ interface Props {
 
 export function ServerTabs({ active, onChange }: Props) {
   return (
-    <div className="flex border-b border-gray-200">
-      {SERVERS.map(s => (
-        <button
-          key={s.id}
-          onClick={() => onChange(s.id)}
-          className={`px-5 py-3 text-sm font-medium transition-colors ${
-            active === s.id
-              ? 'border-b-2 border-blue-600 text-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          {s.label}
-        </button>
-      ))}
-    </div>
+    <Tabs value={active} onValueChange={onChange}>
+      <TabsList className="rounded-none bg-transparent w-full justify-start">
+        {SERVERS.map(s => (
+          <TabsTrigger key={s.id} value={s.id}>
+            {s.label}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+    </Tabs>
   )
 }

@@ -2,6 +2,12 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useSession } from '@/lib/use-session'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import type { InventoryItem, TypingTrial } from '@/lib/types'
 
 export function GiveawayConfigurator() {
@@ -10,7 +16,7 @@ export function GiveawayConfigurator() {
   const [session] = useSession()
 
   const [inventory, setInventory] = useState<InventoryItem[]>([])
-  const [invId, setInvId] = useState<number | null>(null)
+  const [invId, setInvId] = useState<string>('')
   const [activeAt, setActiveAt] = useState('')
   const [trialEnabled, setTrialEnabled] = useState(false)
   const [phrase, setPhrase] = useState('')
@@ -32,10 +38,10 @@ export function GiveawayConfigurator() {
 
   useEffect(() => {
     const id = params.get('invId')
-    if (id) setInvId(parseInt(id, 10))
+    if (id) setInvId(id)
   }, [params])
 
-  const selectedItem = inventory.find(i => i.id === invId)
+  const selectedItem = inventory.find(i => i.id === parseInt(invId, 10))
 
   async function submit() {
     if (!session) { setError('No session. Go back and Connect first.'); return }
@@ -55,7 +61,7 @@ export function GiveawayConfigurator() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           session,
-          invId,
+          invId: parseInt(invId, 10),
           dinoName: selectedItem?.name ?? '',
           growthLabel: selectedItem?.growthLabel ?? '',
           activeAt: activeAt ? new Date(activeAt).toISOString() : null,
@@ -72,92 +78,96 @@ export function GiveawayConfigurator() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-start justify-center pt-12 px-4 pb-12">
-      <div className="w-full max-w-md bg-white rounded-xl border border-gray-200 p-6 flex flex-col gap-5 shadow-sm">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => router.push('/')}
-            className="text-gray-400 hover:text-gray-600 text-lg"
-            aria-label="Back"
-          >
-            ←
-          </button>
-          <h1 className="text-lg font-bold text-gray-800">Configure Giveaway</h1>
-        </div>
-
-        {/* Dino picker */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-gray-700">Dino</label>
-          {!session ? (
-            <p className="text-sm text-gray-400">No session — go back and connect first.</p>
-          ) : inventory.length === 0 ? (
-            <p className="text-sm text-gray-400">Loading inventory…</p>
-          ) : (
-            <select
-              value={invId ?? ''}
-              onChange={e => setInvId(parseInt(e.target.value, 10))}
-              className="border border-gray-300 rounded px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    <div className="min-h-screen bg-background flex items-start justify-center pt-12 px-4 pb-12">
+      <Card className="w-full max-w-md">
+        <CardHeader className="pb-2">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => router.push('/')}
+              aria-label="Back"
+              className="text-muted-foreground hover:text-foreground -ml-2"
             >
-              <option value="">Select a dino…</option>
-              {inventory.map(item => (
-                <option key={item.id} value={item.id}>
-                  {item.name} — {item.growthLabel}
-                  {item.onCooldown ? ' (cooldown)' : ''}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
+              ←
+            </Button>
+            <CardTitle className="text-lg">Configure Giveaway</CardTitle>
+          </div>
+        </CardHeader>
 
-        {/* Active at */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-gray-700">Active at (optional)</label>
-          <input
-            type="datetime-local"
-            value={activeAt}
-            onChange={e => setActiveAt(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <p className="text-xs text-gray-400">Leave empty to activate immediately.</p>
-        </div>
+        <CardContent className="flex flex-col gap-5 pt-2">
+          {/* Dino picker */}
+          <div className="flex flex-col gap-1.5">
+            <Label>Dino</Label>
+            {!session ? (
+              <p className="text-sm text-muted-foreground">No session — go back and connect first.</p>
+            ) : inventory.length === 0 ? (
+              <p className="text-sm text-muted-foreground">Loading inventory…</p>
+            ) : (
+              <Select value={invId} onValueChange={setInvId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a dino…" />
+                </SelectTrigger>
+                <SelectContent>
+                  {inventory.map(item => (
+                    <SelectItem key={item.id} value={String(item.id)}>
+                      {item.name} — {item.growthLabel}
+                      {item.onCooldown ? ' (cooldown)' : ''}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </div>
 
-        {/* Trial toggle */}
-        <div className="flex flex-col gap-2">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={trialEnabled}
-              onChange={e => setTrialEnabled(e.target.checked)}
-              className="rounded"
+          {/* Active at */}
+          <div className="flex flex-col gap-1.5">
+            <Label>Active at (optional)</Label>
+            <Input
+              type="datetime-local"
+              value={activeAt}
+              onChange={e => setActiveAt(e.target.value)}
             />
-            <span className="text-sm font-medium text-gray-700">Enable typing trial</span>
-          </label>
-          {trialEnabled && (
-            <div className="flex flex-col gap-1.5 pl-6">
-              <label className="text-sm text-gray-600">
-                Phrase the recipient must type exactly
-              </label>
-              <input
-                type="text"
-                value={phrase}
-                onChange={e => setPhrase(e.target.value)}
-                placeholder="e.g. I love Theri"
-                className="border border-gray-300 rounded px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            <p className="text-xs text-muted-foreground">Leave empty to activate immediately.</p>
+          </div>
+
+          {/* Trial toggle */}
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="trial"
+                checked={trialEnabled}
+                onCheckedChange={checked => setTrialEnabled(!!checked)}
               />
+              <Label htmlFor="trial" className="cursor-pointer">Enable typing trial</Label>
             </div>
-          )}
-        </div>
+            {trialEnabled && (
+              <div className="flex flex-col gap-1.5 pl-6">
+                <Label className="text-muted-foreground font-normal">
+                  Phrase the recipient must type exactly
+                </Label>
+                <Input
+                  type="text"
+                  value={phrase}
+                  onChange={e => setPhrase(e.target.value)}
+                  placeholder="e.g. I love Theri"
+                />
+              </div>
+            )}
+          </div>
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <p className="text-destructive text-sm">{error}</p>}
 
-        <button
-          onClick={submit}
-          disabled={submitting || !invId}
-          className="py-2.5 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 text-sm"
-        >
-          {submitting ? 'Generating link…' : 'Generate Link'}
-        </button>
-      </div>
+          <Button
+            onClick={submit}
+            disabled={submitting || !invId}
+            size="lg"
+            className="w-full"
+          >
+            {submitting ? 'Generating link…' : 'Generate Link'}
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   )
 }

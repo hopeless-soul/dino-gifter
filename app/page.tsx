@@ -5,6 +5,7 @@ import { SessionInput } from '@/components/SessionInput'
 import { InventoryPanel } from '@/components/InventoryPanel'
 import { ServerTabs } from '@/components/ServerTabs'
 import { SlotsGrid } from '@/components/SlotsGrid'
+import { Card } from '@/components/ui/card'
 import type { InventoryItem, SlotCard } from '@/lib/types'
 
 export default function InventoryPage() {
@@ -49,12 +50,12 @@ export default function InventoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-4">
-        <h1 className="text-base font-bold text-gray-800">🦕 Dino Gifter</h1>
-        <nav className="flex gap-4 text-sm text-gray-500 ml-auto">
-          <a href="/login" className="hover:text-gray-700">Login</a>
-          <a href="/register" className="hover:text-gray-700">Register</a>
+    <div className="min-h-screen bg-background">
+      <header className="border-b border-border px-4 py-3 flex items-center gap-4">
+        <h1 className="text-base font-bold text-foreground">🦕 Dino Gifter</h1>
+        <nav className="flex gap-4 text-sm text-muted-foreground ml-auto">
+          <a href="/login" className="hover:text-foreground transition-colors">Login</a>
+          <a href="/register" className="hover:text-foreground transition-colors">Register</a>
         </nav>
       </header>
 
@@ -67,13 +68,13 @@ export default function InventoryPage() {
       />
 
       {!connected && !loading && (
-        <div className="flex items-center justify-center py-24 text-gray-400 text-sm">
+        <div className="flex items-center justify-center py-24 text-muted-foreground text-sm">
           Enter your UserSession cookie and click Connect.
         </div>
       )}
 
       {loading && (
-        <div className="flex items-center justify-center py-24 text-gray-400 text-sm">
+        <div className="flex items-center justify-center py-24 text-muted-foreground text-sm">
           Loading all servers…
         </div>
       )}
@@ -81,22 +82,22 @@ export default function InventoryPage() {
       {connected && (
         <main className="max-w-7xl mx-auto p-4 flex flex-col gap-6">
           <section>
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
+            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">
               Inventory — {inventory.length} items
             </h2>
-            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <Card className="overflow-hidden">
               <InventoryPanel items={inventory} />
-            </div>
+            </Card>
           </section>
 
           <section>
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">
+            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">
               Server Slots
             </h2>
-            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <Card className="overflow-hidden">
               <ServerTabs active={activeServer} onChange={setActiveServer} />
               <SlotsGrid slots={serverSlots[activeServer] ?? []} />
-            </div>
+            </Card>
           </section>
         </main>
       )}

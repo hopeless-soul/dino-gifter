@@ -35,8 +35,8 @@ export function CountdownTimer({ activeAt, onActive }: Props) {
 
   return (
     <div className="text-center">
-      <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Available in</p>
-      <p className="text-4xl font-mono font-bold tabular-nums text-gray-800">
+      <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Available in</p>
+      <p className="text-4xl font-mono font-bold tabular-nums text-foreground">
         {formatCountdown(remaining)}
       </p>
     </div>
