@@ -28,7 +28,7 @@ export function InventoryPanel({ items }: Props) {
           key={item.id}
           className="relative group border border-gray-200 rounded-lg p-3 text-sm bg-white hover:border-blue-300 transition-colors cursor-pointer"
         >
-          <p className="font-medium truncate leading-snug">{item.name}</p>
+          <p className="font-medium truncate leading-snug text-gray-800">{item.name}</p>
           <p className="text-gray-500 text-xs mt-0.5">{item.growthLabel}</p>
           {item.onCooldown && (
             <span className="text-xs text-red-500 block mt-0.5">Cooldown</span>

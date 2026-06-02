@@ -234,7 +234,6 @@ components/
   ServerTabs.tsx                   ← 3 server tab buttons
   InventoryPanel.tsx               ← Inventory item grid with hover Gift button
   SlotsGrid.tsx                    ← Read-only slot cards for one server
-  GiftModal.tsx                    ← (unused for now — gift goes directly to /giveaway/new)
   CountdownTimer.tsx               ← HH:MM:SS live countdown
   TypingTrial.tsx                  ← Phrase input + submit + error state
 ```

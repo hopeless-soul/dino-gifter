@@ -96,7 +96,7 @@ export function GiveawayConfigurator() {
             <select
               value={invId ?? ''}
               onChange={e => setInvId(parseInt(e.target.value, 10))}
-              className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 rounded px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select a dino…</option>
               {inventory.map(item => (
@@ -116,7 +116,7 @@ export function GiveawayConfigurator() {
             type="datetime-local"
             value={activeAt}
             onChange={e => setActiveAt(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-gray-300 rounded px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <p className="text-xs text-gray-400">Leave empty to activate immediately.</p>
         </div>
@@ -142,7 +142,7 @@ export function GiveawayConfigurator() {
                 value={phrase}
                 onChange={e => setPhrase(e.target.value)}
                 placeholder="e.g. I love Theri"
-                className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="border border-gray-300 rounded px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           )}

@@ -18,7 +18,7 @@ export function SessionInput({ value, onChange, onConnect, loading, error }: Pro
           onChange={e => onChange(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && value.trim() && onConnect()}
           placeholder="Paste your UserSession cookie…"
-          className="flex-1 border border-gray-300 rounded px-3 py-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1 border border-gray-300 rounded px-3 py-2 font-mono text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <button
           onClick={onConnect}

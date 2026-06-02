@@ -25,7 +25,7 @@ export function SlotsGrid({ slots }: Props) {
             <p className="italic text-xs">Empty</p>
           ) : (
             <>
-              <p className="font-medium truncate">{slot.name}</p>
+              <p className="font-medium truncate text-gray-800">{slot.name}</p>
               <p className="text-gray-500 text-xs mt-0.5">{slot.growthLabel}</p>
             </>
           )}

@@ -27,7 +27,7 @@ export function TypingTrial({ phrase, onSuccess }: Props) {
         onChange={e => { setInput(e.target.value); setError(false) }}
         onKeyDown={e => e.key === 'Enter' && submit()}
         className={`w-full border rounded px-3 py-2 text-center text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-          error ? 'border-red-400' : 'border-gray-300'
+          error ? 'border-red-400 text-gray-800' : 'border-gray-300 text-gray-800'
         }`}
         placeholder="Type here…"
       />
