@@ -17,6 +17,10 @@ describe('getAuthUser', () => {
     setAuthUser(USER)
     expect(getAuthUser()).toEqual(USER)
   })
+  it('returns null when stored value is not valid JSON', () => {
+    localStorage.setItem('dino_auth_user', 'not-json}}}')
+    expect(getAuthUser()).toBeNull()
+  })
 })
 
 describe('setAuthUser', () => {
