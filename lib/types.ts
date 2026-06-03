@@ -1,3 +1,17 @@
+// lib/types.ts
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
+
+export type Role = 'Regular' | 'Operator' | 'Admin'
+
+export interface AuthUser {
+  id: string
+  username: string
+  role: Role
+}
+
+// ── Game / scraper types (unchanged — used by inventory tab) ─────────────────
+
 export interface SlotCard {
   slotNumber: number
   isEmpty: boolean
@@ -15,34 +29,41 @@ export interface InventoryItem {
   onCooldown: boolean
 }
 
-export interface GiveawayConfig {
+// ── Backend giveaway types ────────────────────────────────────────────────────
+
+export interface DinoData {
   id: string
-  invId: number
-  dinoName: string
+  name: string
   growthLabel: string
-  activeAt: string | null
-  trial: TypingTrial | null
-  session: string
-  recipientFriendId: string
-  createdAt: string
-  redeemed: boolean
 }
 
-export interface TypingTrial {
-  type: 'typing'
+export interface TypingTrialData {
   phrase: string
 }
 
-export interface Friend {
-  id: string
-  name: string
+export interface MathTrialData {
+  expression: string
+  answer: number
 }
 
-export interface PublicGiveaway {
+export interface PuzzleTrialData {
+  grid: number[][]       // 9×9; 0 = empty cell, 1–9 = given value
+  solution: number[][]   // 9×9; complete solution
+}
+
+export type TrialData =
+  | { type: 'typing'; data: TypingTrialData }
+  | { type: 'math'; data: MathTrialData }
+  | { type: 'puzzle'; data: PuzzleTrialData }
+
+export type CompletionStatus = 'not_processed' | 'pending' | 'processed' | 'failed'
+
+export interface Giveaway {
   id: string
-  dinoName: string
-  growthLabel: string
+  dino: DinoData
   activeAt: string | null
-  trial: TypingTrial | null
-  redeemed: boolean
+  trials: TrialData[] | null
+  completionStatus: CompletionStatus
+  isCanceled: boolean
+  createdAt: string
 }
