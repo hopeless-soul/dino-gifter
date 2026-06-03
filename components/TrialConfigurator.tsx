@@ -1,5 +1,6 @@
 // components/TrialConfigurator.tsx
 'use client'
+import { useState } from 'react'
 import { nanoid } from 'nanoid'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -29,9 +30,12 @@ function defaultTrial(type: TrialData['type']): TrialData {
 }
 
 export function TrialConfigurator({ trials, onChange }: Props) {
-  const entries: TrialEntry[] = trials.map((t, i) => ({ localId: String(i), trial: t }))
+  const [entries, setEntries] = useState<TrialEntry[]>(() =>
+    trials.map(t => ({ localId: nanoid(), trial: t }))
+  )
 
   function emit(updated: TrialEntry[]) {
+    setEntries(updated)
     onChange(updated.map(e => e.trial))
   }
 
