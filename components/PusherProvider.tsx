@@ -1,6 +1,6 @@
 // components/PusherProvider.tsx
 'use client'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import Pusher from 'pusher-js'
 import api from '@/lib/api'
 import { getAuthUser } from '@/lib/auth'
@@ -15,8 +15,6 @@ interface GiftDinoPayload {
 }
 
 export function PusherProvider({ children }: { children: React.ReactNode }) {
-  const pusherRef = useRef<Pusher | null>(null)
-
   useEffect(() => {
     const user = getAuthUser()
     const key = process.env.NEXT_PUBLIC_PUSHER_KEY
@@ -45,21 +43,25 @@ export function PusherProvider({ children }: { children: React.ReactNode }) {
     channel.bind('gift_dino', async (payload: GiftDinoPayload) => {
       const session = loadSession()
       if (!session) return
-      await moveAndGift(
-        session,
-        parseInt(payload.dino.id, 10),
-        payload.dino.name,
-        payload.recipientApiId,
-      )
+      try {
+        const result = await moveAndGift(
+          session,
+          parseInt(payload.dino.id, 10),
+          payload.dino.name,
+          payload.recipientApiId,
+        )
+        if (!result.ok) {
+          console.error('[gift_dino] moveAndGift failed:', result.error)
+        }
+      } catch (err) {
+        console.error('[gift_dino] unexpected error:', err)
+      }
     })
-
-    pusherRef.current = pusher
 
     return () => {
       channel.unbind_all()
       pusher.unsubscribe(`private-user-${user.id}`)
       pusher.disconnect()
-      pusherRef.current = null
     }
   }, [])
 
