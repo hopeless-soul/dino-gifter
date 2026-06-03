@@ -1,4 +1,10 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(Select-String -Pattern \"seed\")",
+      "Bash(npm run *)"
+    ]
+  },
   "enabledPlugins": {
     "superpowers@superpowers-marketplace": true
   }

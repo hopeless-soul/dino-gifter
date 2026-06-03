@@ -1,0 +1,69 @@
+<h2>Giveaway Claiming — /giveaway/:id</h2>
+<p class="subtitle">Trial sequence → Redeem. Showing 3 states side by side.</p>
+
+<div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+
+  <!-- State 1: Typing trial -->
+  <div class="mockup" style="max-width:220px;">
+    <div class="mockup-header">Trial 1 of 3 — Typing</div>
+    <div class="mockup-body" style="display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center;">
+      <div style="font-size:11px;color:#888;">Dino Giveaway</div>
+      <div style="font-weight:700;font-size:16px;">Therizinosaurus</div>
+      <div style="font-size:11px;color:#888;">Juvenile</div>
+      <div style="width:100%;height:1px;background:#333;"></div>
+      <div style="font-size:11px;color:#aaa;">Type this phrase exactly:</div>
+      <div style="font-size:12px;font-weight:600;padding:6px 10px;background:#1e1e2e;border-radius:4px;border:1px solid #444;font-family:monospace;">I love Theri</div>
+      <div class="mock-input" style="width:100%;font-size:11px;text-align:left;">_</div>
+      <button class="mock-button" style="width:100%;">Next →</button>
+    </div>
+  </div>
+
+  <!-- State 2: Math trial -->
+  <div class="mockup" style="max-width:220px;">
+    <div class="mockup-header">Trial 2 of 3 — Math</div>
+    <div class="mockup-body" style="display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center;">
+      <div style="font-size:11px;color:#888;">Dino Giveaway</div>
+      <div style="font-weight:700;font-size:16px;">Therizinosaurus</div>
+      <div style="font-size:11px;color:#888;">Juvenile</div>
+      <div style="width:100%;height:1px;background:#333;"></div>
+      <div style="font-size:11px;color:#aaa;">Solve:</div>
+      <div style="font-size:18px;font-weight:700;padding:6px 10px;background:#1e1e2e;border-radius:4px;border:1px solid #444;">12 × 4 + 7</div>
+      <div class="mock-input" style="width:100%;font-size:11px;text-align:center;" placeholder="Your answer">55</div>
+      <button class="mock-button" style="width:100%;">Next →</button>
+    </div>
+  </div>
+
+  <!-- State 3: Puzzle trial -->
+  <div class="mockup" style="max-width:220px;">
+    <div class="mockup-header">Trial 3 of 3 — Puzzle</div>
+    <div class="mockup-body" style="display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center;">
+      <div style="font-size:11px;color:#888;">Dino Giveaway</div>
+      <div style="font-weight:700;font-size:16px;">Therizinosaurus</div>
+      <div style="font-size:11px;color:#888;">Juvenile</div>
+      <div style="width:100%;height:1px;background:#333;"></div>
+      <div style="font-size:11px;color:#aaa;">Complete the Sudoku:</div>
+      <div style="display:grid;grid-template-columns:repeat(9,18px);grid-template-rows:repeat(9,18px);gap:1px;background:#444;padding:1px;border-radius:2px;font-size:9px;">
+        ${[5,3,0,0,7,0,0,0,0, 6,0,0,1,9,5,0,0,0, 0,9,8,0,0,0,0,6,0, 8,0,0,0,6,0,0,0,3, 4,0,0,8,0,3,0,0,1, 7,0,0,0,2,0,0,0,6, 0,6,0,0,0,0,2,8,0, 0,0,0,4,1,9,0,0,5, 0,0,0,0,8,0,0,7,9].map(n=>`<div style="background:${n?'#1e1e2e':'#16161e'};display:flex;align-items:center;justify-content:center;color:${n?'#ccc':'#555'};font-weight:${n?'600':'400'}">${n||'·'}</div>`).join('')}
+      </div>
+      <button class="mock-button" style="width:100%;">Next →</button>
+    </div>
+  </div>
+
+  <!-- State 4: Redeem -->
+  <div class="mockup" style="max-width:220px;">
+    <div class="mockup-header">All trials passed</div>
+    <div class="mockup-body" style="display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center;">
+      <div style="font-size:11px;color:#888;">Dino Giveaway</div>
+      <div style="font-weight:700;font-size:16px;">Therizinosaurus</div>
+      <div style="font-size:11px;color:#888;">Juvenile</div>
+      <div style="width:100%;height:1px;background:#333;"></div>
+      <div style="font-size:28px;">🎉</div>
+      <div style="font-size:12px;color:#aaa;">All trials complete!</div>
+      <button class="mock-button" style="width:100%;padding:10px;font-size:14px;background:#22c55e;color:#fff;border-color:#22c55e;">🎁 Redeem</button>
+      <div style="font-size:10px;color:#666;border-top:1px solid #333;padding-top:8px;width:100%;">
+        Share: <span style="font-family:monospace;">dino-gifter.app/giveaway/abc</span>
+      </div>
+    </div>
+  </div>
+
+</div>
