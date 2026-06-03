@@ -6,7 +6,6 @@ import api from '@/lib/api'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import type { Giveaway } from '@/lib/types'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useSession } from '@/lib/use-session'
@@ -15,6 +14,13 @@ import { InventoryPanel } from '@/components/InventoryPanel'
 import { ServerTabs } from '@/components/ServerTabs'
 import { SlotsGrid } from '@/components/SlotsGrid'
 import type { InventoryItem, SlotCard } from '@/lib/types'
+
+const statusBadgeClass: Record<string, string> = {
+  not_processed: 'bg-muted text-muted-foreground',
+  pending: 'bg-yellow-900/40 text-yellow-300',
+  processed: 'bg-green-900/40 text-green-300',
+  failed: 'bg-red-900/40 text-red-300',
+}
 
 // ── Regular user ──────────────────────────────────────────────────────────────
 
@@ -130,13 +136,6 @@ function OperatorHome() {
     }
   }
 
-  const statusBadgeClass: Record<string, string> = {
-    not_processed: 'bg-muted text-muted-foreground',
-    pending: 'bg-yellow-900/40 text-yellow-300',
-    processed: 'bg-green-900/40 text-green-300',
-    failed: 'bg-red-900/40 text-red-300',
-  }
-
   return (
     <main className="max-w-5xl mx-auto p-4">
       <Tabs defaultValue="giveaways">
@@ -164,7 +163,7 @@ function OperatorHome() {
                     </div>
                     <div className="flex items-center gap-3">
                       <span className={`text-xs px-2 py-0.5 rounded-full ${statusBadgeClass[g.completionStatus] ?? 'bg-muted'}`}>
-                        {g.completionStatus.replace('_', ' ')}
+                        {g.completionStatus.replaceAll('_', ' ')}
                       </span>
                       <p className="text-xs text-muted-foreground">
                         {new Date(g.createdAt).toLocaleDateString()}
