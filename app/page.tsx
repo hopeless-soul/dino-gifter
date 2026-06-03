@@ -1,5 +1,8 @@
 'use client'
+import { Pacifico } from 'next/font/google'
 import { useState, useEffect } from 'react'
+
+const pacifico = Pacifico({ weight: '400', subsets: ['latin'] })
 import { useRouter } from 'next/navigation'
 import { useAuthUser } from '@/lib/use-auth-user'
 import api from '@/lib/api'
@@ -222,7 +225,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border px-4 py-3 flex items-center gap-4">
-        <h1 className="text-base font-bold text-foreground">🦕 Dino Gifter</h1>
+        <h1 className={`text-base text-foreground ${pacifico.className}`}>Dino Gifter</h1>
         <nav className="flex gap-4 text-sm ml-auto items-center">
           <span className="text-muted-foreground">{user.username}</span>
           <button

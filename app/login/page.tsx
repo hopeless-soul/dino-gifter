@@ -24,7 +24,7 @@ export default function LoginPage() {
     try {
       const { data } = await api.post<{ access_token: string }>('/auth/login', { username, password })
       const payload = jwtDecode<JwtPayload>(data.access_token)
-      setAuthUser({ id: payload.sub, username: payload.username, role: payload.role })
+      setAuthUser({ id: payload.sub, username: payload.username, role: payload.role, token: data.access_token })
       router.push('/')
     } catch {
       setError('Invalid username or password')
