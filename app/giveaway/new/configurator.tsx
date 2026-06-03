@@ -1,27 +1,35 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useSession } from '@/lib/use-session'
+import { useAuthUser } from '@/lib/use-auth-user'
+import api from '@/lib/api'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import type { InventoryItem, TypingTrial } from '@/lib/types'
+import { TrialConfigurator } from '@/components/TrialConfigurator'
+import type { InventoryItem, TrialData } from '@/lib/types'
 
 export function GiveawayConfigurator() {
   const router = useRouter()
-  const params = useSearchParams()
+  const { user } = useAuthUser()
   const [session] = useSession()
 
   const [inventory, setInventory] = useState<InventoryItem[]>([])
-  const [invId, setInvId] = useState<string>('')
+  const [invId, setInvId] = useState('')
   const [activeAt, setActiveAt] = useState('')
-  const [trialEnabled, setTrialEnabled] = useState(false)
-  const [phrase, setPhrase] = useState('')
+  const [trialsEnabled, setTrialsEnabled] = useState(false)
+  const [trials, setTrials] = useState<TrialData[]>([])
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Role guard — Regular users cannot create giveaways
+  useEffect(() => {
+    if (user && user.role === 'Regular') router.replace('/')
+  }, [user, router])
 
   const fetchInventory = useCallback(async () => {
     if (!session) return
@@ -36,138 +44,123 @@ export function GiveawayConfigurator() {
 
   useEffect(() => { fetchInventory() }, [fetchInventory])
 
-  useEffect(() => {
-    const id = params.get('invId')
-    if (id) setInvId(id)
-  }, [params])
-
   const selectedItem = inventory.find(i => i.id === parseInt(invId, 10))
 
   async function submit() {
-    if (!session) { setError('No session. Go back and Connect first.'); return }
     if (!invId) { setError('Select a dino.'); return }
-    if (trialEnabled && !phrase.trim()) { setError('Enter a trial phrase.'); return }
-
+    if (trialsEnabled && trials.length === 0) { setError('Add at least one trial or uncheck Enable Trials.'); return }
     setSubmitting(true)
     setError(null)
-
-    const trial: TypingTrial | null = trialEnabled
-      ? { type: 'typing', phrase: phrase.trim() }
-      : null
-
     try {
-      const res = await fetch('/api/giveaways', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          session,
-          invId: parseInt(invId, 10),
-          dinoName: selectedItem?.name ?? '',
-          growthLabel: selectedItem?.growthLabel ?? '',
-          activeAt: activeAt ? new Date(activeAt).toISOString() : null,
-          trial,
-        }),
+      const { data } = await api.post<{ id: string }>('/giveaway', {
+        dino: {
+          id: String(selectedItem!.id),
+          name: selectedItem!.name,
+          growthLabel: selectedItem!.growthLabel,
+        },
+        activeAt: activeAt ? new Date(activeAt).toISOString() : null,
+        trials: trialsEnabled && trials.length > 0 ? trials : null,
       })
-      const data = await res.json() as { id?: string; error?: string }
-      if (!res.ok) throw new Error(data.error ?? 'Failed to create giveaway')
-      router.push(`/giveaway/${data.id}?created=1`)
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Unknown error')
+      router.push(`/giveaway/${data.id}`)
+    } catch {
+      setError('Failed to create giveaway. Try again.')
       setSubmitting(false)
     }
   }
 
   return (
     <div className="min-h-screen bg-background flex items-start justify-center pt-12 px-4 pb-12">
-      <Card className="w-full max-w-md">
-        <CardHeader className="pb-2">
-          <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => router.push('/')}
-              aria-label="Back"
-              className="text-muted-foreground hover:text-foreground -ml-2"
-            >
-              ←
-            </Button>
-            <CardTitle className="text-lg">Configure Giveaway</CardTitle>
-          </div>
-        </CardHeader>
+      <div className={trialsEnabled ? 'flex gap-4 w-full max-w-3xl' : 'w-full max-w-md'}>
 
-        <CardContent className="flex flex-col gap-5 pt-2">
-          {/* Dino picker */}
-          <div className="flex flex-col gap-1.5">
-            <Label>Dino</Label>
-            {!session ? (
-              <p className="text-sm text-muted-foreground">No session — go back and connect first.</p>
-            ) : inventory.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Loading inventory…</p>
-            ) : (
-              <Select value={invId} onValueChange={setInvId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a dino…" />
-                </SelectTrigger>
-                <SelectContent>
-                  {inventory.map(item => (
-                    <SelectItem key={item.id} value={String(item.id)}>
-                      {item.name} — {item.growthLabel}
-                      {item.onCooldown ? ' (cooldown)' : ''}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          </div>
+        {/* Left: giveaway config */}
+        <Card className={trialsEnabled ? 'flex-1' : 'w-full'}>
+          <CardHeader className="pb-2">
+            <div className="flex items-center gap-3">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => router.push('/')}
+                aria-label="Back"
+                className="text-muted-foreground hover:text-foreground -ml-2"
+              >
+                ←
+              </Button>
+              <CardTitle className="text-lg">Configure Giveaway</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-5 pt-2">
+            {/* Dino picker */}
+            <div className="flex flex-col gap-1.5">
+              <Label>Dino</Label>
+              {!session ? (
+                <p className="text-sm text-muted-foreground">No game session — go to Inventory tab and connect first.</p>
+              ) : inventory.length === 0 ? (
+                <p className="text-sm text-muted-foreground">Loading inventory…</p>
+              ) : (
+                <Select value={invId} onValueChange={setInvId}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a dino…" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {inventory.map(item => (
+                      <SelectItem key={item.id} value={String(item.id)}>
+                        {item.name} — {item.growthLabel}
+                        {item.onCooldown ? ' (cooldown)' : ''}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
 
-          {/* Active at */}
-          <div className="flex flex-col gap-1.5">
-            <Label>Active at (optional)</Label>
-            <Input
-              type="datetime-local"
-              value={activeAt}
-              onChange={e => setActiveAt(e.target.value)}
-            />
-            <p className="text-xs text-muted-foreground">Leave empty to activate immediately.</p>
-          </div>
+            {/* Active at */}
+            <div className="flex flex-col gap-1.5">
+              <Label>Active at (optional)</Label>
+              <Input
+                type="datetime-local"
+                value={activeAt}
+                onChange={e => setActiveAt(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">Leave empty to activate immediately.</p>
+            </div>
 
-          {/* Trial toggle */}
-          <div className="flex flex-col gap-2">
+            {/* Trials toggle */}
             <div className="flex items-center gap-2">
               <Checkbox
-                id="trial"
-                checked={trialEnabled}
-                onCheckedChange={checked => setTrialEnabled(!!checked)}
+                id="trials"
+                checked={trialsEnabled}
+                onCheckedChange={checked => setTrialsEnabled(!!checked)}
               />
-              <Label htmlFor="trial" className="cursor-pointer">Enable typing trial</Label>
+              <Label htmlFor="trials" className="cursor-pointer">Enable Trials</Label>
             </div>
-            {trialEnabled && (
-              <div className="flex flex-col gap-1.5 pl-6">
-                <Label className="text-muted-foreground font-normal">
-                  Phrase the recipient must type exactly
-                </Label>
-                <Input
-                  type="text"
-                  value={phrase}
-                  onChange={e => setPhrase(e.target.value)}
-                  placeholder="e.g. I love Theri"
-                />
-              </div>
-            )}
-          </div>
 
-          {error && <p className="text-destructive text-sm">{error}</p>}
+            {error && <p className="text-destructive text-sm">{error}</p>}
 
-          <Button
-            onClick={submit}
-            disabled={submitting || !invId}
-            size="lg"
-            className="w-full"
-          >
-            {submitting ? 'Generating link…' : 'Generate Link'}
-          </Button>
-        </CardContent>
-      </Card>
+            <Button
+              type="button"
+              onClick={submit}
+              disabled={submitting || !invId}
+              size="lg"
+              className="w-full"
+            >
+              {submitting ? 'Generating link…' : 'Generate Link'}
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Right: trial configurator (only when trialsEnabled) */}
+        {trialsEnabled && (
+          <Card className="flex-1">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Trial Configurator</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TrialConfigurator trials={trials} onChange={setTrials} />
+            </CardContent>
+          </Card>
+        )}
+      </div>
     </div>
   )
 }
