@@ -32,6 +32,7 @@ export default function GiveawayPage() {
     api.get<Giveaway>(`/giveaway/${id}`)
       .then(({ data }) => {
         setGiveaway(data)
+        if (data.isCanceled) { setFetchError('This giveaway has been canceled.'); return }
         if (data.completionStatus !== 'not_processed') setRedeemed(true)
         if (!data.activeAt || new Date(data.activeAt) <= new Date()) setActive(true)
         if (!data.trials || data.trials.length === 0) setTrialsComplete(true)
@@ -42,14 +43,16 @@ export default function GiveawayPage() {
 
   const handleActive = useCallback(() => setActive(true), [])
 
-  function advanceTrial() {
+  const advanceTrial = useCallback(() => {
     const total = giveaway?.trials?.length ?? 0
-    if (trialIndex + 1 >= total) {
-      setTrialsComplete(true)
-    } else {
-      setTrialIndex(i => i + 1)
-    }
-  }
+    setTrialIndex(i => {
+      if (i + 1 >= total) {
+        setTrialsComplete(true)
+        return i
+      }
+      return i + 1
+    })
+  }, [giveaway])
 
   async function redeem() {
     setRedeeming(true)
