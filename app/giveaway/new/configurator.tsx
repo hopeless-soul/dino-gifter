@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useSession } from '@/lib/use-session'
 import { useAuthUser } from '@/lib/use-auth-user'
 import api from '@/lib/api'
@@ -15,6 +15,7 @@ import type { InventoryItem, TrialData } from '@/lib/types'
 
 export function GiveawayConfigurator() {
   const router = useRouter()
+  const params = useSearchParams()
   const { user } = useAuthUser()
   const [session] = useSession()
 
@@ -30,6 +31,11 @@ export function GiveawayConfigurator() {
   useEffect(() => {
     if (user && user.role === 'Regular') router.replace('/')
   }, [user, router])
+
+  useEffect(() => {
+    const id = params.get('invId')
+    if (id) setInvId(id)
+  }, [params])
 
   const fetchInventory = useCallback(async () => {
     if (!session) return
@@ -49,18 +55,20 @@ export function GiveawayConfigurator() {
   async function submit() {
     if (!invId) { setError('Select a dino.'); return }
     if (trialsEnabled && trials.length === 0) { setError('Add at least one trial or uncheck Enable Trials.'); return }
+    if (!selectedItem) { setError('Selected dino is no longer available.'); setSubmitting(false); return }
     setSubmitting(true)
     setError(null)
     try {
       const { data } = await api.post<{ id: string }>('/giveaway', {
         dino: {
-          id: String(selectedItem!.id),
-          name: selectedItem!.name,
-          growthLabel: selectedItem!.growthLabel,
+          id: String(selectedItem.id),
+          name: selectedItem.name,
+          growthLabel: selectedItem.growthLabel,
         },
         activeAt: activeAt ? new Date(activeAt).toISOString() : null,
         trials: trialsEnabled && trials.length > 0 ? trials : null,
       })
+      setSubmitting(false)
       router.push(`/giveaway/${data.id}`)
     } catch {
       setError('Failed to create giveaway. Try again.')

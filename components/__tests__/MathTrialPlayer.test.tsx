@@ -32,4 +32,12 @@ describe('MathTrialPlayer', () => {
     fireEvent.click(screen.getByRole('button', { name: /next/i }))
     expect(screen.getByText(/incorrect/i)).toBeInTheDocument()
   })
+
+  it('submits on Enter key with correct answer', () => {
+    const onSuccess = vi.fn()
+    render(<MathTrialPlayer data={DATA} onSuccess={onSuccess} />)
+    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '7' } })
+    fireEvent.keyDown(screen.getByRole('spinbutton'), { key: 'Enter' })
+    expect(onSuccess).toHaveBeenCalledOnce()
+  })
 })
