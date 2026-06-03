@@ -8,13 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import api from '@/lib/api'
 import { setAuthUser } from '@/lib/auth'
-import type { AuthUser } from '@/lib/types'
-
-interface JwtPayload {
-  sub: string
-  username: string
-  role: AuthUser['role']
-}
+import type { AuthUser, JwtPayload } from '@/lib/types'
 
 export default function LoginPage() {
   const router = useRouter()

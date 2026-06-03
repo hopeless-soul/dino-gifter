@@ -10,6 +10,13 @@ export interface AuthUser {
   role: Role
 }
 
+export interface JwtPayload {
+  sub: string
+  username: string
+  role: Role
+  tokenVersion: number
+}
+
 // ── Game / scraper types (unchanged — used by inventory tab) ─────────────────
 
 export interface SlotCard {
