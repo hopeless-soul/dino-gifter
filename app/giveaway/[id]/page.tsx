@@ -1,20 +1,24 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'next/navigation'
+import api from '@/lib/api'
 import { CountdownTimer } from '@/components/CountdownTimer'
 import { TypingTrial } from '@/components/TypingTrial'
+import { MathTrialPlayer } from '@/components/trials/MathTrialPlayer'
+import { PuzzleTrialPlayer } from '@/components/trials/PuzzleTrialPlayer'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import type { PublicGiveaway } from '@/lib/types'
+import type { Giveaway, TrialData, TypingTrialData, MathTrialData, PuzzleTrialData } from '@/lib/types'
 
 export default function GiveawayPage() {
   const { id } = useParams<{ id: string }>()
 
-  const [giveaway, setGiveaway] = useState<PublicGiveaway | null>(null)
+  const [giveaway, setGiveaway] = useState<Giveaway | null>(null)
   const [fetchError, setFetchError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [active, setActive] = useState(false)
-  const [trialPassed, setTrialPassed] = useState(false)
+  const [trialIndex, setTrialIndex] = useState(0)
+  const [trialsComplete, setTrialsComplete] = useState(false)
   const [redeeming, setRedeeming] = useState(false)
   const [redeemed, setRedeemed] = useState(false)
   const [redeemError, setRedeemError] = useState<string | null>(null)
@@ -25,15 +29,12 @@ export default function GiveawayPage() {
   }, [])
 
   useEffect(() => {
-    fetch(`/api/giveaways/${id}`)
-      .then(r => r.json())
-      .then((data: PublicGiveaway & { error?: string }) => {
-        if (data.error) { setFetchError(data.error); return }
+    api.get<Giveaway>(`/giveaway/${id}`)
+      .then(({ data }) => {
         setGiveaway(data)
-        setRedeemed(data.redeemed)
-        if (!data.activeAt || new Date(data.activeAt) <= new Date()) {
-          setActive(true)
-        }
+        if (data.completionStatus !== 'not_processed') setRedeemed(true)
+        if (!data.activeAt || new Date(data.activeAt) <= new Date()) setActive(true)
+        if (!data.trials || data.trials.length === 0) setTrialsComplete(true)
       })
       .catch(() => setFetchError('Could not load this giveaway.'))
       .finally(() => setLoading(false))
@@ -41,20 +42,37 @@ export default function GiveawayPage() {
 
   const handleActive = useCallback(() => setActive(true), [])
 
+  function advanceTrial() {
+    const total = giveaway?.trials?.length ?? 0
+    if (trialIndex + 1 >= total) {
+      setTrialsComplete(true)
+    } else {
+      setTrialIndex(i => i + 1)
+    }
+  }
+
   async function redeem() {
     setRedeeming(true)
     setRedeemError(null)
-    const res = await fetch(`/api/giveaways/${id}/redeem`, { method: 'POST' })
-    const data = await res.json() as { ok?: boolean; error?: string }
-    if (res.ok) {
+    try {
+      await api.post(`/giveaway/${id}`)
       setRedeemed(true)
-    } else {
-      setRedeemError(data.error ?? 'Redemption failed')
+    } catch {
+      setRedeemError('Redemption failed. Try again.')
+    } finally {
+      setRedeeming(false)
     }
-    setRedeeming(false)
   }
 
-  const showRedeemButton = active && (!giveaway?.trial || trialPassed) && !redeemed
+  function renderTrial(trial: TrialData) {
+    if (trial.type === 'typing') {
+      return <TypingTrial phrase={(trial.data as TypingTrialData).phrase} onSuccess={advanceTrial} />
+    }
+    if (trial.type === 'math') {
+      return <MathTrialPlayer data={trial.data as MathTrialData} onSuccess={advanceTrial} />
+    }
+    return <PuzzleTrialPlayer data={trial.data as PuzzleTrialData} onSuccess={advanceTrial} />
+  }
 
   if (loading) {
     return (
@@ -74,6 +92,10 @@ export default function GiveawayPage() {
 
   if (!giveaway) return null
 
+  const currentTrial = giveaway.trials?.[trialIndex]
+  const trialCount = giveaway.trials?.length ?? 0
+  const showRedeem = active && trialsComplete && !redeemed
+
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <Card className="w-full max-w-sm">
@@ -81,14 +103,16 @@ export default function GiveawayPage() {
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
             Dino Giveaway
           </p>
-          <h1 className="text-2xl font-bold text-foreground">{giveaway.dinoName}</h1>
-          <p className="text-muted-foreground mt-1">{giveaway.growthLabel}</p>
+          <h1 className="text-2xl font-bold text-foreground">{giveaway.dino.name}</h1>
+          <p className="text-muted-foreground mt-1">{giveaway.dino.growthLabel}</p>
         </CardHeader>
 
         <CardContent className="flex flex-col gap-6 items-center text-center">
           {redeemed ? (
-            <p className="text-success font-medium text-sm">
-              This giveaway has already been claimed.
+            <p className="text-sm font-medium" style={{ color: 'var(--color-success, #22c55e)' }}>
+              {giveaway.completionStatus !== 'not_processed' && !redeemError
+                ? 'This giveaway has already been claimed.'
+                : 'Claimed! The dino is on its way.'}
             </p>
           ) : (
             <>
@@ -96,14 +120,16 @@ export default function GiveawayPage() {
                 <CountdownTimer activeAt={giveaway.activeAt} onActive={handleActive} />
               )}
 
-              {active && giveaway.trial && !trialPassed && (
-                <TypingTrial
-                  phrase={giveaway.trial.phrase}
-                  onSuccess={() => setTrialPassed(true)}
-                />
+              {active && currentTrial && !trialsComplete && (
+                <div className="w-full flex flex-col gap-2">
+                  <p className="text-xs text-muted-foreground">
+                    Trial {trialIndex + 1} of {trialCount}
+                  </p>
+                  {renderTrial(currentTrial)}
+                </div>
               )}
 
-              {showRedeemButton && (
+              {showRedeem && (
                 <Button
                   onClick={redeem}
                   disabled={redeeming}
