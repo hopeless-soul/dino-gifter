@@ -17,6 +17,7 @@ import { InventoryPanel } from '@/components/InventoryPanel'
 import { ServerTabs } from '@/components/ServerTabs'
 import { SlotsGrid } from '@/components/SlotsGrid'
 import type { InventoryItem, SlotCard } from '@/lib/types'
+import { Badge } from "@/components/ui/badge"
 
 const statusBadgeClass: Record<string, string> = {
   not_processed: 'bg-muted text-muted-foreground',
@@ -227,7 +228,7 @@ export default function HomePage() {
       <header className="border-b border-border px-4 py-3 flex items-center gap-4">
         <h1 className={`text-base text-foreground ${pacifico.className}`}>Dino Gifter</h1>
         <nav className="flex gap-4 text-sm ml-auto items-center">
-          <span className="text-muted-foreground">{user.username}</span>
+          <Badge>{user.username}</Badge>
           <button
             onClick={async () => { await logout(); router.replace('/login') }}
             className="text-muted-foreground hover:text-foreground transition-colors"

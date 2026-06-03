@@ -9,6 +9,20 @@ import { Label } from '@/components/ui/label'
 import api from '@/lib/api'
 import { setAuthUser } from '@/lib/auth'
 import type { AuthUser, JwtPayload } from '@/lib/types'
+import { cn } from '@/lib/utils'
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSeparator,
+  FieldSet,
+  FieldTitle,
+} from "@/components/ui/field"
+
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -25,7 +39,7 @@ export default function RegisterPage() {
       await api.post('/auth/register', { username, password })
       const { data } = await api.post<{ access_token: string }>('/auth/login', { username, password })
       const payload = jwtDecode<JwtPayload>(data.access_token)
-      setAuthUser({ id: payload.sub, username: payload.username, role: payload.role })
+      setAuthUser({ id: payload.sub, username: payload.username, role: payload.role, token: data.access_token })
       router.push('/')
     } catch {
       setError('Registration failed. Username may already be taken.')
@@ -36,45 +50,51 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader className="text-center">
-          <CardTitle className="text-xl">Register</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={submit} className="flex flex-col gap-3">
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                value={username}
-                onChange={e => setUsername(e.target.value)}
-                autoComplete="username"
-                required
-              />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="password">Password (min 8 characters)</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                autoComplete="new-password"
-                minLength={8}
-                required
-              />
-            </div>
-            {error && <p className="text-destructive text-sm">{error}</p>}
-            <Button type="submit" disabled={loading} className="w-full">
-              {loading ? 'Creating account…' : 'Create account'}
-            </Button>
-            <p className="text-sm text-center text-muted-foreground">
-              Already have an account?{' '}
-              <a href="/login" className="text-primary hover:underline">Login</a>
-            </p>
-          </form>
-        </CardContent>
-      </Card>
+      <div className={cn("flex flex-col gap-6", 'w-full max-w-sm')}>
+        <Card>
+          <CardHeader className="text-center">
+            <CardTitle className="text-xl">Register</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={submit} className="flex flex-col gap-3">
+              <FieldGroup>
+                <Field>
+                  <FieldLabel htmlFor="username">Username</FieldLabel>
+                  <Input
+                    id="username"
+                    value={username}
+                    onChange={e => setUsername(e.target.value)}
+                    autoComplete="username"
+                    required
+                  />
+                </Field>
+                <Field className="flex flex-col gap-1.5">
+                  <FieldLabel htmlFor="password">Password</FieldLabel>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    autoComplete="new-password"
+                    minLength={8}
+                    required
+                  />
+                </Field>
+                {error && <p className="text-destructive text-sm">{error}</p>}
+                <Field>
+                  <Button type="submit" disabled={loading} className="w-full">
+                    {loading ? 'Creating account…' : 'Create account'}
+                  </Button>
+                  <FieldDescription className="text-sm text-center text-muted-foreground">
+                    Already have an account?{' '}
+                    <a href="/login" className="text-primary hover:underline">Login</a>
+                  </FieldDescription>
+                </Field>
+              </FieldGroup>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }
