@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { loadSession, saveSession } from './backend/session'
+import { loadSession, saveSession } from '@/lib/backend/session'
 
 export function useSession() {
   const [session, setSessionState] = useState('')

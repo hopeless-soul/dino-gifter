@@ -3,7 +3,7 @@
 import { Pacifico } from 'next/font/google'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useAuthUser } from '@/lib/use-auth-user'
+import { useAuthUser } from '@/lib/hooks/use-auth-user'
 import { Badge } from '@/components/ui/badge'
 
 const pacifico = Pacifico({ weight: '400', subsets: ['latin'] })
