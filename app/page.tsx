@@ -12,7 +12,7 @@ import { SessionInput } from '@/components/SessionInput'
 import { InventoryPanel } from '@/components/InventoryPanel'
 import { ServerTabs } from '@/components/ServerTabs'
 import { SlotsGrid } from '@/components/SlotsGrid'
-import { Navbar } from '@/components/Navbar'
+import { Navbar } from '@/components/layout/Navbar'
 import type { InventoryItem, SlotCard } from '@/lib/types'
 import { Badge } from "@/components/ui/badge"
 import { ApiIdCard } from '@/components/ApiIdCard'
