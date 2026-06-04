@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { TrialConfigurator } from '../TrialConfigurator'
+import { TrialConfigurator } from '../giveaway/TrialConfigurator'
 
 describe('TrialConfigurator', () => {
   it('renders an Add Trial button', () => {

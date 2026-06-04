@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { GiveawayConfigurator } from './configurator'
+import { GiveawayConfigurator } from '@/components/giveaway/GiveawayConfigurator'
 
 export default function GiveawayNewPage() {
   return (

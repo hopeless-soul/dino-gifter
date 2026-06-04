@@ -1,4 +1,4 @@
-// components/TrialConfigurator.tsx
+// components/giveaway/TrialConfigurator.tsx
 'use client'
 import { useState } from 'react'
 import { nanoid } from 'nanoid'

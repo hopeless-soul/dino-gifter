@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { formatCountdown } from '../CountdownTimer'
+import { formatCountdown } from '../giveaway/CountdownTimer'
 
 describe('formatCountdown', () => {
   it('formats 3661000ms as 01:01:01', () => {

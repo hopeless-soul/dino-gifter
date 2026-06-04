@@ -2,14 +2,14 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'next/navigation'
 import api from '@/lib/backend/api'
-import { CountdownTimer } from '@/components/CountdownTimer'
-import { TypingTrial } from '@/components/TypingTrial'
+import { CountdownTimer } from '@/components/giveaway/CountdownTimer'
+import { TypingTrial } from '@/components/trials/TypingTrial'
 import { MathTrialPlayer } from '@/components/trials/MathTrialPlayer'
 import { PuzzleTrialPlayer } from '@/components/trials/PuzzleTrialPlayer'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import type { Giveaway, TrialData, TypingTrialData, MathTrialData, PuzzleTrialData } from '@/lib/types'
-import { CardSimIcon, Gift } from 'lucide-react'
+import { Gift } from 'lucide-react'
 
 export default function GiveawayPage() {
   const { id } = useParams<{ id: string }>()
