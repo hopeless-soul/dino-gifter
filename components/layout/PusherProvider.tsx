@@ -6,7 +6,12 @@ import { getAuthUser } from '@/lib/backend/auth'
 import { loadSession } from '@/lib/backend/session'
 import type { GiftDinoPayload } from '@/lib/types'
 
+// Module-level set: survives re-renders and guards against Pusher duplicate delivery
+const inFlight = new Set<string>()
+
 async function handleGiftDino(payload: GiftDinoPayload) {
+  if (inFlight.has(payload.giveawayId)) return
+  inFlight.add(payload.giveawayId)
   const session = loadSession()
   if (!session) {
     console.warn('[gift_dino] no game session — cannot process')

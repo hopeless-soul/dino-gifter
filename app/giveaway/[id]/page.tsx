@@ -6,14 +6,17 @@ import { CountdownTimer } from '@/components/giveaway/CountdownTimer'
 import { TypingTrial } from '@/components/trials/TypingTrial'
 import { MathTrialPlayer } from '@/components/trials/MathTrialPlayer'
 import { PuzzleTrialPlayer } from '@/components/trials/PuzzleTrialPlayer'
+import { RiddleTrialPlayer } from '@/components/trials/RiddleTrialPlayer'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import type { Giveaway, TrialData, TypingTrialData, MathTrialData, PuzzleTrialData } from '@/lib/types'
-import { Gift, Trophy, ClipboardCopy, Check } from 'lucide-react'
+import type { Giveaway, TrialData, TypingTrialData, MathTrialData, PuzzleTrialData, RiddleTrialData } from '@/lib/types'
+import { Gift, Trophy, ClipboardCopy, Check, TriangleAlert } from 'lucide-react'
+import type { UserMeResponse } from '@/lib/types'
 
 function trialHeading(type: string): string {
   if (type === 'typing') return 'Type the phrase'
   if (type === 'math') return 'Solve the expression'
+  if (type === 'riddle') return 'Solve the riddle'
   return 'Solve the puzzle'
 }
 
@@ -31,9 +34,16 @@ export default function GiveawayPage() {
   const [redeemError, setRedeemError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [shareUrl, setShareUrl] = useState('')
+  const [missingApiId, setMissingApiId] = useState(false)
 
   useEffect(() => {
     setShareUrl(window.location.href.split('?')[0])
+  }, [])
+
+  useEffect(() => {
+    api.get<UserMeResponse>('/users/me')
+      .then(({ data }) => { if (!data.apiId) setMissingApiId(true) })
+      .catch(() => { })
   }, [])
 
   useEffect(() => {
@@ -83,6 +93,7 @@ export default function GiveawayPage() {
   function renderTrial(trial: TrialData) {
     if (trial.type === 'typing') return <TypingTrial phrase={(trial.data as TypingTrialData).phrase} onSuccess={advanceTrial} />
     if (trial.type === 'math') return <MathTrialPlayer data={trial.data as MathTrialData} onSuccess={advanceTrial} />
+    if (trial.type === 'riddle') return <RiddleTrialPlayer data={trial.data as RiddleTrialData} onSuccess={advanceTrial} />
     return <PuzzleTrialPlayer data={trial.data as PuzzleTrialData} onSuccess={advanceTrial} />
   }
 
@@ -108,10 +119,22 @@ export default function GiveawayPage() {
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-background flex items-center justify-center px-6 py-8 mt-16">
-      <div className={`flex flex-col md:flex-row gap-4 w-full max-w-3xl items-stretch ${!(trialCount > 0 && active && currentTrial && !trialsComplete && !giveaway.recipient) ? 'justify-center' : ''}`}>
+      <div className={`flex flex-col md:flex-row gap-4 w-full max-w-3xl items-stretch ${!(trialCount > 0 && active && currentTrial && !trialsComplete && !giveaway.recipient && !missingApiId) ? 'justify-center' : ''}`}>
 
         {/* Left column — 320px */}
         <div className="flex flex-col gap-4 w-full md:w-80 shrink-0">
+
+          {/* API ID warning */}
+          {missingApiId && (
+            <Card className="border-yellow-500/50 bg-yellow-500/10">
+              <CardContent className="flex items-start gap-3 p-4">
+                <TriangleAlert size={16} className="text-yellow-500 mt-0.5 shrink-0" />
+                <p className="text-sm text-yellow-600 dark:text-yellow-400">
+                  Your API ID is not set. You won&apos;t be able to receive gifts until you add it in your profile settings.
+                </p>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Hero card */}
           <Card>
@@ -194,7 +217,7 @@ export default function GiveawayPage() {
                   <div
                     key={i}
                     className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
-                      i < trialIndex ? 'bg-primary' : i === trialIndex ? 'bg-primary/50' : 'bg-muted'
+                      i < trialIndex ? 'bg-primary' : i === trialIndex ? 'progress-bar-active' : 'bg-muted'
                     }`}
                   />
                 ))}
@@ -238,7 +261,7 @@ export default function GiveawayPage() {
         </div>
 
         {/* Right column: trial content */}
-        {trialCount > 0 && active && currentTrial && !trialsComplete && !giveaway.recipient && (
+        {trialCount > 0 && active && currentTrial && !trialsComplete && !giveaway.recipient && !missingApiId && (
           <Card className="flex-1 w-full flex flex-col min-h-[300px] md:self-stretch">
             <CardHeader className="pb-2 pt-5 px-6">
               <p className="text-xs text-muted-foreground/60 uppercase tracking-widest">

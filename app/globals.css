@@ -127,6 +127,22 @@ body {
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.progress-bar-active {
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--color-primary) 35%, transparent) 0%,
+    color-mix(in oklab, var(--color-primary) 80%, transparent) 50%,
+    color-mix(in oklab, var(--color-primary) 35%, transparent) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -136,5 +152,6 @@ body {
   }
   html {
     @apply font-sans;
+    scrollbar-gutter: stable;
   }
 }

@@ -7,7 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { TypingTrialEditor } from '@/components/trials/TypingTrialEditor'
 import { MathTrialEditor } from '@/components/trials/MathTrialEditor'
 import { PuzzleTrialEditor } from '@/components/trials/PuzzleTrialEditor'
-import type { TrialData, TypingTrialData, MathTrialData, PuzzleTrialData } from '@/lib/types'
+import { RiddleTrialEditor } from '@/components/trials/RiddleTrialEditor'
+import type { TrialData, TypingTrialData, MathTrialData, PuzzleTrialData, RiddleTrialData } from '@/lib/types'
 
 interface TrialEntry {
   localId: string
@@ -26,6 +27,7 @@ function emptyGrid(): number[][] {
 function defaultTrial(type: TrialData['type']): TrialData {
   if (type === 'typing') return { type: 'typing', data: { phrase: '' } }
   if (type === 'math') return { type: 'math', data: { expression: '', answer: 0 } }
+  if (type === 'riddle') return { type: 'riddle', data: { riddle: '', answer: '' } }
   return { type: 'puzzle', data: { grid: emptyGrid(), solution: emptyGrid() } }
 }
 
@@ -51,7 +53,7 @@ export function TrialConfigurator({ trials, onChange }: Props) {
     emit(entries.map(e => e.localId === localId ? { ...e, trial: defaultTrial(type) } : e))
   }
 
-  function changeData(localId: string, data: TypingTrialData | MathTrialData | PuzzleTrialData) {
+  function changeData(localId: string, data: TypingTrialData | MathTrialData | PuzzleTrialData | RiddleTrialData) {
     emit(entries.map(e => {
       if (e.localId !== localId) return e
       return { ...e, trial: { ...e.trial, data } as TrialData }
@@ -87,6 +89,7 @@ export function TrialConfigurator({ trials, onChange }: Props) {
               <SelectItem value="typing">Typing</SelectItem>
               <SelectItem value="math">Math</SelectItem>
               <SelectItem value="puzzle">Puzzle (Sudoku)</SelectItem>
+              <SelectItem value="riddle">Riddle</SelectItem>
             </SelectContent>
           </Select>
 
@@ -105,6 +108,12 @@ export function TrialConfigurator({ trials, onChange }: Props) {
           {entry.trial.type === 'puzzle' && (
             <PuzzleTrialEditor
               data={entry.trial.data as PuzzleTrialData}
+              onChange={d => changeData(entry.localId, d)}
+            />
+          )}
+          {entry.trial.type === 'riddle' && (
+            <RiddleTrialEditor
+              data={entry.trial.data as RiddleTrialData}
               onChange={d => changeData(entry.localId, d)}
             />
           )}

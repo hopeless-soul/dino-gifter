@@ -61,10 +61,16 @@ export interface PuzzleTrialData {
   solution: number[][]
 }
 
+export interface RiddleTrialData {
+  riddle: string
+  answer: string
+}
+
 export type TrialData =
   | { type: 'typing'; data: TypingTrialData }
   | { type: 'math'; data: MathTrialData }
   | { type: 'puzzle'; data: PuzzleTrialData }
+  | { type: 'riddle'; data: RiddleTrialData }
 
 export type CompletionStatus = 'not_processed' | 'pending' | 'processed' | 'failed'
 

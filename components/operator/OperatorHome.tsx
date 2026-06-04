@@ -13,7 +13,7 @@ import { ServerTabs } from '@/components/game/ServerTabs'
 import { SlotsGrid } from '@/components/game/SlotsGrid'
 import { ApiIdCard } from '@/components/user/ApiIdCard'
 import { Badge } from '@/components/ui/badge'
-import { Ban, Check, ClipboardCopy, ExternalLink, Gift, Plus, RotateCcw } from 'lucide-react'
+import { Archive, Ban, Check, ClipboardCopy, ExternalLink, Gift, PartyPopper, Plus, RotateCcw, TriangleAlert } from 'lucide-react'
 import {
   Item,
   ItemActions,
@@ -22,7 +22,7 @@ import {
   ItemMedia,
   ItemTitle,
 } from '@/components/ui/item'
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   HoverCard,
   HoverCardContent,
@@ -174,15 +174,28 @@ export function OperatorHome() {
               <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">
                 Giveaways — {giveaways.length} items
               </h2>
-              <ScrollArea className="h-128 w-full rounded-md border p-4">
-                <ScrollBar />
-                <div className="flex w-full flex-col gap-4 p-2 overflow-y-auto">
+              <ScrollArea className="h-128 w-full rounded-md border">
+                <div className="flex w-full flex-col gap-4 overflow-y-auto">
                   {giveaways.map((g) => (
-                    <Item className='w-full' variant='muted' key={g.id} style={g.isCanceled ? { background: 'color-mix(in srgb, var(--muted) 10%, transparent)' } : undefined}>
+                    <Item className='w-full' variant='muted' key={g.id} style={g.isCanceled ? { opacity: 0.4 } : undefined}>
                       <HoverCard openDelay={10} closeDelay={100}>
                         <HoverCardTrigger asChild>
-                          <ItemMedia variant='image' style={{ background: 'var(--muted)' }}>
-                            <Gift size='21' className="text-white" />
+                          <ItemMedia variant='image' style={{
+                            background: g.isCanceled
+                              ? 'var(--muted)'
+                              : g.completionStatus === 'failed'
+                                ? 'color-mix(in srgb, #ef4444 30%, transparent)'
+                                : g.completionStatus === 'processed'
+                                  ? 'color-mix(in srgb, #22c55e 30%, transparent)'
+                                  : 'var(--muted)',
+                          }}>
+                            {g.isCanceled
+                              ? <Archive size='21' className="text-white" />
+                              : g.completionStatus === 'failed'
+                                ? <TriangleAlert size='21' className="text-white" />
+                                : g.completionStatus === 'processed'
+                                  ? <PartyPopper size='21' className="text-white" />
+                                  : <Gift size='21' className="text-white" />}
                           </ItemMedia>
                         </HoverCardTrigger>
                         <HoverCardContent className="flex w-72 flex-col gap-0.5 ml-56">
