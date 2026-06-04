@@ -44,7 +44,7 @@ export function SlotsGrid({ slots, server = '1', giveaways = [] }: Props) {
       {slots.map(slot => {
         const state = getSlotState(slot, server, giveaways)
         const relatedGiveaway = giveaways.find(
-          g => g.server === server && g.slot === String(slot.slotNumber) && g.completionStatus === 'not_processed'
+          g => g.server === server && g.slot === String(slot.slotNumber) && g.completionStatus === 'not_processed' && !g.isCanceled
         )
         return (
           <div

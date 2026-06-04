@@ -36,6 +36,7 @@ const statusBadgeClass: Record<string, string> = {
   failed: 'bg-muted text-muted-foreground',
 }
 
+// Used in HoverCard detail view (HH:MM:SS precision). In-list rows use CountdownHHMM.
 function Countdown({ activeAt }: { activeAt: string | null }) {
   const [remaining, setRemaining] = useState<number | null>(null)
 
@@ -74,7 +75,7 @@ function CountdownHHMM({ activeAt }: { activeAt: string | null }) {
       const totalMin = Math.floor(ms / 60000)
       const h = Math.floor(totalMin / 60)
       const m = totalMin % 60
-      setLabel(ms === 0 ? '0:00' : `${h}:${String(m).padStart(2, '0')}`)
+      setLabel(`${h}:${String(m).padStart(2, '0')}`)
     }
     tick()
     const id = setInterval(tick, 10000)
