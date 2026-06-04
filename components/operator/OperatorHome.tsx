@@ -31,9 +31,9 @@ import {
 
 const statusBadgeClass: Record<string, string> = {
   not_processed: 'bg-muted text-muted-foreground',
-  pending: 'bg-yellow-900/40 text-yellow-300',
-  processed: 'bg-green-900/40 text-green-300',
-  failed: 'bg-red-900/40 text-red-300',
+  pending: 'bg-muted text-muted-foreground',
+  processed: 'bg-muted text-muted-foreground',
+  failed: 'bg-muted text-muted-foreground',
 }
 
 function Countdown({ activeAt }: { activeAt: string | null }) {
@@ -60,6 +60,28 @@ function Countdown({ activeAt }: { activeAt: string | null }) {
     ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
     : `${m}:${String(s).padStart(2, '0')}`
 
+  return <span className="text-xs font-mono text-muted-foreground">{label}</span>
+}
+
+function CountdownHHMM({ activeAt }: { activeAt: string | null }) {
+  const [label, setLabel] = useState('0:00')
+
+  useEffect(() => {
+    if (!activeAt) return
+    const target = new Date(activeAt).getTime()
+    const tick = () => {
+      const ms = Math.max(0, target - Date.now())
+      const totalMin = Math.floor(ms / 60000)
+      const h = Math.floor(totalMin / 60)
+      const m = totalMin % 60
+      setLabel(ms === 0 ? '0:00' : `${h}:${String(m).padStart(2, '0')}`)
+    }
+    tick()
+    const id = setInterval(tick, 10000)
+    return () => clearInterval(id)
+  }, [activeAt])
+
+  if (!activeAt) return null
   return <span className="text-xs font-mono text-muted-foreground">{label}</span>
 }
 
@@ -127,7 +149,7 @@ export function OperatorHome() {
             <TabsTrigger value="giveaways">Giveaways</TabsTrigger>
             <TabsTrigger value="inventory">Inventory</TabsTrigger>
           </TabsList>
-          <Button size="sm" onClick={() => router.push('/giveaway/new')}>
+          <Button size="sm" className="bg-white text-black hover:bg-white/90" onClick={() => router.push('/giveaway/new')}>
             <Plus size={12} /> New Giveaway
           </Button>
         </div>
@@ -148,7 +170,7 @@ export function OperatorHome() {
                       <HoverCard openDelay={10} closeDelay={100}>
                         <HoverCardTrigger asChild>
                           <ItemMedia variant='image' style={{ background: 'var(--muted)' }}>
-                            <Gift size='21' />
+                            <Gift size='21' className="text-white" />
                           </ItemMedia>
                         </HoverCardTrigger>
                         <HoverCardContent className="flex w-72 flex-col gap-0.5 ml-56">
@@ -184,7 +206,7 @@ export function OperatorHome() {
                           <span className={`text-xs px-2 py-0.5 rounded-full ${statusBadgeClass[g.completionStatus] ?? 'bg-muted'}`}>
                             {g.completionStatus.replaceAll('_', ' ')}
                           </span>
-                          <Countdown activeAt={g.activeAt} />
+                          <CountdownHHMM activeAt={g.activeAt} />
                           <p className="text-xs text-muted-foreground hidden sm:block">
                             {new Date(g.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
                           </p>
@@ -235,7 +257,7 @@ export function OperatorHome() {
                 </h2>
                 <Card className="overflow-hidden">
                   <ServerTabs active={activeServer} onChange={setActiveServer} />
-                  <SlotsGrid slots={serverSlots[activeServer] ?? []} />
+                  <SlotsGrid slots={serverSlots[activeServer] ?? []} server={activeServer} giveaways={giveaways} />
                 </Card>
               </section>
             </div>
