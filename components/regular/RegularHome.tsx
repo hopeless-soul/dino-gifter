@@ -1,11 +1,14 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import api from '@/lib/backend/api'
-import { Card, CardContent } from '@/components/ui/card'
 import { ApiIdCard } from '@/components/user/ApiIdCard'
+import { Button } from '@/components/ui/button'
+import { Gift, ExternalLink } from 'lucide-react'
 import type { Giveaway } from '@/lib/types'
 
 export function RegularHome() {
+  const router = useRouter()
   const [giveaways, setGiveaways] = useState<Giveaway[]>([])
 
   useEffect(() => {
@@ -15,32 +18,51 @@ export function RegularHome() {
   }, [])
 
   return (
-    <main className="max-w-xl mx-auto p-4 flex flex-col gap-6">
+    <main className="max-w-xl w-full mx-auto p-4 flex flex-col gap-4">
       <ApiIdCard />
 
       <section>
-        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">
           Claimed Giveaways
-        </h2>
-        {giveaways.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No claimed giveaways yet.</p>
-        ) : (
-          <div className="flex flex-col gap-2">
-            {giveaways.map(g => (
-              <Card key={g.id}>
-                <CardContent className="py-3 flex justify-between items-center">
-                  <div>
-                    <p className="font-medium">{g.dino.name}</p>
-                    <p className="text-sm text-muted-foreground">{g.dino.growthLabel}</p>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {new Date(g.createdAt).toLocaleDateString()}
+        </p>
+
+        <div className="border border-border rounded-xl p-2 flex flex-col gap-1.5">
+          {giveaways.length === 0 ? (
+            <p className="text-xs text-muted-foreground italic text-center py-6">
+              No claimed giveaways yet.
+            </p>
+          ) : (
+            giveaways.map(g => (
+              <div
+                key={g.id}
+                className="bg-muted/30 border border-border/60 rounded-lg px-3 py-2.5 flex items-center gap-3 hover:border-border transition-colors cursor-pointer"
+                onClick={() => router.push(`/giveaway/${g.id}`)}
+              >
+                <div className="w-9 h-9 bg-muted border border-border/50 rounded-lg flex items-center justify-center shrink-0">
+                  <Gift size={18} className="text-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-foreground truncate">{g.dino.name}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {g.dino.growthLabel}
+                    {g.creator.username ? ` · from ${g.creator.username}` : ''}
                   </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
+                </div>
+                <p className="text-xs font-mono text-muted-foreground/60 shrink-0">
+                  {new Date(g.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}
+                </p>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="w-7 h-7 shrink-0 text-muted-foreground hover:text-foreground"
+                  onClick={e => { e.stopPropagation(); window.open(`/giveaway/${g.id}`, '_blank') }}
+                >
+                  <ExternalLink size={13} />
+                </Button>
+              </div>
+            ))
+          )}
+        </div>
       </section>
     </main>
   )
