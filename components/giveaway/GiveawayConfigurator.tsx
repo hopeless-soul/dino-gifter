@@ -106,21 +106,35 @@ export function GiveawayConfigurator() {
     if (!autoSlot) { setError('No available slot on this server — all are reserved.'); return }
     if (trialsEnabled && trials.length === 0) { setError('Add at least one trial or disable Enable Trials.'); return }
     if (!selectedItem) { setError('Selected dino is no longer available.'); return }
+    if (!session) { setError('No game session — connect in Inventory tab first.'); return }
     setSubmitting(true)
     setError(null)
     try {
+      const moveRes = await fetch('/api/move-to-slot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-user-session': session },
+        body: JSON.stringify({ server: activeServer, invId: selectedItem.id, dinoName: selectedItem.name }),
+      })
+      if (!moveRes.ok) {
+        const body = await moveRes.json() as { error?: string }
+        setError(body.error ?? 'Failed to move dino to server.')
+        setSubmitting(false)
+        return
+      }
+      const { slotNumber } = await moveRes.json() as { slotNumber: number }
+
       const { data } = await api.post<{ id: string }>('/giveaway', {
         dino: {
           id: String(selectedItem.id),
           name: selectedItem.name,
           growthLabel: selectedItem.growthLabel,
           server: activeServer,
-          slot: String(autoSlot.slotNumber),
+          slot: String(slotNumber),
         },
         activeAt: activeAt ? new Date(activeAt).toISOString() : null,
         trials: trialsEnabled && trials.length > 0 ? trials : null,
         server: activeServer,
-        slot: String(autoSlot.slotNumber),
+        slot: String(slotNumber),
       })
       setSubmitting(false)
       router.push(`/giveaway/${data.id}`)

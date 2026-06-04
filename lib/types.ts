@@ -87,3 +87,14 @@ export interface Giveaway {
 export interface UserMeResponse {
   apiId: string | null
 }
+
+
+
+export interface GiftDinoPayload {
+  giveawayId: string;
+  dino: DinoData;
+  recipientApiId: string;
+  recipientId: string;
+  server: string | null;
+  slot: string | null;
+}

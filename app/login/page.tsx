@@ -1,36 +1,27 @@
 'use client'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { jwtDecode } from 'jwt-decode'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import api from '@/lib/backend/api'
 import { setAuthUser } from '@/lib/backend/auth'
-import type { AuthUser, JwtPayload } from '@/lib/types'
+import type { JwtPayload } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import {
   Field,
-  FieldContent,
   FieldDescription,
-  FieldError,
   FieldGroup,
   FieldLabel,
-  FieldLegend,
-  FieldSeparator,
-  FieldSet,
-  FieldTitle,
 } from "@/components/ui/field"
 
 export default function LoginPage() {
-  const router = useRouter()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
-  async function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
     setError(null)
@@ -38,7 +29,7 @@ export default function LoginPage() {
       const { data } = await api.post<{ access_token: string }>('/auth/login', { username, password })
       const payload = jwtDecode<JwtPayload>(data.access_token)
       setAuthUser({ id: payload.sub, username: payload.username, role: payload.role, token: data.access_token })
-      router.push('/')
+      window.location.href = '/'
     } catch {
       setError('Invalid username or password')
     } finally {

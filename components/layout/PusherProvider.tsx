@@ -4,15 +4,7 @@ import { useEffect } from 'react'
 import Pusher from 'pusher-js'
 import api from '@/lib/backend/api'
 import { getAuthUser } from '@/lib/backend/auth'
-import { loadSession } from '@/lib/backend/session'
-import { moveAndGift } from '@/lib/crawler/redeem'
-import type { DinoData } from '@/lib/types'
-
-interface GiftDinoPayload {
-  giveawayId: string
-  dino: DinoData
-  recipientApiId: string
-}
+import { GiftDinoPayload } from '@/lib/types'
 
 export function PusherProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -40,22 +32,9 @@ export function PusherProvider({ children }: { children: React.ReactNode }) {
 
     const channel = pusher.subscribe(`private-user-${user.id}`)
 
-    channel.bind('gift_dino', async (payload: GiftDinoPayload) => {
-      const session = loadSession()
-      if (!session) return
-      try {
-        const result = await moveAndGift(
-          session,
-          parseInt(payload.dino.id, 10),
-          payload.dino.name,
-          payload.recipientApiId,
-        )
-        if (!result.ok) {
-          console.error('[gift_dino] moveAndGift failed:', result.error)
-        }
-      } catch (err) {
-        console.error('[gift_dino] unexpected error:', err)
-      }
+    channel.bind('gift_dino', (payload: GiftDinoPayload) => {
+      console.log('[gift_dino]', payload)
+      console.log(payload)
     })
 
     return () => {

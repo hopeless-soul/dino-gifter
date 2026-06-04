@@ -108,7 +108,7 @@ export default function GiveawayPage() {
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-background flex items-center justify-center px-6 py-8 mt-16">
-      <div className={`flex flex-col md:flex-row gap-4 w-full max-w-3xl items-stretch ${!(trialCount > 0 && active && currentTrial && !trialsComplete) ? 'justify-center' : ''}`}>
+      <div className={`flex flex-col md:flex-row gap-4 w-full max-w-3xl items-stretch ${!(trialCount > 0 && active && currentTrial && !trialsComplete && !giveaway.recipient) ? 'justify-center' : ''}`}>
 
         {/* Left column — 320px */}
         <div className="flex flex-col gap-4 w-full md:w-80 shrink-0">
@@ -238,7 +238,7 @@ export default function GiveawayPage() {
         </div>
 
         {/* Right column: trial content */}
-        {trialCount > 0 && active && currentTrial && !trialsComplete && (
+        {trialCount > 0 && active && currentTrial && !trialsComplete && !giveaway.recipient && (
           <Card className="flex-1 w-full flex flex-col min-h-[300px] md:self-stretch">
             <CardHeader className="pb-2 pt-5 px-6">
               <p className="text-xs text-muted-foreground/60 uppercase tracking-widest">
