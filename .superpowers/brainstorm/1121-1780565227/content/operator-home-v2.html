@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Operator Home v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d0d0d; color: #ddd; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 24px; }
+
+  h2 { font-size: 16px; font-weight: 600; color: #eee; margin-bottom: 4px; text-align: center; }
+  .subtitle { font-size: 12px; color: #555; text-align: center; margin-bottom: 20px; }
+
+  .page { max-width: 900px; margin: 0 auto; }
+
+  .navbar { border-bottom: 1px solid #1e1e1e; padding: 10px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; background: #0d0d0d; border-radius: 8px 8px 0 0; }
+  .nav-logo { font-size: 15px; color: #eee; font-family: Pacifico, 'Pacifico Fallback'; font-style: normal; font-weight: 400; }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .nav-badge { background: #222; color: #aaa; font-size: 10px; padding: 3px 8px; border-radius: 20px; border: 1px solid #333; }
+  .nav-logout { font-size: 11px; color: #444; cursor: pointer; }
+  .nav-logout:hover { color: #888; }
+
+  .card { background: #161616; border: 1px solid #1e1e1e; border-radius: 12px; overflow: hidden; }
+  .card-header { padding: 12px 14px 8px; }
+  .card-title { font-size: 12px; font-weight: 600; color: #bbb; }
+  .card-title span { color: #444; font-weight: 400; }
+  .card-body { padding: 10px 14px 14px; display: flex; gap: 8px; align-items: center; }
+  .mock-input { background: #111; border: 1px solid #1e1e1e; border-radius: 6px; padding: 7px 10px; font-size: 11px; color: #555; flex: 1; font-family: monospace; }
+  .mock-btn { background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 6px; padding: 7px 14px; font-size: 11px; color: #666; white-space: nowrap; cursor: pointer; }
+  .mock-btn.primary { background: #222; border-color: #333; color: #999; }
+
+  .top-row { display: flex; gap: 12px; margin-bottom: 16px; }
+  .top-card { flex: 1; }
+
+  /* Tabs */
+  .tabs-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .tabs-list { display: flex; background: #111; border: 1px solid #1e1e1e; border-radius: 8px; padding: 3px; gap: 2px; }
+  .tab { padding: 5px 16px; font-size: 11px; color: #555; border-radius: 6px; cursor: pointer; transition: background 0.15s, color 0.15s; user-select: none; }
+  .tab.active { background: #222; color: #ccc; }
+  .new-btn { background: #fff; border: 1px solid #fff; color: #111; border-radius: 7px; padding: 6px 12px; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+  .new-btn:hover { background: #e8e8e8; }
+
+  /* Section label */
+  .section-label { font-size: 10px; font-weight: 600; color: #444; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+
+  /* Giveaway list */
+  .scroll-area { border: 1px solid #1e1e1e; border-radius: 10px; padding: 8px; max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+  .item { background: #111; border: 1px solid #1e1e1e; border-radius: 9px; padding: 10px 12px; display: flex; align-items: center; gap: 10px; transition: border-color 0.15s; }
+  .item:hover { border-color: #2a2a2a; }
+
+  /* Gift icon mock (lucide-style) */
+  .gift-icon { width: 36px; height: 36px; background: #1a1a1a; border: 1px solid #222; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fff; }
+  .gift-icon svg { width: 18px; height: 18px; }
+
+  .item-content { flex: 1; min-width: 0; }
+  .item-title { font-size: 12px; font-weight: 600; color: #ccc; }
+  .item-desc { font-size: 10px; color: #444; margin-top: 1px; }
+  .item-meta { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+  /* Status pills — monochrome */
+  .status-pill { font-size: 9px; padding: 2px 7px; border-radius: 20px; white-space: nowrap; border: 1px solid #2a2a2a; background: #1e1e1e; color: #555; }
+
+  .item-time { font-size: 9px; color: #333; white-space: nowrap; font-family: monospace; }
+  .countdown { font-size: 10px; color: #555; font-family: monospace; white-space: nowrap; }
+
+  .item-actions { display: flex; gap: 4px; flex-shrink: 0; }
+  .icon-btn { width: 28px; height: 28px; background: #111; border: 1px solid #1e1e1e; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #444; cursor: pointer; }
+  .icon-btn:hover { border-color: #333; color: #888; }
+
+  /* Inventory */
+  .inv-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 12px; }
+  .inv-item { border: 1px solid #1e1e1e; border-radius: 7px; padding: 7px; background: #111; cursor: pointer; transition: border-color 0.15s; }
+  .inv-item:hover { border-color: #333; }
+  .inv-name { font-weight: 600; font-size: 10px; color: #bbb; }
+  .inv-growth { font-size: 9px; color: #444; margin-top: 2px; }
+  .cooldown-badge { font-size: 8px; background: #2a1a00; color: #c87820; border: 1px solid #4a3010; padding: 1px 5px; border-radius: 4px; margin-top: 3px; display: inline-block; }
+
+  .server-tabs { display: flex; border-bottom: 1px solid #1e1e1e; }
+  .server-tab { padding: 7px 14px; font-size: 11px; color: #444; cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; user-select: none; }
+  .server-tab.active { color: #aaa; border-bottom-color: #444; }
+
+  .slots-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 12px; }
+  .slot { border-radius: 7px; padding: 8px; border: 1px solid; }
+  /* Empty — available */
+  .slot.empty { border-color: #1e1e1e; border-style: dashed; color: #333; background: #0e0e0e; }
+  /* Occupied by dino, NOT a giveaway — busy/inactive */
+  .slot.busy { border-color: #1e1e1e; background: #111; color: #3a3a3a; opacity: 0.5; }
+  /* Slot tied to a currently-active giveaway (claim window open) */
+  .slot.giveaway-active { border-color: #3a3a5a; background: #141420; color: #8888cc; }
+  /* Slot tied to a scheduled giveaway (not started yet) */
+  .slot.giveaway-scheduled { border-color: #2a2a3a; background: #111118; color: #5a5a8a; border-style: dashed; }
+  .slot-num { font-size: 8px; color: #444; margin-bottom: 3px; }
+  .slot-name { font-weight: 600; font-size: 10px; }
+  .slot-growth { font-size: 9px; color: #444; margin-top: 1px; }
+  .slot-tag { font-size: 8px; margin-top: 3px; opacity: 0.8; }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .inv-section { margin-bottom: 16px; }
+</style>
+</head>
+<body>
+<h2>Operator Home — v2</h2>
+<p class="subtitle">More monochrome · New tab selector · Lucide Gift icon · Countdown HH:MM only</p>
+
+<div class="page">
+  <div class="navbar">
+    <div class="nav-logo">Dino Gifter</div>
+    <div class="nav-right">
+      <div class="nav-badge">hopeless-soul</div>
+      <div class="nav-logout">Logout</div>
+    </div>
+  </div>
+
+  <div class="top-row">
+    <div class="card top-card">
+      <div class="card-header"><div class="card-title">Your UserSession Cookie <span>(unsaved)</span></div></div>
+      <div class="card-body">
+        <div class="mock-input">••••••••••••••••</div>
+        <div class="mock-btn primary">Connect</div>
+      </div>
+    </div>
+    <div class="card top-card">
+      <div class="card-header"><div class="card-title">Your API ID</div></div>
+      <div class="card-body">
+        <div class="mock-input" style="color:#888;">12345678</div>
+        <div class="mock-btn">Save</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs-header">
+    <div class="tabs-list">
+      <div class="tab active" onclick="switchTab('giveaways')">Giveaways</div>
+      <div class="tab" onclick="switchTab('inventory')">Inventory</div>
+    </div>
+    <button class="new-btn">＋ New Giveaway</button>
+  </div>
+
+  <!-- Giveaways tab -->
+  <div class="tab-content active" id="tab-giveaways">
+    <div class="section-label">Giveaways — 4 items</div>
+    <div class="scroll-area">
+
+      <div class="item">
+        <div class="gift-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/>
+            <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+          </svg>
+        </div>
+        <div class="item-content">
+          <div class="item-title">T-Rex (Huge)</div>
+          <div class="item-desc">Ancient</div>
+        </div>
+        <div class="item-meta">
+          <span class="status-pill processed">processed</span>
+          <span class="countdown">0:00</span>
+          <span class="item-time">14:32 · 04/06</span>
+        </div>
+        <div class="item-actions">
+          <div class="icon-btn">⧉</div>
+          <div class="icon-btn">↗</div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="gift-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/>
+            <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+          </svg>
+        </div>
+        <div class="item-content">
+          <div class="item-title">Ankylosaurus</div>
+          <div class="item-desc">Adult</div>
+        </div>
+        <div class="item-meta">
+          <span class="status-pill pending">pending</span>
+          <span class="countdown">2:14</span>
+          <span class="item-time">13:10 · 04/06</span>
+        </div>
+        <div class="item-actions">
+          <div class="icon-btn">⧉</div>
+          <div class="icon-btn">↗</div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="gift-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/>
+            <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+          </svg>
+        </div>
+        <div class="item-content">
+          <div class="item-title">Velociraptor</div>
+          <div class="item-desc">Juvenile</div>
+        </div>
+        <div class="item-meta">
+          <span class="status-pill not_processed">not processed</span>
+          <span class="countdown">0:00</span>
+          <span class="item-time">12:55 · 04/06</span>
+        </div>
+        <div class="item-actions">
+          <div class="icon-btn">⧉</div>
+          <div class="icon-btn">↗</div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="gift-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/>
+            <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+          </svg>
+        </div>
+        <div class="item-content">
+          <div class="item-title">Brachiosaurus</div>
+          <div class="item-desc">Ancient</div>
+        </div>
+        <div class="item-meta">
+          <span class="status-pill processed">processed</span>
+          <span class="countdown">0:00</span>
+          <span class="item-time">11:00 · 04/06</span>
+        </div>
+        <div class="item-actions">
+          <div class="icon-btn">⧉</div>
+          <div class="icon-btn">↗</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Inventory tab -->
+  <div class="tab-content" id="tab-inventory">
+    <div class="inv-section">
+      <div class="section-label">Inventory — 6 items</div>
+      <div class="card">
+        <div class="inv-grid">
+          <div class="inv-item"><div class="inv-name">T-Rex</div><div class="inv-growth">Ancient</div></div>
+          <div class="inv-item"><div class="inv-name">Ankylosaurus</div><div class="inv-growth">Adult</div><div class="cooldown-badge">Cooldown</div></div>
+          <div class="inv-item"><div class="inv-name">Velociraptor</div><div class="inv-growth">Juvenile</div></div>
+          <div class="inv-item"><div class="inv-name">Pterodactyl</div><div class="inv-growth">Adult</div></div>
+          <div class="inv-item"><div class="inv-name">Stegosaurus</div><div class="inv-growth">Huge</div></div>
+          <div class="inv-item"><div class="inv-name">Brachiosaurus</div><div class="inv-growth">Ancient</div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">Server Slots</div>
+      <div class="card">
+        <div class="server-tabs">
+          <div class="server-tab active">Survival 1</div>
+          <div class="server-tab">Survival 2</div>
+          <div class="server-tab">Chill</div>
+        </div>
+        <div class="slots-grid">
+          <div class="slot giveaway-active">
+            <div class="slot-num">Slot 1</div>
+            <div class="slot-name">T-Rex</div>
+            <div class="slot-growth">Ancient</div>
+            <div class="slot-tag">↑ active giveaway</div>
+          </div>
+          <div class="slot giveaway-scheduled">
+            <div class="slot-num">Slot 2</div>
+            <div class="slot-name">Ankylosaurus</div>
+            <div class="slot-growth">Adult</div>
+            <div class="slot-tag">⏳ starts in 2:14</div>
+          </div>
+          <div class="slot busy">
+            <div class="slot-num">Slot 3</div>
+            <div class="slot-name">Velociraptor</div>
+            <div class="slot-growth">Juvenile</div>
+          </div>
+          <div class="slot busy">
+            <div class="slot-num">Slot 4</div>
+            <div class="slot-name">Pterodactyl</div>
+            <div class="slot-growth">Adult</div>
+          </div>
+          <div class="slot empty">
+            <div class="slot-num">Slot 5</div>
+            <div class="slot-name" style="font-style:italic;">Empty</div>
+          </div>
+          <div class="slot empty">
+            <div class="slot-num">Slot 6</div>
+            <div class="slot-name" style="font-style:italic;">Empty</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['giveaways','inventory'][i] === name));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+}
+</script>
+</body>
+</html>

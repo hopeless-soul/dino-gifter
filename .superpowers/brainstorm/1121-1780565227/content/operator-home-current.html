@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Operator Home</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d0d0d; color: #ddd; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 24px; }
+
+  h2 { font-size: 16px; font-weight: 600; color: #eee; margin-bottom: 4px; text-align: center; }
+  .subtitle { font-size: 12px; color: #555; text-align: center; margin-bottom: 20px; }
+
+  .page { max-width: 900px; margin: 0 auto; }
+
+  /* Navbar */
+  .navbar { border-bottom: 1px solid #222; padding: 10px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; border-radius: 8px 8px 0 0; background: #111; }
+  .nav-logo { font-size: 14px; font-weight: 700; color: #9a8aff; }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .nav-badge { background: #2a2a3a; color: #9a8aff; font-size: 10px; padding: 3px 8px; border-radius: 20px; border: 1px solid #3a3a5a; }
+  .nav-logout { font-size: 11px; color: #555; cursor: pointer; }
+
+  .card { background: #161616; border: 1px solid #262626; border-radius: 12px; overflow: hidden; }
+
+  /* Top row: session + api id */
+  .top-row { display: flex; gap: 12px; margin-bottom: 16px; }
+  .top-card { flex: 1; }
+  .card-header { padding: 12px 14px 8px; border-bottom: 1px solid #1e1e1e; }
+  .card-title { font-size: 12px; font-weight: 600; color: #ddd; }
+  .card-title span { color: #555; font-weight: 400; }
+  .card-body { padding: 12px 14px; display: flex; gap: 8px; align-items: center; }
+  .mock-input { background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 6px; padding: 7px 10px; font-size: 11px; color: #555; flex: 1; font-family: monospace; }
+  .mock-btn { background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 6px; padding: 7px 14px; font-size: 11px; color: #777; white-space: nowrap; cursor: pointer; }
+  .mock-btn.primary { background: #5a4af4; border-color: #5a4af4; color: #fff; }
+
+  /* Tabs */
+  .tabs-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .tabs-list { display: flex; background: #1a1a1a; border-radius: 8px; padding: 3px; gap: 2px; }
+  .tab { padding: 5px 14px; font-size: 11px; color: #555; border-radius: 6px; cursor: pointer; }
+  .tab.active { background: #262626; color: #ddd; }
+  .new-btn { background: #5a4af4; color: #fff; border: none; border-radius: 7px; padding: 6px 12px; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+
+  /* Giveaway list */
+  .section-label { font-size: 10px; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+  .scroll-area { border: 1px solid #222; border-radius: 10px; padding: 10px; max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+
+  .item { background: #1a1a1a; border: 1px solid #222; border-radius: 9px; padding: 10px 12px; display: flex; align-items: center; gap: 10px; }
+  .item-media { width: 36px; height: 36px; background: #222; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .item-content { flex: 1; min-width: 0; }
+  .item-title { font-size: 12px; font-weight: 600; color: #ddd; }
+  .item-desc { font-size: 10px; color: #555; margin-top: 1px; }
+  .item-meta { display: flex; align-items: center; gap: 8px; padding: 0 8px; }
+  .status-pill { font-size: 9px; padding: 2px 7px; border-radius: 20px; }
+  .status-pill.pending { background: #2a2010; color: #aa8030; }
+  .status-pill.processed { background: #102a10; color: #30aa50; }
+  .status-pill.not_processed { background: #1e1e1e; color: #555; }
+  .item-time { font-size: 9px; color: #3a3a3a; }
+  .item-actions { display: flex; gap: 4px; flex-shrink: 0; }
+  .icon-btn { width: 28px; height: 28px; background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #555; cursor: pointer; }
+
+  /* Inventory tab */
+  .inv-section { margin-bottom: 16px; }
+  .inv-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 12px; max-height: 140px; overflow-y: auto; }
+  .inv-item { border: 1px solid #222; border-radius: 7px; padding: 7px; background: #1a1a1a; font-size: 10px; color: #aaa; position: relative; cursor: pointer; }
+  .inv-item:hover { border-color: #5a4af4; }
+  .inv-name { font-weight: 600; font-size: 10px; color: #ccc; }
+  .inv-growth { font-size: 9px; color: #555; margin-top: 2px; }
+  .cooldown-badge { font-size: 8px; background: #3a1010; color: #aa4040; padding: 1px 5px; border-radius: 4px; margin-top: 3px; display: inline-block; }
+
+  .server-tabs { display: flex; border-bottom: 1px solid #1e1e1e; }
+  .server-tab { padding: 7px 14px; font-size: 11px; color: #555; cursor: pointer; border-bottom: 2px solid transparent; }
+  .server-tab.active { color: #9a8aff; border-bottom-color: #5a4af4; }
+  .slots-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 12px; }
+  .slot { border-radius: 7px; padding: 8px; border: 1px solid; font-size: 10px; }
+  .slot.empty { border-color: #222; border-style: dashed; color: #3a3a3a; background: #0e0e0e; }
+  .slot.occupied { border-color: #2a2a2a; background: #1a1a1a; color: #aaa; }
+  .slot-num { font-size: 8px; color: #444; margin-bottom: 3px; }
+  .slot-name { font-weight: 600; font-size: 10px; }
+  .slot-growth { font-size: 9px; color: #555; margin-top: 1px; }
+
+  .annotation { font-size: 11px; color: #555; text-align: center; margin-top: 16px; font-style: italic; }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+</style>
+</head>
+<body>
+<h2>Operator Home — Current Layout</h2>
+<p class="subtitle">Click tabs to switch. What feels off?</p>
+
+<div class="page">
+  <div class="navbar">
+    <div class="nav-logo">Dino Gifter</div>
+    <div class="nav-right">
+      <div class="nav-badge">hopeless-soul</div>
+      <div class="nav-logout">Logout</div>
+    </div>
+  </div>
+
+  <!-- Top row -->
+  <div class="top-row">
+    <div class="card top-card">
+      <div class="card-header"><div class="card-title">Your UserSession Cookie <span>(unsaved)</span></div></div>
+      <div class="card-body">
+        <div class="mock-input">••••••••••••••••</div>
+        <div class="mock-btn primary">Connect</div>
+      </div>
+    </div>
+    <div class="card top-card">
+      <div class="card-header"><div class="card-title">Your API ID</div></div>
+      <div class="card-body">
+        <div class="mock-input" style="color:#888;">12345678</div>
+        <div class="mock-btn">Save</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs-header">
+    <div class="tabs-list">
+      <div class="tab active" onclick="switchTab('giveaways')">Giveaways</div>
+      <div class="tab" onclick="switchTab('inventory')">Inventory</div>
+    </div>
+    <button class="new-btn">＋ New Giveaway</button>
+  </div>
+
+  <!-- Giveaways tab -->
+  <div class="tab-content active" id="tab-giveaways">
+    <div class="section-label">Giveaways — 4 items</div>
+    <div class="scroll-area">
+      <div class="item">
+        <div class="item-media">🎁</div>
+        <div class="item-content">
+          <div class="item-title">T-Rex (Huge)</div>
+          <div class="item-desc">Ancient</div>
+        </div>
+        <div class="item-meta">
+          <span class="status-pill processed">processed</span>
+          <span class="item-time">14:32 · 04/06</span>
+        </div>
+        <div class="item-actions">
+          <div class="icon-btn">⧉</div>
+          <div class="icon-btn">↗</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-media">🎁</div>
+        <div class="item-content">
+          <div class="item-title">Ankylosaurus</div>
+          <div class="item-desc">Adult</div>
+        </div>
+        <div class="item-meta">
+          <span class="status-pill pending">pending</span>
+          <span class="item-time">02:14:37</span>
+          <span class="item-time">13:10 · 04/06</span>
+        </div>
+        <div class="item-actions">
+          <div class="icon-btn">⧉</div>
+          <div class="icon-btn">↗</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-media">🎁</div>
+        <div class="item-content">
+          <div class="item-title">Velociraptor</div>
+          <div class="item-desc">Juvenile</div>
+        </div>
+        <div class="item-meta">
+          <span class="status-pill not_processed">not processed</span>
+          <span class="item-time">12:55 · 04/06</span>
+        </div>
+        <div class="item-actions">
+          <div class="icon-btn">⧉</div>
+          <div class="icon-btn">↗</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-media">🎁</div>
+        <div class="item-content">
+          <div class="item-title">Brachiosaurus</div>
+          <div class="item-desc">Ancient</div>
+        </div>
+        <div class="item-meta">
+          <span class="status-pill processed">processed</span>
+          <span class="item-time">11:00 · 04/06</span>
+        </div>
+        <div class="item-actions">
+          <div class="icon-btn">⧉</div>
+          <div class="icon-btn">↗</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inventory tab -->
+  <div class="tab-content" id="tab-inventory">
+    <div class="inv-section">
+      <div class="section-label">Inventory — 6 items</div>
+      <div class="card">
+        <div class="inv-grid">
+          <div class="inv-item"><div class="inv-name">T-Rex</div><div class="inv-growth">Ancient</div></div>
+          <div class="inv-item"><div class="inv-name">Ankylosaurus</div><div class="inv-growth">Adult</div><div class="cooldown-badge">Cooldown</div></div>
+          <div class="inv-item"><div class="inv-name">Velociraptor</div><div class="inv-growth">Juvenile</div></div>
+          <div class="inv-item"><div class="inv-name">Pterodactyl</div><div class="inv-growth">Adult</div></div>
+          <div class="inv-item"><div class="inv-name">Stegosaurus</div><div class="inv-growth">Huge</div></div>
+          <div class="inv-item"><div class="inv-name">Brachiosaurus</div><div class="inv-growth">Ancient</div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">Server Slots</div>
+      <div class="card">
+        <div class="server-tabs">
+          <div class="server-tab active">Survival 1</div>
+          <div class="server-tab">Survival 2</div>
+          <div class="server-tab">Chill</div>
+        </div>
+        <div class="slots-grid">
+          <div class="slot occupied"><div class="slot-num">Slot 3</div><div class="slot-name">T-Rex</div><div class="slot-growth">Ancient</div></div>
+          <div class="slot occupied"><div class="slot-num">Slot 4</div><div class="slot-name">Ankylosaurus</div><div class="slot-growth">Adult</div></div>
+          <div class="slot empty"><div class="slot-num">Slot 5</div><div class="slot-name" style="font-style:italic;">Empty</div></div>
+          <div class="slot empty"><div class="slot-num">Slot 6</div><div class="slot-name" style="font-style:italic;">Empty</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="annotation">Click "Giveaways" / "Inventory" tabs to switch views</p>
+
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', ['giveaways','inventory'][i] === name));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+}
+</script>
+</body>
+</html>

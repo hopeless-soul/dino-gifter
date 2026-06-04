@@ -1,0 +1,167 @@
+<h2>Giveaway Claim Page — Layout Direction</h2>
+<p class="subtitle">Which overall feel fits the app best? (Current page has a floating dual-card layout that feels disconnected)</p>
+
+<style>
+  .preview-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 16px; }
+  .preview-card { border: 1px solid #333; border-radius: 12px; overflow: hidden; background: #111; cursor: pointer; transition: border-color 0.2s; }
+  .preview-card:hover { border-color: #666; }
+  .preview-card.selected { border-color: #7c6af7; box-shadow: 0 0 0 2px #7c6af740; }
+  .preview-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #888; padding: 10px 14px 6px; }
+  .preview-title { font-size: 14px; font-weight: 600; color: #eee; padding: 0 14px 8px; }
+  .preview-desc { font-size: 12px; color: #666; padding: 0 14px 12px; line-height: 1.5; }
+  .preview-body { padding: 0 10px 10px; }
+
+  /* Option A — Centered Hero */
+  .mock-a { background: #0e0e0e; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 10px; min-height: 220px; }
+  .mock-a-hero { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 10px; width: 100%; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .mock-a-icon { width: 48px; height: 48px; background: #2a2a4a; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  .mock-a-name { font-size: 14px; font-weight: 700; color: #e2e2ff; }
+  .mock-a-sub { font-size: 11px; color: #8888aa; }
+  .mock-a-badge { font-size: 10px; background: #2a1a3a; color: #cc88ff; padding: 2px 8px; border-radius: 20px; border: 1px solid #4a2a6a; }
+  .mock-a-btn { background: #5a4af4; color: #fff; border: none; border-radius: 8px; padding: 8px 24px; font-size: 12px; font-weight: 600; cursor: pointer; width: 100%; }
+  .mock-a-share { font-size: 10px; color: #555; border-top: 1px solid #222; padding-top: 8px; width: 100%; text-align: center; }
+  .mock-a-trial { background: #161616; border: 1px solid #2a2a2a; border-radius: 8px; width: 100%; padding: 10px 14px; }
+  .mock-a-trial-label { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .mock-a-trial-bar { height: 3px; background: #222; border-radius: 2px; margin-bottom: 8px; }
+  .mock-a-trial-fill { height: 3px; background: #5a4af4; border-radius: 2px; width: 33%; }
+  .mock-a-trial-text { font-size: 12px; color: #aaa; }
+
+  /* Option B — Full-Width Banner */
+  .mock-b { background: #0e0e0e; min-height: 220px; display: flex; flex-direction: column; }
+  .mock-b-banner { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); padding: 20px 16px; display: flex; align-items: center; gap: 14px; }
+  .mock-b-icon { width: 44px; height: 44px; background: rgba(255,255,255,0.08); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .mock-b-info { flex: 1; }
+  .mock-b-creator { font-size: 10px; color: #aaa8cc; text-transform: uppercase; letter-spacing: 0.06em; }
+  .mock-b-name { font-size: 16px; font-weight: 700; color: #fff; }
+  .mock-b-sub { font-size: 11px; color: #8888aa; margin-top: 1px; }
+  .mock-b-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .mock-b-section { background: #161616; border-radius: 8px; padding: 10px 12px; }
+  .mock-b-section-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .mock-b-progress { display: flex; gap: 4px; }
+  .mock-b-step { flex: 1; height: 4px; border-radius: 2px; background: #222; }
+  .mock-b-step.done { background: #5a4af4; }
+  .mock-b-step.active { background: #5a4af4; opacity: 0.5; }
+  .mock-b-btn { background: #5a4af4; color: #fff; border: none; border-radius: 8px; padding: 10px; font-size: 12px; font-weight: 600; cursor: pointer; width: 100%; }
+
+  /* Option C — Timeline / Steps */
+  .mock-c { background: #0e0e0e; min-height: 220px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .mock-c-header { display: flex; align-items: center; gap: 10px; padding-bottom: 10px; border-bottom: 1px solid #1e1e1e; }
+  .mock-c-avatar { width: 38px; height: 38px; background: linear-gradient(135deg, #2a1a4a, #1a2a4a); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .mock-c-hinfo { flex: 1; }
+  .mock-c-name { font-size: 13px; font-weight: 700; color: #eee; }
+  .mock-c-sub { font-size: 11px; color: #666; }
+  .mock-c-steps { display: flex; flex-direction: column; gap: 6px; }
+  .mock-c-step { display: flex; align-items: flex-start; gap: 10px; }
+  .mock-c-dot { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; }
+  .mock-c-dot.complete { background: #1a3a1a; border: 1px solid #2a5a2a; color: #4a9a4a; }
+  .mock-c-dot.current { background: #2a1a4a; border: 1px solid #5a4af4; color: #9a8aff; }
+  .mock-c-dot.pending { background: #1a1a1a; border: 1px solid #333; color: #555; }
+  .mock-c-step-body { flex: 1; padding-bottom: 6px; border-bottom: 1px solid #1a1a1a; }
+  .mock-c-step-title { font-size: 12px; font-weight: 600; color: #ccc; }
+  .mock-c-step-desc { font-size: 11px; color: #555; margin-top: 2px; }
+  .mock-c-step-content { font-size: 11px; color: #8888bb; margin-top: 6px; font-style: italic; }
+  .mock-c-step:last-child .mock-c-step-body { border-bottom: none; }
+  .mock-c-btn { background: #5a4af4; color: #fff; border: none; border-radius: 8px; padding: 8px; font-size: 11px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 4px; }
+</style>
+
+<div class="preview-grid">
+  <!-- Option A -->
+  <div class="preview-card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="preview-label">Option A</div>
+    <div class="preview-title">Centered Hero Card</div>
+    <div class="preview-body">
+      <div class="mock-a">
+        <div class="mock-a-hero">
+          <div class="mock-a-badge">gifted by hopeless-soul</div>
+          <div class="mock-a-icon">🦕</div>
+          <div class="mock-a-name">T-Rex (Huge)</div>
+          <div class="mock-a-sub">Ancient • Server 1</div>
+          <button class="mock-a-btn">🎁 Redeem</button>
+          <div class="mock-a-share">dino-gifter.app/giveaway/abc123</div>
+        </div>
+        <div class="mock-a-trial">
+          <div class="mock-a-trial-label">Trial 1 of 3</div>
+          <div class="mock-a-trial-bar"><div class="mock-a-trial-fill"></div></div>
+          <div class="mock-a-trial-text">Type the phrase to continue…</div>
+        </div>
+      </div>
+    </div>
+    <div class="preview-desc">Single prominent card. Dino info + redeem on top, trial below. Clean vertical stack on mobile & desktop.</div>
+  </div>
+
+  <!-- Option B -->
+  <div class="preview-card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="preview-label">Option B</div>
+    <div class="preview-title">Banner + Action Body</div>
+    <div class="preview-body">
+      <div class="mock-b">
+        <div class="mock-b-banner">
+          <div class="mock-b-icon">🦕</div>
+          <div class="mock-b-info">
+            <div class="mock-b-creator">from hopeless-soul</div>
+            <div class="mock-b-name">T-Rex (Huge)</div>
+            <div class="mock-b-sub">Ancient • Server 1</div>
+          </div>
+        </div>
+        <div class="mock-b-body">
+          <div class="mock-b-section">
+            <div class="mock-b-section-label">Progress</div>
+            <div class="mock-b-progress">
+              <div class="mock-b-step done"></div>
+              <div class="mock-b-step active"></div>
+              <div class="mock-b-step"></div>
+            </div>
+          </div>
+          <div class="mock-b-section">
+            <div class="mock-b-section-label">Trial 2 of 3 — Math</div>
+            <div style="font-size:12px;color:#aaa;">Solve: 12 × 7 = ?</div>
+          </div>
+          <button class="mock-b-btn">🎁 Redeem Gift</button>
+        </div>
+      </div>
+    </div>
+    <div class="preview-desc">Gradient banner at the top with dino identity. Card body holds trial + action. Compact, structured.</div>
+  </div>
+
+  <!-- Option C -->
+  <div class="preview-card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="preview-label">Option C</div>
+    <div class="preview-title">Step-by-Step Timeline</div>
+    <div class="preview-body">
+      <div class="mock-c">
+        <div class="mock-c-header">
+          <div class="mock-c-avatar">🦕</div>
+          <div class="mock-c-hinfo">
+            <div class="mock-c-name">T-Rex (Huge)</div>
+            <div class="mock-c-sub">gifted by hopeless-soul • Ancient</div>
+          </div>
+        </div>
+        <div class="mock-c-steps">
+          <div class="mock-c-step">
+            <div class="mock-c-dot complete">✓</div>
+            <div class="mock-c-step-body">
+              <div class="mock-c-step-title">Typing Trial</div>
+              <div class="mock-c-step-desc">Completed</div>
+            </div>
+          </div>
+          <div class="mock-c-step">
+            <div class="mock-c-dot current">2</div>
+            <div class="mock-c-step-body">
+              <div class="mock-c-step-title">Math Trial</div>
+              <div class="mock-c-step-content">Solve: 12 × 7 = ?</div>
+            </div>
+          </div>
+          <div class="mock-c-step">
+            <div class="mock-c-dot pending">3</div>
+            <div class="mock-c-step-body">
+              <div class="mock-c-step-title">Redeem</div>
+              <div class="mock-c-step-desc">Complete all trials first</div>
+            </div>
+          </div>
+        </div>
+        <button class="mock-c-btn" style="opacity:0.4;cursor:not-allowed;" disabled>🎁 Redeem</button>
+      </div>
+    </div>
+    <div class="preview-desc">Vertical timeline showing each step. Clear progress. Redeem unlocks after all trials done.</div>
+  </div>
+</div>

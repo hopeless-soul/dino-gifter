@@ -1,0 +1,163 @@
+<h2>Giveaway Claim — Layout v2</h2>
+<p class="subtitle">Trial card fills all available height. Bottom-left card cycles through 3 states.</p>
+
+<style>
+  .toggle-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
+  .toggle-btn { font-size: 11px; padding: 4px 14px; border-radius: 20px; border: 1px solid #333; background: transparent; color: #666; cursor: pointer; transition: all 0.15s; }
+  .toggle-btn.active-tab { background: #1e1e2e; border-color: #5a4af4; color: #9a8aff; }
+
+  .scene { background: #0a0a0a; border-radius: 12px; padding: 20px; display: flex; gap: 12px; max-width: 680px; margin: 0 auto; align-items: stretch; }
+
+  .col-left { display: flex; flex-direction: column; gap: 10px; width: 210px; flex-shrink: 0; }
+  .col-right { flex: 1; min-width: 0; display: flex; }
+
+  .m-card { background: #161616; border: 1px solid #262626; border-radius: 12px; overflow: hidden; }
+
+  /* Hero */
+  .hero-body { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 14px; }
+  .hero-from { font-size: 9px; color: #555; text-transform: uppercase; letter-spacing: 0.08em; }
+  .hero-icon { width: 48px; height: 48px; background: linear-gradient(135deg, #2a1a4a, #1a2a4a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .hero-name { font-size: 14px; font-weight: 700; color: #e2e2ff; }
+  .hero-sub { font-size: 10px; color: #555; }
+  .hero-btn { background: #5a4af4; color: #fff; border: none; border-radius: 8px; padding: 8px 0; font-size: 11px; font-weight: 600; width: 100%; cursor: pointer; }
+  .hero-btn.locked { opacity: 0.3; cursor: default; }
+  .hero-share { font-size: 9px; color: #3a3a3a; border-top: 1px solid #1e1e1e; padding-top: 7px; width: 100%; text-align: center; }
+
+  /* Status card — shared slot */
+  .status-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; justify-content: center; }
+  .status-label { font-size: 9px; color: #555; text-transform: uppercase; letter-spacing: 0.07em; }
+
+  /* Countdown */
+  .cd-display { font-size: 26px; font-weight: 700; color: #9a8aff; font-family: monospace; text-align: center; }
+  .cd-sub { font-size: 10px; color: #3a3a3a; text-align: center; }
+
+  /* Trial progress */
+  .steps { display: flex; gap: 4px; }
+  .step { flex: 1; height: 4px; border-radius: 2px; }
+  .step.done { background: #5a4af4; }
+  .step.active { background: #5a4af480; }
+  .step.pending { background: #222; }
+  .step-meta { display: flex; justify-content: space-between; }
+  .step-name { font-size: 11px; color: #bbb; font-weight: 500; }
+  .step-count { font-size: 10px; color: #444; }
+
+  /* Winner */
+  .winner-avatar { width: 36px; height: 36px; background: linear-gradient(135deg, #1a3a1a, #1a2a3a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; margin: 0 auto; }
+  .winner-name { font-size: 13px; font-weight: 700; color: #4aaa4a; text-align: center; }
+  .winner-label { font-size: 10px; color: #3a5a3a; text-align: center; }
+
+  /* Trial card — fills full right column height */
+  .trial-card { display: flex; flex-direction: column; width: 100%; }
+  .trial-body { padding: 18px 16px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+  .trial-type-label { font-size: 9px; color: #555; text-transform: uppercase; letter-spacing: 0.08em; }
+  .trial-heading { font-size: 13px; font-weight: 600; color: #ccc; }
+  .math-expr { font-size: 30px; font-weight: 700; color: #9a8aff; font-family: monospace; text-align: center; padding: 20px 0; background: #0e0e1a; border-radius: 8px; flex: 1; display: flex; align-items: center; justify-content: center; }
+  .trial-input { background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 8px; padding: 10px 12px; font-size: 14px; color: #aaa; width: 100%; box-sizing: border-box; }
+  .trial-submit { background: #5a4af4; color: #fff; border: none; border-radius: 8px; padding: 10px 0; font-size: 12px; font-weight: 600; width: 100%; cursor: pointer; }
+  .dot-row { display: flex; gap: 5px; justify-content: center; margin-top: auto; padding-top: 8px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .dot.on { background: #5a4af4; }
+  .dot.off { background: #222; }
+
+  .annotation { font-size: 10px; color: #3a3a5a; text-align: center; margin-top: 10px; font-style: italic; }
+</style>
+
+<div class="toggle-row">
+  <button class="toggle-btn active-tab" onclick="show('countdown')">⏳ Countdown</button>
+  <button class="toggle-btn" onclick="show('progress')">🎯 Trial progress</button>
+  <button class="toggle-btn" onclick="show('winner')">🏆 Claimed</button>
+</div>
+
+<div class="scene">
+  <!-- Left column -->
+  <div class="col-left">
+    <!-- Hero card -->
+    <div class="m-card">
+      <div class="hero-body">
+        <div class="hero-from">from hopeless-soul</div>
+        <div class="hero-icon">🦕</div>
+        <div class="hero-name">T-Rex (Huge)</div>
+        <div class="hero-sub">Ancient · Server 1</div>
+        <button class="hero-btn locked" id="redeem-btn">🎁 Redeem</button>
+        <div class="hero-share">gifter.app/giveaway/abc123</div>
+      </div>
+    </div>
+
+    <!-- Status card -->
+    <div class="m-card" style="flex:1;">
+
+      <!-- State: Countdown -->
+      <div class="status-body" id="s-countdown">
+        <div class="status-label">Available in</div>
+        <div class="cd-display">02:14:37</div>
+        <div class="cd-sub">Unlocks automatically</div>
+      </div>
+
+      <!-- State: Trial progress -->
+      <div class="status-body" id="s-progress" style="display:none;">
+        <div class="step-meta">
+          <div class="step-name">Math Trial</div>
+          <div class="step-count">2 / 3</div>
+        </div>
+        <div class="steps">
+          <div class="step done"></div>
+          <div class="step active"></div>
+          <div class="step pending"></div>
+        </div>
+        <div class="status-label" style="margin-top:2px;">Complete all trials to unlock</div>
+      </div>
+
+      <!-- State: Winner -->
+      <div class="status-body" id="s-winner" style="display:none;">
+        <div class="winner-avatar">🏆</div>
+        <div class="winner-name">dach1asus</div>
+        <div class="winner-label">Claimed this gift</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Right column: trial content, full height -->
+  <div class="col-right">
+    <div class="m-card trial-card">
+      <div class="trial-body">
+        <div>
+          <div class="trial-type-label">Math Trial · 2 of 3</div>
+          <div class="trial-heading">Solve the expression</div>
+        </div>
+        <div class="math-expr">12 × 7 = ?</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <input class="trial-input" placeholder="Enter your answer…" readonly />
+          <button class="trial-submit">Submit Answer</button>
+        </div>
+        <div class="dot-row">
+          <div class="dot off"></div>
+          <div class="dot on"></div>
+          <div class="dot off"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="annotation">Toggle the 3 states above — same bottom-left card slot, different content</p>
+
+<script>
+function show(state) {
+  ['countdown','progress','winner'].forEach(s => {
+    document.getElementById('s-' + s).style.display = s === state ? '' : 'none';
+  });
+  document.querySelectorAll('.toggle-btn').forEach((b, i) => {
+    const states = ['countdown','progress','winner'];
+    b.classList.toggle('active-tab', states[i] === state);
+  });
+  const btn = document.getElementById('redeem-btn');
+  if (state === 'winner') {
+    btn.classList.remove('locked'); btn.textContent = '✓ Claimed';
+    btn.style.background = '#1a3a1a'; btn.style.color = '#4aaa4a';
+  } else {
+    btn.classList.add('locked'); btn.textContent = '🎁 Redeem';
+    btn.style.background = ''; btn.style.color = '';
+  }
+}
+</script>

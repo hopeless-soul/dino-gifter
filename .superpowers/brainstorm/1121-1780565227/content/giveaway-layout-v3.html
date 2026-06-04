@@ -1,0 +1,258 @@
+<h2>Giveaway Claim — v3: Fixed Heights + Mobile</h2>
+<p class="subtitle">Cards hold their size across state changes. Toggle desktop/mobile and cycle states.</p>
+
+<style>
+  .controls { display: flex; gap: 20px; justify-content: center; margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
+  .toggle-group { display: flex; gap: 6px; }
+  .toggle-btn { font-size: 11px; padding: 4px 12px; border-radius: 20px; border: 1px solid #333; background: transparent; color: #666; cursor: pointer; }
+  .toggle-btn.on { background: #1e1e2e; border-color: #5a4af4; color: #9a8aff; }
+  .group-label { font-size: 10px; color: #444; align-self: center; }
+
+  /* ── Shared card base ── */
+  .m-card { background: #161616; border: 1px solid #262626; border-radius: 12px; overflow: hidden; }
+
+  /* ── DESKTOP layout ── */
+  .desktop-scene { background: #0a0a0a; border-radius: 12px; padding: 20px; display: flex; gap: 12px; max-width: 680px; margin: 0 auto; align-items: stretch; }
+  .d-col-left { display: flex; flex-direction: column; gap: 10px; width: 210px; flex-shrink: 0; }
+  .d-col-right { flex: 1; min-width: 0; display: flex; }
+
+  /* ── MOBILE layout ── */
+  .mobile-scene { background: #0a0a0a; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; max-width: 360px; margin: 0 auto; }
+
+  /* ── Hero card ── */
+  .hero-body { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 14px; }
+  .hero-from { font-size: 9px; color: #555; text-transform: uppercase; letter-spacing: 0.08em; }
+  .hero-icon { width: 48px; height: 48px; background: linear-gradient(135deg, #2a1a4a, #1a2a4a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .hero-name { font-size: 14px; font-weight: 700; color: #e2e2ff; }
+  .hero-sub { font-size: 10px; color: #555; }
+  .hero-btn { border: none; border-radius: 8px; padding: 8px 0; font-size: 11px; font-weight: 600; width: 100%; cursor: pointer; transition: all 0.2s; }
+  .hero-btn.locked { background: #5a4af420; color: #5a4af4; cursor: default; }
+  .hero-btn.active { background: #5a4af4; color: #fff; }
+  .hero-btn.claimed { background: #1a3a1a; color: #4aaa4a; cursor: default; }
+  .hero-share { font-size: 9px; color: #3a3a3a; border-top: 1px solid #1e1e1e; padding-top: 7px; width: 100%; text-align: center; }
+
+  /* ── Status card — fixed height ── */
+  .status-card { height: 96px; display: flex; flex-direction: column; justify-content: center; padding: 0 16px; position: relative; overflow: hidden; }
+  .status-card.mobile { height: 80px; }
+
+  .status-slot { position: absolute; inset: 0; padding: 14px 16px; display: flex; flex-direction: column; justify-content: center; gap: 8px; transition: opacity 0.25s; }
+  .status-slot.hidden { opacity: 0; pointer-events: none; }
+
+  .status-label { font-size: 9px; color: #555; text-transform: uppercase; letter-spacing: 0.07em; }
+  .cd-display { font-size: 24px; font-weight: 700; color: #9a8aff; font-family: monospace; }
+  .cd-sub { font-size: 9px; color: #3a3a3a; }
+  .steps { display: flex; gap: 4px; }
+  .step { flex: 1; height: 4px; border-radius: 2px; }
+  .step.done { background: #5a4af4; }
+  .step.active { background: #5a4af480; }
+  .step.pending { background: #222; }
+  .step-meta { display: flex; justify-content: space-between; }
+  .step-name { font-size: 11px; color: #bbb; font-weight: 500; }
+  .step-count { font-size: 10px; color: #444; }
+  .winner-row { display: flex; align-items: center; gap: 10px; }
+  .winner-avatar { width: 32px; height: 32px; background: #1a3a1a; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+  .winner-info { display: flex; flex-direction: column; gap: 2px; }
+  .winner-name { font-size: 13px; font-weight: 700; color: #4aaa4a; }
+  .winner-lbl { font-size: 9px; color: #3a5a3a; }
+
+  /* ── Trial card — fills remaining height ── */
+  .trial-card { display: flex; flex-direction: column; width: 100%; }
+  .trial-body { padding: 16px 16px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+  .trial-type-label { font-size: 9px; color: #555; text-transform: uppercase; letter-spacing: 0.08em; }
+  .trial-heading { font-size: 13px; font-weight: 600; color: #ccc; }
+  .math-expr { font-size: 28px; font-weight: 700; color: #9a8aff; font-family: monospace; text-align: center; padding: 0; background: #0e0e1a; border-radius: 8px; flex: 1; display: flex; align-items: center; justify-content: center; min-height: 70px; }
+  .trial-input { background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 8px; padding: 9px 12px; font-size: 13px; color: #aaa; width: 100%; box-sizing: border-box; }
+  .trial-submit { background: #5a4af4; color: #fff; border: none; border-radius: 8px; padding: 9px 0; font-size: 12px; font-weight: 600; width: 100%; cursor: pointer; }
+  .dot-row { display: flex; gap: 5px; justify-content: center; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .dot.on { background: #5a4af4; }
+  .dot.off { background: #222; }
+
+  /* Mobile trial fixed height */
+  .trial-mobile { min-height: 220px; }
+
+  .annotation { font-size: 10px; color: #3a3a5a; text-align: center; margin-top: 10px; font-style: italic; }
+</style>
+
+<div class="controls">
+  <div class="group-label">View:</div>
+  <div class="toggle-group">
+    <button class="toggle-btn on" onclick="setView('desktop')">🖥 Desktop</button>
+    <button class="toggle-btn" onclick="setView('mobile')">📱 Mobile</button>
+  </div>
+  <div class="group-label">State:</div>
+  <div class="toggle-group">
+    <button class="toggle-btn on" onclick="setState('countdown')">⏳ Countdown</button>
+    <button class="toggle-btn" onclick="setState('progress')">🎯 Trial</button>
+    <button class="toggle-btn" onclick="setState('winner')">🏆 Claimed</button>
+  </div>
+</div>
+
+<!-- DESKTOP -->
+<div id="view-desktop">
+  <div class="desktop-scene">
+    <div class="d-col-left">
+      <div class="m-card">
+        <div class="hero-body">
+          <div class="hero-from">from hopeless-soul</div>
+          <div class="hero-icon">🦕</div>
+          <div class="hero-name">T-Rex (Huge)</div>
+          <div class="hero-sub">Ancient · Server 1</div>
+          <button class="hero-btn locked" id="d-btn">🎁 Redeem</button>
+          <div class="hero-share">gifter.app/giveaway/abc123</div>
+        </div>
+      </div>
+      <div class="m-card" style="flex:1; min-height:96px;">
+        <div class="status-card">
+          <div class="status-slot" id="d-s-countdown">
+            <div class="status-label">Available in</div>
+            <div class="cd-display">02:14:37</div>
+            <div class="cd-sub">Unlocks automatically</div>
+          </div>
+          <div class="status-slot hidden" id="d-s-progress">
+            <div class="step-meta">
+              <div class="step-name">Math Trial</div>
+              <div class="step-count">2 / 3</div>
+            </div>
+            <div class="steps">
+              <div class="step done"></div>
+              <div class="step active"></div>
+              <div class="step pending"></div>
+            </div>
+            <div class="status-label" style="margin-top:2px;">Complete all trials to unlock</div>
+          </div>
+          <div class="status-slot hidden" id="d-s-winner">
+            <div class="winner-row">
+              <div class="winner-avatar">🏆</div>
+              <div class="winner-info">
+                <div class="winner-name">dach1asus</div>
+                <div class="winner-lbl">Claimed this gift</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-col-right">
+      <div class="m-card trial-card">
+        <div class="trial-body">
+          <div>
+            <div class="trial-type-label">Math Trial · 2 of 3</div>
+            <div class="trial-heading">Solve the expression</div>
+          </div>
+          <div class="math-expr">12 × 7 = ?</div>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <input class="trial-input" placeholder="Enter your answer…" readonly />
+            <button class="trial-submit">Submit Answer</button>
+          </div>
+          <div class="dot-row">
+            <div class="dot off"></div>
+            <div class="dot on"></div>
+            <div class="dot off"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE -->
+<div id="view-mobile" style="display:none;">
+  <div class="mobile-scene">
+    <div class="m-card">
+      <div class="hero-body" style="padding:14px 12px; gap:6px;">
+        <div class="hero-from">from hopeless-soul</div>
+        <div class="hero-icon">🦕</div>
+        <div class="hero-name">T-Rex (Huge)</div>
+        <div class="hero-sub">Ancient · Server 1</div>
+        <button class="hero-btn locked" id="m-btn">🎁 Redeem</button>
+        <div class="hero-share">gifter.app/giveaway/abc123</div>
+      </div>
+    </div>
+    <div class="m-card">
+      <div class="status-card mobile">
+        <div class="status-slot" id="m-s-countdown">
+          <div class="status-label">Available in</div>
+          <div class="cd-display" style="font-size:20px;">02:14:37</div>
+        </div>
+        <div class="status-slot hidden" id="m-s-progress">
+          <div class="step-meta">
+            <div class="step-name">Math Trial</div>
+            <div class="step-count">2 / 3</div>
+          </div>
+          <div class="steps">
+            <div class="step done"></div>
+            <div class="step active"></div>
+            <div class="step pending"></div>
+          </div>
+        </div>
+        <div class="status-slot hidden" id="m-s-winner">
+          <div class="winner-row">
+            <div class="winner-avatar">🏆</div>
+            <div class="winner-info">
+              <div class="winner-name">dach1asus</div>
+              <div class="winner-lbl">Claimed this gift</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="m-card trial-card">
+      <div class="trial-body trial-mobile">
+        <div>
+          <div class="trial-type-label">Math Trial · 2 of 3</div>
+          <div class="trial-heading">Solve the expression</div>
+        </div>
+        <div class="math-expr">12 × 7 = ?</div>
+        <div style="display:flex;flex-direction:column;gap:7px;">
+          <input class="trial-input" placeholder="Enter your answer…" readonly />
+          <button class="trial-submit">Submit Answer</button>
+        </div>
+        <div class="dot-row">
+          <div class="dot off"></div><div class="dot on"></div><div class="dot off"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="annotation">Status card has fixed height — no layout shift between states</p>
+
+<script>
+let currentView = 'desktop', currentState = 'countdown';
+
+function setView(v) {
+  currentView = v;
+  document.getElementById('view-desktop').style.display = v === 'desktop' ? '' : 'none';
+  document.getElementById('view-mobile').style.display = v === 'mobile' ? '' : 'none';
+  document.querySelectorAll('.toggle-group')[0].querySelectorAll('.toggle-btn').forEach((b,i) => {
+    b.classList.toggle('on', ['desktop','mobile'][i] === v);
+  });
+  applyState();
+}
+
+function setState(s) {
+  currentState = s;
+  document.querySelectorAll('.toggle-group')[1].querySelectorAll('.toggle-btn').forEach((b,i) => {
+    b.classList.toggle('on', ['countdown','progress','winner'][i] === s);
+  });
+  applyState();
+}
+
+function applyState() {
+  const s = currentState;
+  ['countdown','progress','winner'].forEach(k => {
+    ['d','m'].forEach(p => {
+      const el = document.getElementById(p + '-s-' + k);
+      if (el) el.classList.toggle('hidden', k !== s);
+    });
+  });
+  ['d-btn','m-btn'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    btn.className = 'hero-btn';
+    if (s === 'countdown' || s === 'progress') { btn.classList.add('locked'); btn.textContent = '🎁 Redeem'; }
+    else { btn.classList.add('claimed'); btn.textContent = '✓ Claimed'; }
+  });
+}
+</script>

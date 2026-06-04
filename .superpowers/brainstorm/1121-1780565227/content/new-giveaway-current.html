@@ -1,0 +1,129 @@
+<h2>Creation Page — Current Layout</h2>
+<p class="subtitle">Three cards in a horizontal row. What feels off to you?</p>
+
+<style>
+  .scene { background: #0a0a0a; border-radius: 12px; padding: 20px; max-width: 820px; margin: 20px auto; }
+  .row { display: flex; gap: 12px; align-items: flex-start; }
+  .m-card { background: #161616; border: 1px solid #262626; border-radius: 12px; overflow: hidden; }
+
+  /* Config card */
+  .config-card { width: 200px; flex-shrink: 0; }
+  .card-header { padding: 14px 16px 8px; border-bottom: 1px solid #1e1e1e; display: flex; align-items: center; gap: 8px; }
+  .card-title { font-size: 13px; font-weight: 600; color: #ddd; }
+  .back-btn { width: 24px; height: 24px; background: transparent; border: none; color: #555; font-size: 14px; cursor: pointer; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .card-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 14px; }
+
+  .field-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; }
+  .mock-select { background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 7px; padding: 7px 10px; font-size: 11px; color: #888; display: flex; justify-content: space-between; align-items: center; }
+  .mock-input { background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 7px; padding: 7px 10px; font-size: 11px; color: #888; }
+  .mock-hint { font-size: 9px; color: #3a3a3a; margin-top: 4px; }
+  .mock-slot-box { background: #1e1e2e; border: 1px solid #2a2a4a; border-radius: 7px; padding: 8px 10px; }
+  .mock-slot-label { font-size: 9px; color: #555; margin-bottom: 2px; }
+  .mock-slot-val { font-size: 12px; font-weight: 600; color: #9a8aff; }
+  .checkbox-row { display: flex; align-items: center; gap: 7px; font-size: 11px; color: #888; }
+  .mock-checkbox { width: 13px; height: 13px; border: 1px solid #3a3a3a; border-radius: 3px; background: #5a4af4; display: flex; align-items: center; justify-content: center; font-size: 8px; color: #fff; flex-shrink: 0; }
+  .generate-btn { background: #5a4af4; color: #fff; border: none; border-radius: 8px; padding: 9px 0; font-size: 12px; font-weight: 600; width: 100%; cursor: pointer; }
+
+  /* Slots preview card */
+  .slots-card { flex: 1; min-width: 0; }
+  .slots-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 12px; }
+  .slot { border-radius: 7px; padding: 8px; font-size: 10px; border: 1px solid; }
+  .slot.empty { border-color: #2a2a2a; border-style: dashed; color: #3a3a3a; background: #111; }
+  .slot.occupied { border-color: #2a2a2a; background: #1a1a1a; color: #aaa; }
+  .slot.selected { border-color: #5a4af4; background: #1a1530; color: #9a8aff; }
+  .slot.blocked { border-color: #3a1a1a; background: #1a0a0a; color: #5a2a2a; }
+  .slot-num { font-size: 9px; color: #444; margin-bottom: 3px; }
+  .slot-name { font-weight: 600; font-size: 10px; }
+  .slot-tag { font-size: 8px; margin-top: 3px; opacity: 0.7; }
+
+  /* Trial configurator card */
+  .trial-card { flex: 1; min-width: 0; }
+  .trial-entry { background: #1a1a1a; border: 1px solid #222; border-radius: 8px; padding: 10px; margin-bottom: 8px; }
+  .trial-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .trial-num { font-size: 9px; color: #555; text-transform: uppercase; letter-spacing: 0.06em; }
+  .trial-x { font-size: 12px; color: #444; cursor: pointer; }
+  .trial-type-select { background: #111; border: 1px solid #2a2a2a; border-radius: 6px; padding: 5px 8px; font-size: 10px; color: #888; width: 100%; margin-bottom: 6px; }
+  .trial-field { background: #111; border: 1px solid #222; border-radius: 6px; padding: 5px 8px; font-size: 10px; color: #666; width: 100%; box-sizing: border-box; margin-bottom: 4px; }
+  .add-trial-btn { background: transparent; border: 1px dashed #2a2a2a; border-radius: 7px; padding: 7px 0; font-size: 11px; color: #444; width: 100%; cursor: pointer; }
+
+  .server-tabs { display: flex; border-bottom: 1px solid #1e1e1e; }
+  .server-tab { padding: 8px 14px; font-size: 11px; color: #555; cursor: pointer; border-bottom: 2px solid transparent; }
+  .server-tab.active { color: #9a8aff; border-bottom-color: #5a4af4; }
+</style>
+
+<div class="scene">
+  <div class="row">
+
+    <!-- Config card (fixed 200px) -->
+    <div class="m-card config-card">
+      <div class="card-header">
+        <button class="back-btn">←</button>
+        <div class="card-title">Configure Giveaway</div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="field-label">Dino</div>
+          <div class="mock-select"><span>T-Rex (Huge) — Ancient</span><span style="color:#444;">▾</span></div>
+        </div>
+        <div class="mock-slot-box">
+          <div class="mock-slot-label">Auto-selected slot</div>
+          <div class="mock-slot-val">Server 1 · Slot 3</div>
+        </div>
+        <div>
+          <div class="field-label">Active at (optional)</div>
+          <div class="mock-input" style="color:#3a3a3a;">Pick date & time…</div>
+          <div class="mock-hint">Leave empty to activate immediately.</div>
+        </div>
+        <div class="checkbox-row">
+          <div class="mock-checkbox">✓</div>
+          <span>Enable Trials</span>
+        </div>
+        <button class="generate-btn">Generate Link</button>
+      </div>
+    </div>
+
+    <!-- Slots preview -->
+    <div class="m-card slots-card">
+      <div class="card-header" style="border:none;padding-bottom:0;">
+        <div class="card-title">Server Slots</div>
+      </div>
+      <div class="server-tabs">
+        <div class="server-tab active">Survival 1</div>
+        <div class="server-tab">Survival 2</div>
+        <div class="server-tab">Chill</div>
+      </div>
+      <div class="slots-grid">
+        <div class="slot selected"><div class="slot-num">Slot 3</div><div class="slot-name italic" style="color:#555;">Empty</div><div class="slot-tag">← selected</div></div>
+        <div class="slot occupied"><div class="slot-num">Slot 4</div><div class="slot-name">Ankylosaurus</div><div class="slot-tag">Adult</div></div>
+        <div class="slot blocked"><div class="slot-num">Slot 5</div><div class="slot-name" style="font-style:italic;">Empty</div><div class="slot-tag">Active giveaway</div></div>
+        <div class="slot empty"><div class="slot-num">Slot 6</div><div class="slot-name italic">Empty</div></div>
+        <div class="slot occupied"><div class="slot-num">Slot 7</div><div class="slot-name">Velociraptor</div><div class="slot-tag">Juvenile</div></div>
+        <div class="slot empty"><div class="slot-num">Slot 8</div><div class="slot-name italic">Empty</div></div>
+      </div>
+    </div>
+
+    <!-- Trial configurator -->
+    <div class="m-card trial-card">
+      <div class="card-header" style="border:none;padding-bottom:0;">
+        <div class="card-title">Trial Configurator</div>
+      </div>
+      <div class="card-body">
+        <div class="trial-entry">
+          <div class="trial-row"><span class="trial-num">Trial 1</span><span class="trial-x">✕</span></div>
+          <select class="trial-type-select"><option>Typing</option></select>
+          <input class="trial-field" placeholder="Phrase to type…" readonly />
+        </div>
+        <div class="trial-entry">
+          <div class="trial-row"><span class="trial-num">Trial 2</span><span class="trial-x">✕</span></div>
+          <select class="trial-type-select"><option>Math</option></select>
+          <input class="trial-field" placeholder="Expression…" readonly />
+          <input class="trial-field" placeholder="Answer…" readonly />
+        </div>
+        <button class="add-trial-btn">+ Add Trial</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<p style="text-align:center;font-size:11px;color:#444;margin-top:8px;">Current layout — 3 cards horizontally, fixed config width, two flex cards</p>

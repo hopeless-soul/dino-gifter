@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Creation Page — Transitions</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d0d0d; color: #ddd; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 24px; min-height: 100vh; }
+
+  h2 { font-size: 16px; font-weight: 600; color: #eee; margin-bottom: 4px; text-align: center; }
+  .subtitle { font-size: 12px; color: #555; text-align: center; margin-bottom: 20px; }
+
+  /* ── Layout ── */
+  .page { display: flex; align-items: flex-start; gap: 12px; max-width: 860px; margin: 0 auto; }
+
+  /* ── Card base ── */
+  .card { background: #161616; border: 1px solid #262626; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+
+  /* ── Config card ── */
+  .config-card { width: 240px; flex-shrink: 0; }
+  .card-header { padding: 12px 14px; border-bottom: 1px solid #1e1e1e; display: flex; align-items: center; gap: 8px; }
+  .card-title { font-size: 12px; font-weight: 600; color: #ddd; }
+  .back-btn { width: 22px; height: 22px; background: transparent; border: none; color: #555; font-size: 14px; cursor: pointer; border-radius: 5px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .card-body { padding: 14px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+  .field-label { font-size: 9px; color: #555; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
+  .mock-select { background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 6px; padding: 7px 10px; font-size: 11px; color: #888; display: flex; justify-content: space-between; cursor: pointer; }
+  .mock-input { background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 6px; padding: 7px 10px; font-size: 11px; color: #3a3a3a; }
+  .mock-hint { font-size: 9px; color: #3a3a3a; margin-top: 3px; }
+  .slot-box { background: #1e1e2e; border: 1px solid #2a2a4a; border-radius: 6px; padding: 8px 10px; }
+  .slot-box-label { font-size: 9px; color: #555; margin-bottom: 2px; }
+  .slot-box-val { font-size: 11px; font-weight: 600; color: #9a8aff; }
+
+  /* Toggle */
+  .toggle-row { display: flex; align-items: center; gap: 8px; }
+  .toggle-switch { width: 32px; height: 18px; border-radius: 9px; background: #5a4af4; border: none; cursor: pointer; position: relative; flex-shrink: 0; transition: background 0.2s; }
+  .toggle-switch::after { content:''; position:absolute; width:12px; height:12px; border-radius:50%; background:#fff; top:3px; left:17px; transition: left 0.2s; }
+  .toggle-switch.off { background: #2a2a2a; }
+  .toggle-switch.off::after { left: 3px; }
+  .toggle-label { font-size: 11px; color: #888; }
+
+  .generate-btn { background: #5a4af4; color: #fff; border: none; border-radius: 8px; padding: 9px 0; font-size: 11px; font-weight: 600; width: 100%; cursor: pointer; margin-top: auto; transition: background 0.15s; }
+  .generate-btn:hover { background: #4a3ae0; }
+
+  /* ── Slots card ── */
+  .slots-card { flex: 1; min-width: 0; }
+  .server-tabs { display: flex; border-bottom: 1px solid #1e1e1e; }
+  .server-tab { padding: 8px 14px; font-size: 11px; color: #555; cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; user-select: none; }
+  .server-tab.active { color: #9a8aff; border-bottom-color: #5a4af4; }
+
+  .slots-viewport { flex: 1; overflow: hidden; position: relative; min-height: 200px; }
+  .slots-page { position: absolute; inset: 0; padding: 10px; display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; align-content: start; overflow-y: auto;
+    opacity: 0; transform: translateX(20px);
+    transition: opacity 0.22s ease, transform 0.22s ease; pointer-events: none; }
+  .slots-page.visible { opacity: 1; transform: translateX(0); pointer-events: auto; }
+  .slots-page.exit-left { opacity: 0; transform: translateX(-20px); }
+
+  .slot { border-radius: 7px; padding: 7px 8px; border: 1px solid; }
+  .slot.empty { border-color: #222; border-style: dashed; color: #3a3a3a; background: #0e0e0e; }
+  .slot.occupied { border-color: #2a2a2a; background: #1a1a1a; color: #aaa; }
+  .slot.sel { border-color: #5a4af4; background: #1a1530; color: #9a8aff; }
+  .slot.blocked { border-color: #3a1a1a; background: #180a0a; color: #5a2a2a; }
+  .slot-num { font-size: 8px; color: #444; margin-bottom: 3px; }
+  .slot-name { font-size: 10px; font-weight: 600; }
+  .slot-tag { font-size: 8px; margin-top: 2px; opacity: 0.7; }
+
+  /* ── Trial card — animated width ── */
+  .trial-outer {
+    width: 0; flex-shrink: 0; overflow: hidden;
+    transition: width 0.28s cubic-bezier(0.4,0,0.2,1);
+  }
+  .trial-outer.open { width: 260px; }
+  .trial-card { width: 260px; }
+
+  .trial-entry { background: #111; border: 1px solid #1e1e1e; border-radius: 7px; padding: 9px; margin-bottom: 6px;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity 0.2s ease, transform 0.2s ease; }
+  .trial-entry.visible { opacity: 1; transform: translateY(0); }
+  .trial-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
+  .trial-num { font-size: 8px; color: #555; text-transform: uppercase; letter-spacing: 0.06em; }
+  .trial-x { font-size: 11px; color: #3a3a3a; cursor: pointer; }
+  .trial-type-select { background: #0e0e0e; border: 1px solid #222; border-radius: 5px; padding: 5px 8px; font-size: 10px; color: #888; width: 100%; margin-bottom: 5px; }
+  .trial-field { background: #0e0e0e; border: 1px solid #1e1e1e; border-radius: 5px; padding: 5px 8px; font-size: 10px; color: #555; width: 100%; margin-bottom: 3px; }
+  .add-trial-btn { background: transparent; border: 1px dashed #222; border-radius: 6px; padding: 7px 0; font-size: 10px; color: #3a3a3a; width: 100%; cursor: pointer; transition: border-color 0.15s, color 0.15s; }
+  .add-trial-btn:hover { border-color: #5a4af4; color: #7a6af4; }
+</style>
+</head>
+<body>
+<h2>Creation Page — Transitions Demo</h2>
+<p class="subtitle">Interactive. Toggle "Enable Trials" and switch server tabs to see transitions.</p>
+
+<div class="page">
+
+  <!-- Config -->
+  <div class="card config-card">
+    <div class="card-header">
+      <button class="back-btn">←</button>
+      <div class="card-title">Configure Giveaway</div>
+    </div>
+    <div class="card-body">
+      <div>
+        <div class="field-label">Dino</div>
+        <div class="mock-select"><span>T-Rex (Huge) — Ancient</span><span style="color:#333;">▾</span></div>
+      </div>
+      <div class="slot-box">
+        <div class="slot-box-label">Auto-selected slot</div>
+        <div class="slot-box-val">Server 1 · Slot 3</div>
+      </div>
+      <div>
+        <div class="field-label">Active at (optional)</div>
+        <div class="mock-input">Pick date & time…</div>
+        <div class="mock-hint">Leave empty to activate immediately.</div>
+      </div>
+      <div class="toggle-row">
+        <button class="toggle-switch" id="trials-toggle" onclick="toggleTrials()"></button>
+        <span class="toggle-label">Enable Trials</span>
+      </div>
+      <button class="generate-btn">Generate Link</button>
+    </div>
+  </div>
+
+  <!-- Slots -->
+  <div class="card slots-card">
+    <div class="card-header" style="border-bottom:none;padding-bottom:0;">
+      <div class="card-title">Server Slots</div>
+    </div>
+    <div class="server-tabs">
+      <div class="server-tab active" onclick="switchTab(0)">Survival 1</div>
+      <div class="server-tab" onclick="switchTab(1)">Survival 2</div>
+      <div class="server-tab" onclick="switchTab(2)">Chill</div>
+    </div>
+    <div class="slots-viewport">
+      <div class="slots-page visible" id="tab-0">
+        <div class="slot sel"><div class="slot-num">Slot 3</div><div class="slot-name" style="font-style:italic;color:#666;">Empty</div><div class="slot-tag">← selected</div></div>
+        <div class="slot occupied"><div class="slot-num">Slot 4</div><div class="slot-name">Ankylosaurus</div><div class="slot-tag">Adult</div></div>
+        <div class="slot blocked"><div class="slot-num">Slot 5</div><div class="slot-name" style="font-style:italic;">Empty</div><div class="slot-tag">Active giveaway</div></div>
+        <div class="slot empty"><div class="slot-num">Slot 6</div><div class="slot-name" style="font-style:italic;">Empty</div></div>
+        <div class="slot occupied"><div class="slot-num">Slot 7</div><div class="slot-name">Velociraptor</div><div class="slot-tag">Juvenile</div></div>
+        <div class="slot empty"><div class="slot-num">Slot 8</div><div class="slot-name" style="font-style:italic;">Empty</div></div>
+      </div>
+      <div class="slots-page" id="tab-1">
+        <div class="slot empty"><div class="slot-num">Slot 1</div><div class="slot-name" style="font-style:italic;">Empty</div></div>
+        <div class="slot occupied"><div class="slot-num">Slot 2</div><div class="slot-name">Brachiosaurus</div><div class="slot-tag">Ancient</div></div>
+        <div class="slot empty"><div class="slot-num">Slot 3</div><div class="slot-name" style="font-style:italic;">Empty</div></div>
+        <div class="slot occupied"><div class="slot-num">Slot 4</div><div class="slot-name">Stegosaurus</div><div class="slot-tag">Adult</div></div>
+        <div class="slot empty"><div class="slot-num">Slot 5</div><div class="slot-name" style="font-style:italic;">Empty</div></div>
+        <div class="slot empty"><div class="slot-num">Slot 6</div><div class="slot-name" style="font-style:italic;">Empty</div></div>
+      </div>
+      <div class="slots-page" id="tab-2">
+        <div class="slot occupied"><div class="slot-num">Slot 1</div><div class="slot-name">Pterodactyl</div><div class="slot-tag">Juvenile</div></div>
+        <div class="slot empty"><div class="slot-num">Slot 2</div><div class="slot-name" style="font-style:italic;">Empty</div></div>
+        <div class="slot empty"><div class="slot-num">Slot 3</div><div class="slot-name" style="font-style:italic;">Empty</div></div>
+        <div class="slot empty"><div class="slot-num">Slot 4</div><div class="slot-name" style="font-style:italic;">Empty</div></div>
+        <div class="slot empty"><div class="slot-num">Slot 5</div><div class="slot-name" style="font-style:italic;">Empty</div></div>
+        <div class="slot empty"><div class="slot-num">Slot 6</div><div class="slot-name" style="font-style:italic;">Empty</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trial (animated width) -->
+  <div class="trial-outer" id="trial-outer">
+    <div class="card trial-card">
+      <div class="card-header" style="border-bottom:none;padding-bottom:0;">
+        <div class="card-title">Trial Configurator</div>
+      </div>
+      <div class="card-body" id="trial-body" style="overflow-y:auto;">
+        <div class="trial-entry" id="trial-1">
+          <div class="trial-row"><span class="trial-num">Trial 1</span><span class="trial-x">✕</span></div>
+          <select class="trial-type-select"><option>Typing</option><option>Math</option><option>Puzzle</option></select>
+          <input class="trial-field" placeholder="Phrase to type…" readonly />
+        </div>
+        <div class="trial-entry" id="trial-2">
+          <div class="trial-row"><span class="trial-num">Trial 2</span><span class="trial-x">✕</span></div>
+          <select class="trial-type-select"><option>Math</option><option>Typing</option><option>Puzzle</option></select>
+          <input class="trial-field" placeholder="Expression…" readonly />
+          <input class="trial-field" placeholder="Answer…" readonly />
+        </div>
+        <button class="add-trial-btn">+ Add Trial</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let trialsOpen = false;
+  let currentTab = 0;
+  let tabTransitioning = false;
+
+  function toggleTrials() {
+    trialsOpen = !trialsOpen;
+    const outer = document.getElementById('trial-outer');
+    const toggle = document.getElementById('trials-toggle');
+    toggle.classList.toggle('off', !trialsOpen);
+
+    if (trialsOpen) {
+      outer.classList.add('open');
+      // stagger trial entries in
+      setTimeout(() => {
+        document.getElementById('trial-1').classList.add('visible');
+        setTimeout(() => document.getElementById('trial-2').classList.add('visible'), 80);
+      }, 160);
+    } else {
+      document.getElementById('trial-1').classList.remove('visible');
+      document.getElementById('trial-2').classList.remove('visible');
+      setTimeout(() => outer.classList.remove('open'), 60);
+    }
+  }
+
+  // init toggle as ON
+  document.getElementById('trial-outer').classList.add('open');
+  setTimeout(() => {
+    document.getElementById('trial-1').classList.add('visible');
+    setTimeout(() => document.getElementById('trial-2').classList.add('visible'), 80);
+  }, 100);
+
+  function switchTab(idx) {
+    if (idx === currentTab || tabTransitioning) return;
+    tabTransitioning = true;
+    const tabs = document.querySelectorAll('.server-tab');
+    const pages = document.querySelectorAll('.slots-page');
+    const dir = idx > currentTab ? 1 : -1;
+
+    // exit current
+    const cur = document.getElementById('tab-' + currentTab);
+    cur.classList.remove('visible');
+    cur.style.transform = `translateX(${dir * -20}px)`;
+    cur.style.opacity = '0';
+
+    tabs[currentTab].classList.remove('active');
+    tabs[idx].classList.add('active');
+    currentTab = idx;
+
+    // enter new
+    const next = document.getElementById('tab-' + idx);
+    next.style.transform = `translateX(${dir * 20}px)`;
+    next.style.opacity = '0';
+    next.style.transition = 'none';
+    next.style.pointerEvents = 'auto';
+
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      next.style.transition = '';
+      next.style.transform = 'translateX(0)';
+      next.style.opacity = '1';
+      setTimeout(() => {
+        cur.style.transform = '';
+        cur.style.opacity = '';
+        tabTransitioning = false;
+      }, 240);
+    }));
+  }
+</script>
+</body>
+</html>

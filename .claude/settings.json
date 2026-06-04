@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(Select-String -Pattern \"seed\")",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(Get-ChildItem -Recurse -Filter \"*.ts\" \"C:\\\\Users\\\\hk\\\\Documents\\\\Development\\\\nest\\\\nest-dino-gifter\\\\src\\\\giveaway\")",
+      "Bash(Select-Object FullName)"
     ]
   },
   "enabledPlugins": {

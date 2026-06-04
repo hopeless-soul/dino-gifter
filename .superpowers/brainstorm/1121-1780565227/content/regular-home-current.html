@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Regular Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d0d0d; color: #ddd; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 24px; }
+  h2 { font-size: 16px; font-weight: 600; color: #eee; margin-bottom: 4px; text-align: center; }
+  .subtitle { font-size: 12px; color: #555; text-align: center; margin-bottom: 20px; }
+  .page { max-width: 480px; margin: 0 auto; }
+
+  .navbar { border-bottom: 1px solid #1e1e1e; padding: 10px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; background: #0d0d0d; border-radius: 8px 8px 0 0; }
+  .nav-logo { font-size: 15px; color: #eee; font-family: Pacifico, 'Pacifico Fallback'; font-style: normal; font-weight: 400; }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .nav-badge { background: #222; color: #aaa; font-size: 10px; padding: 3px 8px; border-radius: 20px; border: 1px solid #333; }
+  .nav-logout { font-size: 11px; color: #444; }
+
+  .card { background: #161616; border: 1px solid #1e1e1e; border-radius: 12px; overflow: hidden; }
+  .card-header { padding: 12px 14px 8px; }
+  .card-title { font-size: 12px; font-weight: 600; color: #bbb; }
+  .card-title span { color: #444; font-weight: 400; }
+  .card-body { padding: 10px 14px 14px; display: flex; gap: 8px; align-items: center; }
+  .mock-input { background: #111; border: 1px solid #1e1e1e; border-radius: 6px; padding: 7px 10px; font-size: 11px; color: #888; flex: 1; }
+  .mock-btn { background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 6px; padding: 7px 14px; font-size: 11px; color: #666; white-space: nowrap; cursor: pointer; }
+
+  .section-label { font-size: 10px; font-weight: 600; color: #444; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+
+  /* Claimed giveaways — plain cards */
+  .giveaway-list { display: flex; flex-direction: column; gap: 8px; }
+  .giveaway-card { background: #161616; border: 1px solid #1e1e1e; border-radius: 10px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; }
+  .giveaway-name { font-size: 12px; font-weight: 600; color: #ccc; }
+  .giveaway-growth { font-size: 10px; color: #444; margin-top: 2px; }
+  .giveaway-date { font-size: 10px; color: #333; }
+
+  .empty-state { font-size: 12px; color: #444; text-align: center; padding: 24px 0; font-style: italic; }
+
+  .gap { margin-bottom: 16px; }
+</style>
+</head>
+<body>
+<h2>Regular User Home — Current</h2>
+<p class="subtitle">Max-width 480px centered. ApiIdCard + claimed giveaways list.</p>
+
+<div class="page">
+  <div class="navbar">
+    <div class="nav-logo">Dino Gifter</div>
+    <div class="nav-right">
+      <div class="nav-badge">dach1asus</div>
+      <div class="nav-logout">Logout</div>
+    </div>
+  </div>
+
+  <!-- API ID card -->
+  <div class="card gap">
+    <div class="card-header"><div class="card-title">Your API ID</div></div>
+    <div class="card-body">
+      <div class="mock-input">12345678</div>
+      <div class="mock-btn">Save</div>
+    </div>
+  </div>
+
+  <!-- Claimed giveaways -->
+  <div class="section-label">Claimed Giveaways</div>
+  <div class="giveaway-list">
+    <div class="giveaway-card">
+      <div>
+        <div class="giveaway-name">T-Rex (Huge)</div>
+        <div class="giveaway-growth">Ancient</div>
+      </div>
+      <div class="giveaway-date">04/06/2026</div>
+    </div>
+    <div class="giveaway-card">
+      <div>
+        <div class="giveaway-name">Ankylosaurus</div>
+        <div class="giveaway-growth">Adult</div>
+      </div>
+      <div class="giveaway-date">03/06/2026</div>
+    </div>
+    <div class="giveaway-card">
+      <div>
+        <div class="giveaway-name">Velociraptor</div>
+        <div class="giveaway-growth">Juvenile</div>
+      </div>
+      <div class="giveaway-date">01/06/2026</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
