@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
+import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ServerTabs } from '@/components/game/ServerTabs'
 import { TrialConfigurator } from '@/components/giveaway/TrialConfigurator'
@@ -95,7 +95,6 @@ export function GiveawayConfigurator() {
 
   useEffect(() => { fetchServerSlots(activeServer) }, [activeServer, fetchServerSlots])
 
-  // First empty, non-blocked slot on the active server
   const autoSlot = (serverSlots[activeServer] ?? []).find(
     s => s.isEmpty && !blockedSlots.has(`${activeServer}-${s.slotNumber}`)
   ) ?? null
@@ -105,7 +104,7 @@ export function GiveawayConfigurator() {
   async function submit() {
     if (!invId) { setError('Select a dino.'); return }
     if (!autoSlot) { setError('No available slot on this server — all are reserved.'); return }
-    if (trialsEnabled && trials.length === 0) { setError('Add at least one trial or uncheck Enable Trials.'); return }
+    if (trialsEnabled && trials.length === 0) { setError('Add at least one trial or disable Enable Trials.'); return }
     if (!selectedItem) { setError('Selected dino is no longer available.'); return }
     setSubmitting(true)
     setError(null)
@@ -133,10 +132,10 @@ export function GiveawayConfigurator() {
 
   return (
     <div className="min-h-screen bg-background flex items-start justify-center pt-12 px-4 pb-12">
-      <div className={cn('flex gap-4 w-full', trialsEnabled ? 'max-w-5xl' : 'max-w-3xl')}>
+      <div className="flex gap-4 w-full max-w-6xl items-stretch">
 
-        {/* Giveaway config */}
-        <Card className="w-72 shrink-0">
+        {/* Config card — fixed width, Generate Link pinned to bottom */}
+        <Card className="w-60 shrink-0 flex flex-col">
           <CardHeader className="pb-2">
             <div className="flex items-center gap-3">
               <Button
@@ -149,14 +148,14 @@ export function GiveawayConfigurator() {
               >
                 ←
               </Button>
-              <CardTitle className="text-lg">Configure Giveaway</CardTitle>
+              <CardTitle className="text-base">Configure Giveaway</CardTitle>
             </div>
           </CardHeader>
-          <CardContent className="flex flex-col gap-5 pt-2">
+          <CardContent className="flex flex-col gap-4 pt-2 flex-1">
             <div className="flex flex-col gap-1.5">
               <Label>Dino</Label>
               {!session ? (
-                <p className="text-sm text-muted-foreground">No game session — go to Inventory tab and connect first.</p>
+                <p className="text-sm text-muted-foreground">No game session — connect in Inventory tab first.</p>
               ) : inventory.length === 0 ? (
                 <p className="text-sm text-muted-foreground">Loading inventory…</p>
               ) : (
@@ -194,45 +193,44 @@ export function GiveawayConfigurator() {
             </div>
 
             <div className="flex items-center gap-2">
-              <Checkbox
+              <Switch
                 id="trials"
                 checked={trialsEnabled}
-                onCheckedChange={checked => setTrialsEnabled(!!checked)}
+                onCheckedChange={setTrialsEnabled}
               />
               <Label htmlFor="trials" className="cursor-pointer">Enable Trials</Label>
             </div>
 
             {error && <p className="text-destructive text-sm">{error}</p>}
 
+            {/* Pin Generate Link to bottom */}
             <Button
               type="button"
               onClick={submit}
               disabled={submitting || !invId || !autoSlot}
               size="lg"
-              className="w-full"
+              className="w-full mt-auto"
             >
               {submitting ? 'Generating link…' : 'Generate Link'}
             </Button>
           </CardContent>
         </Card>
 
-        {/* Slot preview panel */}
-        <Card className="flex-1 min-w-0">
+        {/* Slots card */}
+        <Card className="flex-1 min-w-0 flex flex-col">
           <CardHeader className="pb-2">
-            <CardTitle className="text-lg">Server Slots</CardTitle>
+            <CardTitle className="text-base">Server Slots</CardTitle>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="p-0 flex-1 overflow-y-auto">
             {!session ? (
-              <p className="text-sm text-muted-foreground px-4 py-4">
-                No game session — connect first.
-              </p>
+              <p className="text-sm text-muted-foreground px-4 py-4">No game session — connect first.</p>
             ) : (
               <>
                 <ServerTabs active={activeServer} onChange={setActiveServer} />
                 {loadingSlots ? (
                   <p className="text-sm text-muted-foreground px-4 py-4">Loading…</p>
                 ) : (serverSlots[activeServer] ?? []).length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-3 max-h-72 overflow-y-auto">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-3">
                     {serverSlots[activeServer].map(slot => {
                       const isBlocked = blockedSlots.has(`${activeServer}-${slot.slotNumber}`)
                       const isAuto = autoSlot?.slotNumber === slot.slotNumber
@@ -273,17 +271,25 @@ export function GiveawayConfigurator() {
           </CardContent>
         </Card>
 
-        {/* Trial configurator */}
-        {trialsEnabled && (
-          <Card className="flex-1 min-w-0">
+        {/* Trial card — animated width slide */}
+        <div
+          style={{
+            width: trialsEnabled ? '320px' : '0px',
+            overflow: 'hidden',
+            transition: 'width 0.35s cubic-bezier(0.4,0,0.2,1)',
+            flexShrink: 0,
+          }}
+        >
+          <Card className="flex flex-col h-full" style={{ minWidth: '320px' }}>
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Trial Configurator</CardTitle>
+              <CardTitle className="text-base">Trial Configurator</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex-1 overflow-y-auto">
               <TrialConfigurator trials={trials} onChange={setTrials} />
             </CardContent>
           </Card>
-        )}
+        </div>
+
       </div>
     </div>
   )
