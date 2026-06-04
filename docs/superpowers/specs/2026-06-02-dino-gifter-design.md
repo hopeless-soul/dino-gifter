@@ -18,7 +18,7 @@ Persistence is mocked with a module-level `Map` for now. When a real backend is 
 |---|---|---|
 | `/` | Inventory | Live inventory + server slot viewer. Entry point for creating giveaways. |
 | `/giveaway/new` | Giveaway Configurator | Form to configure a giveaway and generate a shareable link. |
-| `/giveaway/[id]` | Giveaway | Recipient-facing page. Countdown, trial, and Redeem button. |
+| `/giveaway/[id]` | Giveaway | recipient-facing page. Countdown, trial, and Redeem button. |
 | `/login` | Login | Draft scaffold — static form, no wiring. |
 | `/register` | Register | Draft scaffold — static form, no wiring. |
 
@@ -48,7 +48,7 @@ When navigated to from the inventory page, the Item field is pre-filled via quer
 - **Item (Dino)** — dropdown populated from live inventory. Shows `name + growthLabel`. Stores `invId` as the value. Pre-filled if navigated from inventory page.
 - **Trial** — optional toggle. When enabled:
   - Trial type: "Typing trial" (only option for now — no selector needed, just shown as a label).
-  - **Phrase** — text input. Recipient must type this exactly to unlock the Redeem button.
+  - **Phrase** — text input. recipient must type this exactly to unlock the Redeem button.
 - **Confirm** — submits `POST /api/giveaways`. On success, navigates to `/giveaway/[id]` and displays the full shareable URL prominently.
 
 ### Session requirement
@@ -58,7 +58,7 @@ This page also needs the session cookie (to populate the Item dropdown). If not 
 
 ## Page 3: Giveaway (`/giveaway/[id]`)
 
-Recipient-facing. No session cookie required from the recipient.
+recipient-facing. No session cookie required from the recipient.
 
 Data is fetched via `GET /api/giveaways/[id]`. The response includes only public-safe fields — the giver's session cookie is never returned to the client.
 

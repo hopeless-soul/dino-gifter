@@ -104,9 +104,11 @@ export default function GiveawayPage() {
   const showTrialsDone = active && (trialCount === 0 || trialsComplete) && !redeemed
   const showClaimed = redeemed
 
+  console.log('Giveaway: ', giveaway)
+
   return (
     <div className="min-h-[calc(100vh-64px)] bg-background flex items-center justify-center px-6 py-8 mt-16">
-      <div className="flex flex-col md:flex-row gap-4 w-full max-w-2xl items-stretch">
+      <div className={`flex flex-col md:flex-row gap-4 w-full max-w-3xl items-stretch ${!(trialCount > 0 && active && currentTrial && !trialsComplete) ? 'justify-center' : ''}`}>
 
         {/* Left column — 320px */}
         <div className="flex flex-col gap-4 w-full md:w-80 shrink-0">
@@ -126,7 +128,7 @@ export default function GiveawayPage() {
               <div className="text-center">
                 <h1 className="text-xl font-bold text-foreground">{giveaway.dino.name}</h1>
                 <p className="text-sm text-muted-foreground mt-1">
-                  {giveaway.dino.growthLabel}{giveaway.server ? ` · ${giveaway.server}` : ''}
+                  {giveaway.dino.growthLabel} · Server {`${giveaway.server}`}
                 </p>
               </div>
 

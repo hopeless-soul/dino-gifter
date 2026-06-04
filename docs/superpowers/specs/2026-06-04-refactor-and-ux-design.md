@@ -86,7 +86,7 @@ Fixes to `lib/types.ts` based on OpenAPI spec comparison:
 | Fix | Detail |
 |---|---|
 | `DinoData` — add `server` + `slot` | Backend `DinoDataDto` requires both as strings |
-| `recepient` → `recipient` | Typo in `Giveaway` interface; update all usages |
+| `recipient` → `recipient` | Typo in `Giveaway` interface; update all usages |
 | Add `UserMeResponse` type | `{ apiId: string \| null }` for `GET /users/me` |
 
 The `GiftDinoPayload.dino.id` usage (`parseInt` as `invId`) is intentional — the frontend stores the game inventory number as the dino ID string, and the backend echoes it back.

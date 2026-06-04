@@ -23,7 +23,7 @@
 - `giveaway.service.ts`: fix `recipientApiId: u.id` → `recipientApiId: u.apiId`
 - `UsersController`: add `PATCH /users` endpoint using `@CurrentUser()` to update `apiId`
 - `UsersController`: add `GET /users/me` endpoint to return `{id, username, role, apiId}` for the current user
-- `GiveawayController`: add `GET /giveaway/won` (or similar) restricted to Regular users, returning giveaways where `recepient = currentUser`
+- `GiveawayController`: add `GET /giveaway/won` (or similar) restricted to Regular users, returning giveaways where `recipient = currentUser`
 - NestJS CORS: allow the frontend origin (`NEXT_PUBLIC_API_URL` origin) with credentials
 
 ---
@@ -126,7 +126,7 @@ On 201: navigate to `/giveaway/{id}` (where `id` comes from the response body).
 Accessible to all authenticated users.
 
 ### Data fetching
-On mount: `GET /giveaway/{id}` → full Giveaway entity including `trials: TrialData[] | null`, `dino`, `activeAt`, `recepient` (null if unclaimed), `isCanceled`.
+On mount: `GET /giveaway/{id}` → full Giveaway entity including `trials: TrialData[] | null`, `dino`, `activeAt`, `recipient` (null if unclaimed), `isCanceled`.
 
 ### States
 - **Loading** — spinner
@@ -134,7 +134,7 @@ On mount: `GET /giveaway/{id}` → full Giveaway entity including `trials: Trial
 - **Countdown** — if `activeAt` is in the future, show `CountdownTimer` (existing component). Trials and Redeem are hidden until active.
 - **Trial sequence** — if `trials` is non-null and non-empty, display one trial at a time.
 - **Redeem** — shown when active and all trials passed (or no trials).
-- **Already claimed** — `recepient !== null`: show "This giveaway has already been claimed."
+- **Already claimed** — `recipient !== null`: show "This giveaway has already been claimed."
 
 ### Trial rendering (one at a time, tracked by `currentTrialIndex`)
 - **Typing**: show required phrase in a code block, text input below. "Next" enabled only when input matches `data.phrase` exactly.

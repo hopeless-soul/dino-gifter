@@ -67,11 +67,11 @@
 
 **Files:**
 - Modify: `lib/types.ts`
-- Modify: `app/giveaway/new/configurator.tsx` (fix `recepient` usage)
+- Modify: `app/giveaway/new/configurator.tsx` (fix `recipient` usage)
 
 - [ ] **Step 1: Update lib/types.ts**
 
-Replace `DinoData`, add `UserMeResponse`, fix `recepient`:
+Replace `DinoData`, add `UserMeResponse`, fix `recipient`:
 
 ```typescript
 // lib/types.ts
@@ -165,13 +165,13 @@ export interface UserMeResponse {
 }
 ```
 
-- [ ] **Step 2: Fix `recepient` usage in configurator**
+- [ ] **Step 2: Fix `recipient` usage in configurator**
 
 In `app/giveaway/new/configurator.tsx`, line 66, change:
 
 ```typescript
 // OLD
-if (!g.recepient && !g.isCanceled && g.server && g.slot) {
+if (!g.recipient && !g.isCanceled && g.server && g.slot) {
 // NEW
 if (!g.recipient && !g.isCanceled && g.server && g.slot) {
 ```
@@ -211,7 +211,7 @@ Expected: all existing tests pass.
 
 ```bash
 git add lib/types.ts app/giveaway/new/configurator.tsx components/ApiIdCard.tsx
-git commit -m "fix: correct recepient typo, add server+slot to DinoData, add UserMeResponse"
+git commit -m "fix: correct recipient typo, add server+slot to DinoData, add UserMeResponse"
 ```
 
 ---
@@ -2418,7 +2418,7 @@ git commit -m "feat: creation page UX — slide-in trial card, pinned generate b
 - Part 5 (operator home UX) → Task 10 ✓
 - Part 6 (regular user home UX) → Task 11 ✓
 - HoverCard preservation → explicit in Task 9 (OperatorHome extraction keeps HoverCard intact) ✓
-- `recepient` → `recipient` fix → Task 1 ✓
+- `recipient` → `recipient` fix → Task 1 ✓
 - `UserMeResponse` type → Task 1 ✓
 - Pacifico logo font → Navbar already uses it; kept in Task 5 ✓
 - White New Giveaway button → Task 10 ✓
@@ -2437,7 +2437,7 @@ git commit -m "feat: creation page UX — slide-in trial card, pinned generate b
 
 **Type consistency check:**
 - `DinoData` with `server: string, slot: string` is defined in Task 1 and used in GiveawayConfigurator submit (Task 13) ✓
-- `Giveaway.recipient` (not `recepient`) consistent across all tasks ✓
+- `Giveaway.recipient` (not `recipient`) consistent across all tasks ✓
 - `SlotsGrid` updated signature `{ slots, server?, giveaways? }` defined in Task 10, called in OperatorHome Task 10 ✓
 - `UserMeResponse` defined in Task 1, used in ApiIdCard Task 8 ✓
 - `useAuthUser` from `@/lib/hooks/use-auth-user` consistent in all tasks after Task 4 ✓

@@ -18,7 +18,7 @@ The following NestJS changes **must exist** before the frontend can function end
 2. `giveaway.service.ts` — use `u.apiId` (not `u.id`) in `emitMoveDino`
 3. `UsersController` — add `GET /users/me` returning `{id, username, role, apiId}`
 4. `UsersController` — add `PATCH /users` using `@CurrentUser()` accepting `{apiId: string}`
-5. `GiveawayController` — add `GET /giveaway/won` returning giveaways where `recepient = currentUser`
+5. `GiveawayController` — add `GET /giveaway/won` returning giveaways where `recipient = currentUser`
 6. NestJS CORS — allow `http://localhost:3000` with credentials
 
 Frontend unit tests are independent of the backend. Integration testing requires all six changes above.
