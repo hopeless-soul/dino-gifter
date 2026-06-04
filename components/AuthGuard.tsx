@@ -2,7 +2,7 @@
 'use client'
 import { useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { getAuthUser } from '@/lib/auth'
+import { getAuthUser } from '@/lib/backend/auth'
 
 const PUBLIC_PATHS = ['/login', '/register']
 

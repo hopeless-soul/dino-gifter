@@ -1,3 +1,4 @@
+// lib/backend/session.ts
 const KEY = 'dino_user_session'
 
 export function loadSession(): string {

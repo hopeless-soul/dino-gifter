@@ -1,6 +1,6 @@
 // lib/__tests__/auth.test.ts
 import { describe, it, expect, beforeEach } from 'vitest'
-import { getAuthUser, setAuthUser, clearAuthUser } from '../auth'
+import { getAuthUser, setAuthUser, clearAuthUser } from '../backend/auth'
 import type { AuthUser } from '../types'
 
 const USER: AuthUser = { id: 'abc-123', username: 'tester', role: 'Regular' }

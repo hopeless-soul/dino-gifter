@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthUser } from '@/lib/use-auth-user'
-import api from '@/lib/api'
+import api from '@/lib/backend/api'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import type { Giveaway } from '@/lib/types'

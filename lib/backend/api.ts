@@ -1,3 +1,4 @@
+// lib/backend/api.ts
 import axios from 'axios'
 import { getAuthUser, clearAuthUser } from './auth'
 

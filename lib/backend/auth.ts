@@ -1,5 +1,5 @@
-// lib/auth.ts
-import type { AuthUser } from './types'
+// lib/backend/auth.ts
+import type { AuthUser } from '../types'
 
 const KEY = 'dino_auth_user'
 

@@ -2,9 +2,9 @@
 'use client'
 import { useEffect } from 'react'
 import Pusher from 'pusher-js'
-import api from '@/lib/api'
-import { getAuthUser } from '@/lib/auth'
-import { loadSession } from '@/lib/session'
+import api from '@/lib/backend/api'
+import { getAuthUser } from '@/lib/backend/auth'
+import { loadSession } from '@/lib/backend/session'
 import { moveAndGift } from '@/lib/redeem'
 import type { DinoData } from '@/lib/types'
 

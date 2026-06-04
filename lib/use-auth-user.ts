@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
-import { getAuthUser, clearAuthUser } from './auth'
-import api from './api'
+import { getAuthUser, clearAuthUser } from './backend/auth'
+import api from './backend/api'
 import type { AuthUser } from './types'
 
 export function useAuthUser() {
