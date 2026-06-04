@@ -1,10 +1,47 @@
-// components/layout/PusherProvider.tsx
 'use client'
 import { useEffect } from 'react'
 import Pusher from 'pusher-js'
 import api from '@/lib/backend/api'
 import { getAuthUser } from '@/lib/backend/auth'
-import { GiftDinoPayload } from '@/lib/types'
+import { loadSession } from '@/lib/backend/session'
+import type { GiftDinoPayload } from '@/lib/types'
+
+async function handleGiftDino(payload: GiftDinoPayload) {
+  const session = loadSession()
+  if (!session) {
+    console.warn('[gift_dino] no game session — cannot process')
+    return
+  }
+
+  let completionStatus: 'processed' | 'failed' = 'failed'
+
+  try {
+    const res = await fetch('/api/send-gift', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-user-session': session },
+      body: JSON.stringify({
+        server: payload.server,
+        slot: payload.slot,
+        recipientApiId: payload.recipientApiId,
+      }),
+    })
+
+    if (res.ok) {
+      completionStatus = 'processed'
+    } else {
+      const body = await res.json() as { error?: string }
+      console.error('[gift_dino] send-gift failed:', body.error)
+    }
+  } catch (err) {
+    console.error('[gift_dino] network error:', err)
+  }
+
+  try {
+    await api.patch(`/giveaway/${payload.giveawayId}`, { completionStatus })
+  } catch (err) {
+    console.error('[gift_dino] failed to update giveaway status:', err)
+  }
+}
 
 export function PusherProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -33,8 +70,7 @@ export function PusherProvider({ children }: { children: React.ReactNode }) {
     const channel = pusher.subscribe(`private-user-${user.id}`)
 
     channel.bind('gift_dino', (payload: GiftDinoPayload) => {
-      console.log('[gift_dino]', payload)
-      console.log(payload)
+      void handleGiftDino(payload)
     })
 
     return () => {
