@@ -180,7 +180,7 @@ export default function GiveawayPage() {
           <div className={`absolute inset-0 flex flex-col items-center justify-center gap-3 px-5 transition-opacity duration-300 ${showTrialProgress ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
             <div className="text-center">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                {currentTrial ? currentTrial.type.charAt(0).toUpperCase() + currentTrial.type.slice(0, 6) + ' Trial' : ''}
+                {currentTrial ? currentTrial.type.charAt(0).toUpperCase() + currentTrial.type.slice(1) + ' Trial' : ''}
               </p>
               <p className="text-sm font-mono mt-0.5 text-foreground">{trialIndex + 1} / {trialCount}</p>
             </div>
