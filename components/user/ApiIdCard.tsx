@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import api from '@/lib/backend/api'
 import type { UserMeResponse } from '@/lib/types'
-import { Field, FieldDescription } from './ui/field'
+import { Field, FieldDescription } from '@/components/ui/field'
 import { TriangleAlert } from 'lucide-react'
 
 export function ApiIdCard() {

@@ -8,14 +8,14 @@ import { Button } from '@/components/ui/button'
 import type { Giveaway } from '@/lib/types'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useSession } from '@/lib/hooks/use-session'
-import { SessionInput } from '@/components/SessionInput'
+import { SessionInput } from '@/components/user/SessionInput'
 import { InventoryPanel } from '@/components/game/InventoryPanel'
 import { ServerTabs } from '@/components/game/ServerTabs'
 import { SlotsGrid } from '@/components/game/SlotsGrid'
 import { Navbar } from '@/components/layout/Navbar'
 import type { InventoryItem, SlotCard } from '@/lib/types'
 import { Badge } from "@/components/ui/badge"
-import { ApiIdCard } from '@/components/ApiIdCard'
+import { ApiIdCard } from '@/components/user/ApiIdCard'
 import { Check, ClipboardCopy, ExternalLink, Gavel, Gift, Plus } from 'lucide-react'
 import {
   Item,

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { TypingTrial } from '../TypingTrial'
+import { TypingTrial } from '../trials/TypingTrial'
 
 describe('TypingTrial', () => {
   it('calls onSuccess when the correct phrase is submitted', () => {
