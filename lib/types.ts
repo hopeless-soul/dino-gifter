@@ -75,4 +75,6 @@ export interface Giveaway {
   isCanceled: boolean
   createdAt: string
   creator: Partial<{ id: string, username: string }>
+  server: string;
+  slot: string;
 }
