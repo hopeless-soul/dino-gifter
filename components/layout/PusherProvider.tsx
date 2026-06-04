@@ -1,4 +1,4 @@
-// components/PusherProvider.tsx
+// components/layout/PusherProvider.tsx
 'use client'
 import { useEffect } from 'react'
 import Pusher from 'pusher-js'

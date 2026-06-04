@@ -13,7 +13,7 @@ export function Navbar() {
   const router = useRouter()
 
   return (
-    <header className="border-b border-border px-4 py-3 flex items-center gap-4 fixed top-0 left-0 right-0 z-50">
+    <header className="border-b border-border px-4 py-3 flex items-center gap-4 fixed top-0 left-0 right-0 z-50 bg-background">
       <Link href="/"><h1 className={`text-base text-foreground ${pacifico.className}`}>Dino Gifter</h1></Link>
       <nav className="flex gap-4 text-sm ml-auto items-center">
         {user ? (

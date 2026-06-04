@@ -1,7 +1,7 @@
 // components/__tests__/AuthGuard.test.tsx
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render } from '@testing-library/react'
-import { AuthGuard } from '../AuthGuard'
+import { AuthGuard } from '../layout/AuthGuard'
 
 const mockReplace = vi.fn()
 vi.mock('next/navigation', () => ({

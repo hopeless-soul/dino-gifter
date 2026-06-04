@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { AuthGuard } from "@/components/AuthGuard";
-import { PusherProvider } from "@/components/PusherProvider";
-import { Navbar } from "@/components/Navbar";
+import { AuthGuard } from "@/components/layout/AuthGuard";
+import { PusherProvider } from "@/components/layout/PusherProvider";
+import { Navbar } from "@/components/layout/Navbar";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
