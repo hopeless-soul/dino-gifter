@@ -102,14 +102,14 @@ export default function GiveawayPage() {
   const showRedeem = active && trialsComplete && !redeemed
 
   return (
-    <div className="min-h-screen bg-background flex flex-col md:flex-row items-center justify-center gap-4 px-4 py-8">
+    <div className="min-h-screen bg-background flex flex-column items-center justify-center px-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center pb-2">
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
             {giveaway.creator.username} Gives away
           </p>
           <h1 className="text-2xl font-bold text-foreground">{giveaway.dino.name}</h1>
-          <p className="text-muted-foreground mt-1">{giveaway.dino.growthLabel} • {giveaway.server}</p>
+          <p className="text-muted-foreground mt-1">{giveaway.dino.growthLabel}</p>
         </CardHeader>
 
         <CardContent className="flex flex-col items-center">
@@ -127,6 +127,15 @@ export default function GiveawayPage() {
             <>
               {giveaway.activeAt && !active && (
                 <CountdownTimer activeAt={giveaway.activeAt} onActive={handleActive} />
+              )}
+
+              {active && currentTrial && !trialsComplete && (
+                <div className="w-full flex flex-col gap-2">
+                  <p className="text-xs text-muted-foreground">
+                    Trial {trialIndex + 1} of {trialCount}
+                  </p>
+                  {renderTrial(currentTrial)}
+                </div>
               )}
 
               {showRedeem && (
@@ -161,19 +170,6 @@ export default function GiveawayPage() {
           )}
         </CardContent>
       </Card>
-
-      {trialCount > 0 && active && currentTrial && !trialsComplete && (
-        <Card className="w-full max-w-sm">
-          <CardHeader className="text-center pb-2">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Trial {trialIndex + 1} of {trialCount}
-            </p>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4 items-center">
-            {renderTrial(currentTrial)}
-          </CardContent>
-        </Card>
-      )}
     </div>
   )
 }
