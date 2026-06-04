@@ -105,7 +105,7 @@ export default function GiveawayPage() {
   const showClaimed = redeemed
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-background flex items-start justify-center px-6 py-8 mt-16">
+    <div className="min-h-[calc(100vh-64px)] bg-background flex items-center justify-center px-6 py-8 mt-16">
       <div className="flex flex-col md:flex-row gap-4 w-full max-w-2xl items-stretch">
 
         {/* Left column — 320px */}
