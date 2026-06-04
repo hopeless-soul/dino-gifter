@@ -26,7 +26,7 @@ export function ApiIdCard() {
   return (
     <Card className='w-full'>
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">Your API ID {!apiId && <span className='text-muted-foreground ml-1'>(unsaved)</span>}</CardTitle>
+        <CardTitle className="text-base text-left" style={{color: '#bbbbbb'}}>Your API ID {!apiId && <span className='ml-1' style={{color: '#444', fontWeight: '400'}}>(unsaved)</span>}</CardTitle>
       </CardHeader>
       <CardContent className="flex gap-2">
         <Field>

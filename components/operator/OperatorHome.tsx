@@ -166,16 +166,16 @@ export function OperatorHome() {
           </Button>
         </div>
 
-        <TabsContent value="giveaways">
+        <TabsContent value="giveaways" className='w-4xl'>
           {giveaways.length === 0 ? (
             <p className="text-sm text-muted-foreground">No giveaways yet.</p>
           ) : (
             <section>
-              <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+              <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2 text-left" style={{color: '#444'}}>
                 Giveaways — {giveaways.length} items
               </h2>
-              <ScrollArea className="h-128 w-full rounded-md border">
-                <div className="flex w-full flex-col gap-4 overflow-y-auto">
+              <ScrollArea className="h-128 w-full rounded-xl border">
+                <div className="flex w-full flex-col gap-4 overflow-y-auto p-4">
                   {giveaways.map((g) => (
                     <Item className='w-full' variant='muted' key={g.id} style={g.isCanceled ? { opacity: 0.4 } : undefined}>
                       <HoverCard openDelay={10} closeDelay={100}>
@@ -276,11 +276,11 @@ export function OperatorHome() {
           )}
         </TabsContent>
 
-        <TabsContent value="inventory">
+        <TabsContent value="inventory" className='w-4xl'>
           {connected && (
             <div className="flex flex-col gap-6 mt-4">
               <section>
-                <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2 text-left" style={{color: '#444'}}>
                   Inventory — {inventory.length} items
                 </h2>
                 <Card className="overflow-hidden">
@@ -288,7 +288,7 @@ export function OperatorHome() {
                 </Card>
               </section>
               <section>
-                <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2 text-left"  style={{color: '#444'}}>
                   Server Slots
                 </h2>
                 <Card className="overflow-hidden">

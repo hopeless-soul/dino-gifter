@@ -1,6 +1,7 @@
 'use client'
 import { useRouter } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import type { InventoryItem } from '@/lib/types'
 
 interface Props {
@@ -23,7 +24,8 @@ export function InventoryPanel({ items }: Props) {
   }
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 p-4 max-h-64 overflow-y-auto">
+    <ScrollArea className="h-64">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 p-4">
       {items.map(item => (
         <div
           key={item.id}
@@ -43,5 +45,6 @@ export function InventoryPanel({ items }: Props) {
         </div>
       ))}
     </div>
+    </ScrollArea>
   )
 }

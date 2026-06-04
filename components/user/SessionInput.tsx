@@ -15,7 +15,7 @@ export function SessionInput({ value, onChange, onConnect, loading, error }: Pro
   return (
     <Card className='w-full'>
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">Your UserSession Cookie {!value && <span className='text-muted-foreground ml-1'>(unsaved)</span>}</CardTitle>
+        <CardTitle className="text-base text-left" style={{color: '#bbb'}}>Your UserSession Cookie {!value && <span className='text-muted-foreground ml-1' style={{color: '#444', fontWeight: '400'}}>(unsaved)</span>}</CardTitle>
       </CardHeader>
       <CardContent className="flex gap-2">
         <Input
@@ -29,7 +29,7 @@ export function SessionInput({ value, onChange, onConnect, loading, error }: Pro
         <Button
           onClick={onConnect}
           disabled={!value.trim() || loading}
-          variant="default"
+          variant='default'
         >
           {loading ? 'Connecting…' : 'Connect'}
         </Button>
