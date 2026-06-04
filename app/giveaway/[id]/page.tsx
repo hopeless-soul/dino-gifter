@@ -9,6 +9,7 @@ import { PuzzleTrialPlayer } from '@/components/trials/PuzzleTrialPlayer'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import type { Giveaway, TrialData, TypingTrialData, MathTrialData, PuzzleTrialData } from '@/lib/types'
+import { CardSimIcon, Gift } from 'lucide-react'
 
 export default function GiveawayPage() {
   const { id } = useParams<{ id: string }>()
@@ -31,6 +32,7 @@ export default function GiveawayPage() {
   useEffect(() => {
     api.get<Giveaway>(`/giveaway/${id}`)
       .then(({ data }) => {
+        console.log('giveaway: ', data)
         setGiveaway(data)
         if (data.isCanceled) { setFetchError('This giveaway has been canceled.'); return }
         if (data.completionStatus !== 'not_processed') setRedeemed(true)
@@ -100,15 +102,19 @@ export default function GiveawayPage() {
   const showRedeem = active && trialsComplete && !redeemed
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4">
+    <div className="min-h-screen bg-background flex flex-column items-center justify-center px-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center pb-2">
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-            Dino Giveaway
+            {giveaway.creator.username} Gives away
           </p>
           <h1 className="text-2xl font-bold text-foreground">{giveaway.dino.name}</h1>
           <p className="text-muted-foreground mt-1">{giveaway.dino.growthLabel}</p>
         </CardHeader>
+
+        <CardContent className="flex flex-col items-center">
+          <Gift size={120}/>
+        </CardContent>
 
         <CardContent className="flex flex-col gap-6 items-center text-center">
           {redeemed ? (

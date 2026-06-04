@@ -63,6 +63,7 @@ export default function RegisterPage() {
                   <Input
                     id="username"
                     value={username}
+                    placeholder='username'
                     onChange={e => setUsername(e.target.value)}
                     autoComplete="username"
                     required
@@ -74,6 +75,7 @@ export default function RegisterPage() {
                     id="password"
                     type="password"
                     value={password}
+                    placeholder='password'
                     onChange={e => setPassword(e.target.value)}
                     autoComplete="new-password"
                     minLength={8}

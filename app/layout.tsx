@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthGuard } from "@/components/AuthGuard";
 import { PusherProvider } from "@/components/PusherProvider";
+import { Navbar } from "@/components/Navbar";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -20,7 +21,10 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <AuthGuard>
           <PusherProvider>
-            {children}
+            <Navbar />
+            <main className="flex-1">
+              {children}
+            </main>
           </PusherProvider>
         </AuthGuard>
       </body>

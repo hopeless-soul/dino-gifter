@@ -23,7 +23,7 @@ export function InventoryPanel({ items }: Props) {
   }
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 p-4 max-h-72 overflow-y-auto">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 p-4 max-h-64 overflow-y-auto">
       {items.map(item => (
         <div
           key={item.id}

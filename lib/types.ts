@@ -74,4 +74,5 @@ export interface Giveaway {
   completionStatus: CompletionStatus
   isCanceled: boolean
   createdAt: string
+  creator: Partial<{ id: string, username: string }>
 }

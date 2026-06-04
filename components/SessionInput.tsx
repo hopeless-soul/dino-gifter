@@ -1,6 +1,7 @@
 'use client'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 
 interface Props {
   value: string
@@ -12,8 +13,11 @@ interface Props {
 
 export function SessionInput({ value, onChange, onConnect, loading, error }: Props) {
   return (
-    <div className="flex flex-col gap-2 p-4 border-b border-border">
-      <div className="flex gap-2 max-w-2xl">
+    <Card className='w-full'>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base">Your UserSession Cookie {!value && <span className='text-muted-foreground ml-1'>(unsaved)</span>}</CardTitle>
+      </CardHeader>
+      <CardContent className="flex gap-2">
         <Input
           type="password"
           value={value}
@@ -29,8 +33,8 @@ export function SessionInput({ value, onChange, onConnect, loading, error }: Pro
         >
           {loading ? 'Connecting…' : 'Connect'}
         </Button>
-      </div>
+      </CardContent>
       {error && <p className="text-destructive text-sm">{error}</p>}
-    </div>
+    </Card>
   )
 }
