@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
-import { fetchSlotsPage } from '@/lib/ageofdino'
-import { parseSlots } from '@/lib/parse-slots'
+import { fetchSlotsPage } from '@/lib/crawler/ageofdino'
+import { parseSlots } from '@/lib/crawler/parse-slots'
 
 export async function GET(request: NextRequest) {
   const session = request.headers.get('x-user-session')

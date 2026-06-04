@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parseSlots } from '../parse-slots'
+import { parseSlots } from '../crawler/parse-slots'
 
 const HTML = `
 <html><body>

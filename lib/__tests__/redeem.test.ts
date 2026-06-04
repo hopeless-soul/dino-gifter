@@ -1,8 +1,8 @@
 // lib/__tests__/redeem.test.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { moveAndGift } from '../redeem'
-import * as ageofdino from '../ageofdino'
-import * as slotParser from '../parse-slots'
+import { moveAndGift } from '../crawler/redeem'
+import * as ageofdino from '../crawler/ageofdino'
+import * as slotParser from '../crawler/parse-slots'
 import type { SlotCard } from '../types'
 
 const EMPTY_SLOT: SlotCard = {

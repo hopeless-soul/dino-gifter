@@ -1,5 +1,6 @@
+// lib/crawler/parse-slots.ts
 import * as cheerio from 'cheerio'
-import type { InventoryItem, SlotCard } from './types'
+import type { InventoryItem, SlotCard } from '../types'
 
 export function parseSlots(html: string): { slots: SlotCard[]; inventory: InventoryItem[] } {
   const $ = cheerio.load(html)

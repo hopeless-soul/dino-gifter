@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { fetchSlotsPage, moveToSlot, sendGift } from '../ageofdino'
+import { fetchSlotsPage, moveToSlot, sendGift } from '../crawler/ageofdino'
 
 const SESSION = 'test_session_token'
 

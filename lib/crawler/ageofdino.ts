@@ -1,3 +1,4 @@
+// lib/crawler/ageofdino.ts
 const BASE = 'https://ageofdino.ru'
 
 function gameHeaders(session: string): Record<string, string> {

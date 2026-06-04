@@ -1,3 +1,4 @@
+// lib/crawler/redeem.ts
 import { fetchSlotsPage, moveToSlot, sendGift } from './ageofdino'
 import { parseSlots } from './parse-slots'
 

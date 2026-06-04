@@ -5,7 +5,7 @@ import Pusher from 'pusher-js'
 import api from '@/lib/backend/api'
 import { getAuthUser } from '@/lib/backend/auth'
 import { loadSession } from '@/lib/backend/session'
-import { moveAndGift } from '@/lib/redeem'
+import { moveAndGift } from '@/lib/crawler/redeem'
 import type { DinoData } from '@/lib/types'
 
 interface GiftDinoPayload {
