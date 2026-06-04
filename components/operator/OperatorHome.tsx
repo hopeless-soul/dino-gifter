@@ -13,7 +13,7 @@ import { ServerTabs } from '@/components/game/ServerTabs'
 import { SlotsGrid } from '@/components/game/SlotsGrid'
 import { ApiIdCard } from '@/components/user/ApiIdCard'
 import { Badge } from '@/components/ui/badge'
-import { Check, ClipboardCopy, ExternalLink, Gift, Plus } from 'lucide-react'
+import { Ban, Check, ClipboardCopy, ExternalLink, Gift, Plus, RotateCcw } from 'lucide-react'
 import {
   Item,
   ItemActions,
@@ -90,6 +90,7 @@ export function OperatorHome() {
   const router = useRouter()
   const [giveaways, setGiveaways] = useState<Giveaway[]>([])
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [cancelingId, setCancelingId] = useState<string | null>(null)
 
   const [session, setSession] = useSession()
   const [connected, setConnected] = useState(false)
@@ -104,6 +105,16 @@ export function OperatorHome() {
       .then(({ data }) => setGiveaways(data))
       .catch(() => {})
   }, [])
+
+  async function toggleCancel(g: Giveaway) {
+    setCancelingId(g.id)
+    try {
+      await api.patch(`/giveaway/${g.id}`, { isCanceled: !g.isCanceled })
+      setGiveaways(prev => prev.map(x => x.id === g.id ? { ...x, isCanceled: !g.isCanceled } : x))
+    } finally {
+      setCancelingId(null)
+    }
+  }
 
   async function connectInventory() {
     if (!session.trim()) return
@@ -167,7 +178,7 @@ export function OperatorHome() {
                 <ScrollBar />
                 <div className="flex w-full flex-col gap-4 p-2 overflow-y-auto">
                   {giveaways.map((g) => (
-                    <Item className='w-full' variant='muted' key={g.id}>
+                    <Item className='w-full' variant='muted' key={g.id} style={g.isCanceled ? { background: 'color-mix(in srgb, var(--muted) 10%, transparent)' } : undefined}>
                       <HoverCard openDelay={10} closeDelay={100}>
                         <HoverCardTrigger asChild>
                           <ItemMedia variant='image' style={{ background: 'var(--muted)' }}>
@@ -231,6 +242,17 @@ export function OperatorHome() {
                       <ItemActions>
                         <Button size='icon' variant='ghost' onClick={() => window.open(`/giveaway/${g.id}`, '_blank')}>
                           <ExternalLink size={16} />
+                        </Button>
+                      </ItemActions>
+                      <ItemActions>
+                        <Button
+                          size='icon'
+                          variant='ghost'
+                          disabled={cancelingId === g.id}
+                          onClick={() => toggleCancel(g)}
+                          title={g.isCanceled ? 'Restore giveaway' : 'Cancel giveaway'}
+                        >
+                          {g.isCanceled ? <RotateCcw size={16} /> : <Ban size={16} />}
                         </Button>
                       </ItemActions>
                     </Item>
