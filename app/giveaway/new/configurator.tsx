@@ -1,6 +1,7 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { cn } from '@/lib/utils'
 import { useSession } from '@/lib/use-session'
 import { useAuthUser } from '@/lib/use-auth-user'
 import api from '@/lib/api'
@@ -10,8 +11,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { ServerTabs } from '@/components/ServerTabs'
 import { TrialConfigurator } from '@/components/TrialConfigurator'
-import type { InventoryItem, TrialData } from '@/lib/types'
+import type { InventoryItem, SlotCard, TrialData, Giveaway } from '@/lib/types'
 
 export function GiveawayConfigurator() {
   const router = useRouter()
@@ -21,13 +23,19 @@ export function GiveawayConfigurator() {
 
   const [inventory, setInventory] = useState<InventoryItem[]>([])
   const [invId, setInvId] = useState('')
+
+  const [activeServer, setActiveServer] = useState('1')
+  const [serverSlots, setServerSlots] = useState<Record<string, SlotCard[]>>({})
+  const [loadingSlots, setLoadingSlots] = useState(false)
+  const [blockedSlots, setBlockedSlots] = useState<Set<string>>(new Set())
+  const loadedServers = useRef(new Set<string>())
+
   const [activeAt, setActiveAt] = useState('')
   const [trialsEnabled, setTrialsEnabled] = useState(false)
   const [trials, setTrials] = useState<TrialData[]>([])
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Role guard — Regular users cannot create giveaways
   useEffect(() => {
     if (user && user.role === 'Regular') router.replace('/')
   }, [user, router])
@@ -50,12 +58,55 @@ export function GiveawayConfigurator() {
 
   useEffect(() => { fetchInventory() }, [fetchInventory])
 
+  useEffect(() => {
+    api.get<Giveaway[]>('/giveaway')
+      .then(({ data }) => {
+        const blocked = new Set<string>()
+        data.forEach(g => {
+          if (!g.recipient && !g.isCanceled && g.server && g.slot) {
+            blocked.add(`${g.server}-${g.slot}`)
+          }
+        })
+        setBlockedSlots(blocked)
+      })
+      .catch(() => {})
+  }, [])
+
+  const fetchServerSlots = useCallback(async (server: string) => {
+    if (!session || loadedServers.current.has(server)) return
+    loadedServers.current.add(server)
+    setLoadingSlots(true)
+    try {
+      const res = await fetch(`/api/slots?server=${server}`, {
+        headers: { 'x-user-session': session },
+      })
+      if (res.ok) {
+        const data = await res.json() as { slots: SlotCard[] }
+        setServerSlots(prev => ({ ...prev, [server]: data.slots }))
+      } else {
+        loadedServers.current.delete(server)
+      }
+    } catch {
+      loadedServers.current.delete(server)
+    } finally {
+      setLoadingSlots(false)
+    }
+  }, [session])
+
+  useEffect(() => { fetchServerSlots(activeServer) }, [activeServer, fetchServerSlots])
+
+  // First empty, non-blocked slot on the active server
+  const autoSlot = (serverSlots[activeServer] ?? []).find(
+    s => s.isEmpty && !blockedSlots.has(`${activeServer}-${s.slotNumber}`)
+  ) ?? null
+
   const selectedItem = inventory.find(i => i.id === parseInt(invId, 10))
 
   async function submit() {
     if (!invId) { setError('Select a dino.'); return }
+    if (!autoSlot) { setError('No available slot on this server — all are reserved.'); return }
     if (trialsEnabled && trials.length === 0) { setError('Add at least one trial or uncheck Enable Trials.'); return }
-    if (!selectedItem) { setError('Selected dino is no longer available.'); setSubmitting(false); return }
+    if (!selectedItem) { setError('Selected dino is no longer available.'); return }
     setSubmitting(true)
     setError(null)
     try {
@@ -64,9 +115,13 @@ export function GiveawayConfigurator() {
           id: String(selectedItem.id),
           name: selectedItem.name,
           growthLabel: selectedItem.growthLabel,
+          server: activeServer,
+          slot: String(autoSlot.slotNumber),
         },
         activeAt: activeAt ? new Date(activeAt).toISOString() : null,
         trials: trialsEnabled && trials.length > 0 ? trials : null,
+        server: activeServer,
+        slot: String(autoSlot.slotNumber),
       })
       setSubmitting(false)
       router.push(`/giveaway/${data.id}`)
@@ -78,10 +133,10 @@ export function GiveawayConfigurator() {
 
   return (
     <div className="min-h-screen bg-background flex items-start justify-center pt-12 px-4 pb-12">
-      <div className={trialsEnabled ? 'flex gap-4 w-full max-w-3xl' : 'w-full max-w-md'}>
+      <div className={cn('flex gap-4 w-full', trialsEnabled ? 'max-w-5xl' : 'max-w-3xl')}>
 
-        {/* Left: giveaway config */}
-        <Card className={trialsEnabled ? 'flex-1' : 'w-full'}>
+        {/* Giveaway config */}
+        <Card className="w-72 shrink-0">
           <CardHeader className="pb-2">
             <div className="flex items-center gap-3">
               <Button
@@ -98,7 +153,6 @@ export function GiveawayConfigurator() {
             </div>
           </CardHeader>
           <CardContent className="flex flex-col gap-5 pt-2">
-            {/* Dino picker */}
             <div className="flex flex-col gap-1.5">
               <Label>Dino</Label>
               {!session ? (
@@ -122,7 +176,13 @@ export function GiveawayConfigurator() {
               )}
             </div>
 
-            {/* Active at */}
+            {autoSlot !== null && (
+              <div className="rounded-md border border-border bg-muted/30 px-3 py-2 text-sm">
+                <p className="text-xs text-muted-foreground mb-0.5">Auto-selected slot</p>
+                <p className="font-medium">Server {activeServer} · Slot {autoSlot.slotNumber}</p>
+              </div>
+            )}
+
             <div className="flex flex-col gap-1.5">
               <Label>Active at (optional)</Label>
               <Input
@@ -133,7 +193,6 @@ export function GiveawayConfigurator() {
               <p className="text-xs text-muted-foreground">Leave empty to activate immediately.</p>
             </div>
 
-            {/* Trials toggle */}
             <div className="flex items-center gap-2">
               <Checkbox
                 id="trials"
@@ -148,7 +207,7 @@ export function GiveawayConfigurator() {
             <Button
               type="button"
               onClick={submit}
-              disabled={submitting || !invId}
+              disabled={submitting || !invId || !autoSlot}
               size="lg"
               className="w-full"
             >
@@ -157,9 +216,66 @@ export function GiveawayConfigurator() {
           </CardContent>
         </Card>
 
-        {/* Right: trial configurator (only when trialsEnabled) */}
+        {/* Slot preview panel */}
+        <Card className="flex-1 min-w-0">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Server Slots</CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            {!session ? (
+              <p className="text-sm text-muted-foreground px-4 py-4">
+                No game session — connect first.
+              </p>
+            ) : (
+              <>
+                <ServerTabs active={activeServer} onChange={setActiveServer} />
+                {loadingSlots ? (
+                  <p className="text-sm text-muted-foreground px-4 py-4">Loading…</p>
+                ) : (serverSlots[activeServer] ?? []).length > 0 ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-3 max-h-72 overflow-y-auto">
+                    {serverSlots[activeServer].map(slot => {
+                      const isBlocked = blockedSlots.has(`${activeServer}-${slot.slotNumber}`)
+                      const isAuto = autoSlot?.slotNumber === slot.slotNumber
+                      return (
+                        <div
+                          key={slot.slotNumber}
+                          className={cn(
+                            'border rounded-lg p-3 text-sm select-none',
+                            isBlocked
+                              ? 'border-destructive/30 bg-destructive/10 text-muted-foreground'
+                              : isAuto
+                                ? 'border-primary bg-primary/10 ring-1 ring-primary'
+                                : slot.isEmpty
+                                  ? 'border-dashed border-border/50 text-muted-foreground bg-muted/20'
+                                  : 'border-border bg-card'
+                          )}
+                        >
+                          <p className="text-xs text-muted-foreground mb-1">Slot {slot.slotNumber}</p>
+                          {slot.isEmpty ? (
+                            <p className="italic text-xs">Empty</p>
+                          ) : (
+                            <>
+                              <p className="font-medium truncate text-card-foreground">{slot.name}</p>
+                              <p className="text-muted-foreground text-xs mt-0.5">{slot.growthLabel}</p>
+                            </>
+                          )}
+                          {isBlocked && <p className="text-xs text-destructive/70 mt-1">Active giveaway</p>}
+                          {isAuto && <p className="text-xs text-primary mt-1">← selected</p>}
+                        </div>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground px-4 py-4">No slots found.</p>
+                )}
+              </>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Trial configurator */}
         {trialsEnabled && (
-          <Card className="flex-1">
+          <Card className="flex-1 min-w-0">
             <CardHeader className="pb-2">
               <CardTitle className="text-lg">Trial Configurator</CardTitle>
             </CardHeader>

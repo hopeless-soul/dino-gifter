@@ -18,7 +18,7 @@ export interface JwtPayload {
   tokenVersion: number
 }
 
-// ── Game / scraper types (unchanged — used by inventory tab) ─────────────────
+// ── Game / scraper types ──────────────────────────────────────────────────────
 
 export interface SlotCard {
   slotNumber: number
@@ -43,6 +43,8 @@ export interface DinoData {
   id: string
   name: string
   growthLabel: string
+  server: string
+  slot: string
 }
 
 export interface TypingTrialData {
@@ -55,8 +57,8 @@ export interface MathTrialData {
 }
 
 export interface PuzzleTrialData {
-  grid: number[][]       // 9×9; 0 = empty cell, 1–9 = given value
-  solution: number[][]   // 9×9; complete solution
+  grid: number[][]
+  solution: number[][]
 }
 
 export type TrialData =
@@ -74,7 +76,14 @@ export interface Giveaway {
   completionStatus: CompletionStatus
   isCanceled: boolean
   createdAt: string
-  creator: Partial<{ id: string, username: string }>
-  server: string;
-  slot: string;
+  creator: Partial<{ id: string; username: string }>
+  recipient: { id: string; username: string } | null
+  server: string | null
+  slot: string | null
+}
+
+// ── API response types ────────────────────────────────────────────────────────
+
+export interface UserMeResponse {
+  apiId: string | null
 }

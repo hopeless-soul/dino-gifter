@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import api from '@/lib/api'
+import type { UserMeResponse } from '@/lib/types'
 import { Field, FieldDescription } from './ui/field'
 import { TriangleAlert } from 'lucide-react'
 
@@ -12,7 +13,7 @@ export function ApiIdCard() {
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    api.get<{ apiId: string | null }>('/users/me')
+    api.get<UserMeResponse>('/users/me')
       .then(({ data }) => { if (data.apiId) setApiId(data.apiId) })
       .catch(() => { })
   }, [])
