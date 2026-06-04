@@ -105,27 +105,27 @@ export default function GiveawayPage() {
   const showClaimed = redeemed
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-background flex items-start justify-center px-4 py-6 mt-16">
-      <div className="flex flex-col md:flex-row gap-3 w-full max-w-md items-stretch">
+    <div className="min-h-[calc(100vh-64px)] bg-background flex items-start justify-center px-6 py-8 mt-16">
+      <div className="flex flex-col md:flex-row gap-4 w-full max-w-2xl items-stretch">
 
-        {/* Left column */}
-        <div className="flex flex-col gap-2.5 w-full md:w-52 shrink-0">
+        {/* Left column — 320px */}
+        <div className="flex flex-col gap-4 w-full md:w-80 shrink-0">
 
           {/* Hero card */}
           <Card>
-            <CardContent className="flex flex-col items-center gap-2 p-4">
-              <p className="text-[9px] text-muted-foreground/60 uppercase tracking-widest">
+            <CardContent className="flex flex-col items-center gap-3 p-6">
+              <p className="text-xs text-muted-foreground/60 uppercase tracking-widest">
                 from {giveaway.creator.username ?? '—'}
               </p>
               <div
-                className="w-12 h-12 rounded-full flex items-center justify-center"
+                className="w-[72px] h-[72px] rounded-full flex items-center justify-center"
                 style={{ background: 'linear-gradient(135deg, #2a1a4a, #1a2a4a)' }}
               >
-                <Gift size={22} className="text-white" />
+                <Gift size={32} className="text-white" />
               </div>
               <div className="text-center">
-                <h1 className="text-sm font-bold text-foreground">{giveaway.dino.name}</h1>
-                <p className="text-[10px] text-muted-foreground mt-0.5">
+                <h1 className="text-xl font-bold text-foreground">{giveaway.dino.name}</h1>
+                <p className="text-sm text-muted-foreground mt-1">
                   {giveaway.dino.growthLabel}{giveaway.server ? ` · ${giveaway.server}` : ''}
                 </p>
               </div>
@@ -133,7 +133,6 @@ export default function GiveawayPage() {
               {redeemed ? (
                 <Button
                   disabled
-                  size="sm"
                   className="w-full"
                   style={{ background: '#2a1a4a', color: '#9a8aff', opacity: 0.7 }}
                 >
@@ -143,7 +142,6 @@ export default function GiveawayPage() {
                 <Button
                   onClick={redeem}
                   disabled={redeemDisabled}
-                  size="sm"
                   className="w-full"
                   variant={redeemDisabled ? 'secondary' : 'default'}
                 >
@@ -151,17 +149,17 @@ export default function GiveawayPage() {
                 </Button>
               )}
 
-              {redeemError && <p className="text-destructive text-xs text-center">{redeemError}</p>}
+              {redeemError && <p className="text-destructive text-sm text-center">{redeemError}</p>}
 
               {shareUrl && (
                 <button
                   onClick={copyShare}
-                  className="flex items-center justify-center gap-1 text-[9px] text-muted-foreground/40 border-t border-border/30 pt-1.5 w-full hover:text-muted-foreground/60 transition-colors font-mono truncate"
+                  className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground/40 border-t border-border/30 pt-2 w-full hover:text-muted-foreground/60 transition-colors font-mono truncate"
                   title="Click to copy"
                 >
-                  <span className="relative w-3 h-3 flex-shrink-0">
-                    <ClipboardCopy size={9} className={`absolute inset-0 transition-all duration-150 ${copied ? 'opacity-0 scale-75' : 'opacity-100'}`} />
-                    <Check size={9} className={`absolute inset-0 transition-all duration-150 ${copied ? 'opacity-100' : 'opacity-0 scale-75'}`} />
+                  <span className="relative w-3.5 h-3.5 flex-shrink-0">
+                    <ClipboardCopy size={11} className={`absolute inset-0 transition-all duration-150 ${copied ? 'opacity-0 scale-75' : 'opacity-100'}`} />
+                    <Check size={11} className={`absolute inset-0 transition-all duration-150 ${copied ? 'opacity-100' : 'opacity-0 scale-75'}`} />
                   </span>
                   <span className="truncate">{shareUrl}</span>
                 </button>
@@ -169,69 +167,69 @@ export default function GiveawayPage() {
             </CardContent>
           </Card>
 
-          {/* Status card — fixed 96px */}
-          <Card className="relative overflow-hidden" style={{ height: '96px' }}>
+          {/* Status card — 144px */}
+          <Card className="relative overflow-hidden" style={{ height: '144px' }}>
 
             {/* State 1: Countdown */}
-            <div className={`absolute inset-0 flex flex-col justify-center gap-1 px-4 py-3.5 transition-opacity duration-300 ${showCountdown ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-              <p className="text-[9px] text-muted-foreground/60 uppercase tracking-widest">Available in</p>
+            <div className={`absolute inset-0 flex flex-col justify-center gap-1.5 px-6 py-5 transition-opacity duration-300 ${showCountdown ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+              <p className="text-xs text-muted-foreground/60 uppercase tracking-widest">Available in</p>
               {giveaway.activeAt && (
                 <CountdownTimer activeAt={giveaway.activeAt} onActive={handleActive} />
               )}
-              <p className="text-[9px] text-muted-foreground/30">Unlocks automatically</p>
+              <p className="text-xs text-muted-foreground/30">Unlocks automatically</p>
             </div>
 
             {/* State 2: Trial progress */}
-            <div className={`absolute inset-0 flex flex-col justify-center gap-1.5 px-4 py-3.5 transition-opacity duration-300 ${showTrialProgress ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+            <div className={`absolute inset-0 flex flex-col justify-center gap-2 px-6 py-5 transition-opacity duration-300 ${showTrialProgress ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
               <div className="flex items-baseline justify-between">
-                <span className="text-xs font-medium text-foreground/80">
+                <span className="text-sm font-medium text-foreground/80">
                   {currentTrial ? currentTrial.type.charAt(0).toUpperCase() + currentTrial.type.slice(1) + ' Trial' : ''}
                 </span>
-                <span className="text-[10px] text-muted-foreground/60">{trialIndex + 1} / {trialCount}</span>
+                <span className="text-xs text-muted-foreground/60">{trialIndex + 1} / {trialCount}</span>
               </div>
-              <div className="flex gap-1 w-full">
+              <div className="flex gap-1.5 w-full">
                 {Array.from({ length: trialCount }).map((_, i) => (
                   <div
                     key={i}
-                    className={`h-1 flex-1 rounded-full transition-colors duration-300 ${
+                    className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
                       i < trialIndex ? 'bg-primary' : i === trialIndex ? 'bg-primary/50' : 'bg-muted'
                     }`}
                   />
                 ))}
               </div>
-              <p className="text-[9px] text-muted-foreground/40 uppercase tracking-widest">Complete all trials to unlock</p>
+              <p className="text-xs text-muted-foreground/40 uppercase tracking-widest">Complete all trials to unlock</p>
             </div>
 
             {/* State 3: All trials done */}
-            <div className={`absolute inset-0 flex flex-col justify-center gap-1.5 px-4 py-3.5 transition-opacity duration-300 ${showTrialsDone ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+            <div className={`absolute inset-0 flex flex-col justify-center gap-2 px-6 py-5 transition-opacity duration-300 ${showTrialsDone ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
               {trialCount > 0 ? (
                 <>
                   <div className="flex items-baseline justify-between">
-                    <span className="text-xs font-medium text-foreground/80">Done</span>
-                    <span className="text-[10px] text-muted-foreground/60">{trialCount} / {trialCount}</span>
+                    <span className="text-sm font-medium text-foreground/80">Done</span>
+                    <span className="text-xs text-muted-foreground/60">{trialCount} / {trialCount}</span>
                   </div>
-                  <div className="flex gap-1 w-full">
+                  <div className="flex gap-1.5 w-full">
                     {Array.from({ length: trialCount }).map((_, i) => (
-                      <div key={i} className="h-1 flex-1 rounded-full bg-primary" />
+                      <div key={i} className="h-1.5 flex-1 rounded-full bg-primary" />
                     ))}
                   </div>
-                  <p className="text-[9px] text-muted-foreground/40 uppercase tracking-widest">Complete all trials to unlock</p>
+                  <p className="text-xs text-muted-foreground/40 uppercase tracking-widest">Complete all trials to unlock</p>
                 </>
               ) : (
-                <p className="text-xs text-muted-foreground">Ready to redeem</p>
+                <p className="text-sm text-muted-foreground">Ready to redeem</p>
               )}
             </div>
 
             {/* State 4: Claimed */}
             <div
-              className={`absolute inset-0 flex flex-col items-center justify-center gap-1.5 transition-opacity duration-300 ${showClaimed ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+              className={`absolute inset-0 flex flex-col items-center justify-center gap-2 transition-opacity duration-300 ${showClaimed ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
               style={{ background: showClaimed ? 'linear-gradient(135deg, #1a0a2e 0%, #0f1a2e 100%)' : undefined }}
             >
-              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.08)' }}>
-                <Trophy size={16} className="text-purple-400" />
+              <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                <Trophy size={24} className="text-purple-400" />
               </div>
-              <p className="font-bold text-white text-sm">{giveaway.recipient?.username ?? '—'}</p>
-              <p className="text-[10px] text-white/45">Claimed this gift</p>
+              <p className="font-bold text-white text-base">{giveaway.recipient?.username ?? '—'}</p>
+              <p className="text-sm text-white/45">Claimed this gift</p>
             </div>
 
           </Card>
@@ -239,24 +237,24 @@ export default function GiveawayPage() {
 
         {/* Right column: trial content */}
         {trialCount > 0 && active && currentTrial && !trialsComplete && (
-          <Card className="flex-1 w-full flex flex-col min-h-[200px] md:self-stretch">
-            <CardHeader className="pb-1 pt-4 px-4">
-              <p className="text-[9px] text-muted-foreground/60 uppercase tracking-widest">
+          <Card className="flex-1 w-full flex flex-col min-h-[300px] md:self-stretch">
+            <CardHeader className="pb-2 pt-5 px-6">
+              <p className="text-xs text-muted-foreground/60 uppercase tracking-widest">
                 {currentTrial.type.charAt(0).toUpperCase() + currentTrial.type.slice(1)} Trial · {trialIndex + 1} of {trialCount}
               </p>
-              <p className="text-sm font-semibold text-foreground/80 mt-0.5">
+              <p className="text-base font-semibold text-foreground/80 mt-1">
                 {trialHeading(currentTrial.type)}
               </p>
             </CardHeader>
-            <CardContent className="flex flex-col flex-1 gap-3 px-4 pb-4">
+            <CardContent className="flex flex-col flex-1 gap-4 px-6 pb-6">
               {renderTrial(currentTrial)}
             </CardContent>
             {trialCount > 1 && (
-              <div className="flex justify-center gap-1.5 pb-3">
+              <div className="flex justify-center gap-2 pb-4">
                 {Array.from({ length: trialCount }).map((_, i) => (
                   <div
                     key={i}
-                    className={`w-1.5 h-1.5 rounded-full transition-colors ${i === trialIndex ? 'bg-primary' : 'bg-muted-foreground/20'}`}
+                    className={`w-2 h-2 rounded-full transition-colors ${i === trialIndex ? 'bg-primary' : 'bg-muted-foreground/20'}`}
                   />
                 ))}
               </div>
