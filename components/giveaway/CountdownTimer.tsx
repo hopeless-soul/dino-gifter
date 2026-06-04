@@ -34,11 +34,8 @@ export function CountdownTimer({ activeAt, onActive }: Props) {
   if (remaining <= 0) return null
 
   return (
-    <div className="text-center">
-      <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Available in</p>
-      <p className="text-4xl font-mono font-bold tabular-nums text-foreground">
-        {formatCountdown(remaining)}
-      </p>
-    </div>
+    <p className="text-2xl font-bold font-mono tabular-nums" style={{ color: '#9a8aff' }}>
+      {formatCountdown(remaining)}
+    </p>
   )
 }
