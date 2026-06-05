@@ -66,7 +66,7 @@ export function TypingTrial({ phrase, onSuccess }: Props) {
       {error && (
         <p className="text-destructive text-sm">Incorrect phrase. Try again.</p>
       )}
-      <Button onClick={submit} variant="success" className='w-full'>
+      <Button onClick={submit} className='w-full' style={{ background: '#5a4af4', color: '#fff' }}>
         Submit
       </Button>
     </div>

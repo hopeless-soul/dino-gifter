@@ -60,7 +60,7 @@ export function PuzzleTrialPlayer({ data, onSuccess }: Props) {
           })
         )}
       </div>
-      <Button onClick={onSuccess} disabled={!isSolved}>Next →</Button>
+      <Button onClick={onSuccess} disabled={!isSolved} style={{ background: '#5a4af4', color: '#fff' }}>Next →</Button>
     </div>
   )
 }

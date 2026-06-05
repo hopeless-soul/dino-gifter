@@ -217,7 +217,7 @@ export default function GiveawayPage() {
                   <div
                     key={i}
                     className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
-                      i < trialIndex ? 'bg-primary' : i === trialIndex ? 'progress-bar-active' : 'bg-muted'
+                      i < trialIndex ? 'bg-[#5a4af4]' : i === trialIndex ? 'progress-bar-active' : 'bg-[#222]'
                     }`}
                   />
                 ))}
@@ -235,7 +235,7 @@ export default function GiveawayPage() {
                   </div>
                   <div className="flex gap-1.5 w-full">
                     {Array.from({ length: trialCount }).map((_, i) => (
-                      <div key={i} className="h-1.5 flex-1 rounded-full bg-primary" />
+                      <div key={i} className="h-1.5 flex-1 rounded-full bg-[#5a4af4]" />
                     ))}
                   </div>
                   <p className="text-xs text-muted-foreground/40 uppercase tracking-widest">Complete all trials to unlock</p>
@@ -279,7 +279,7 @@ export default function GiveawayPage() {
                 {Array.from({ length: trialCount }).map((_, i) => (
                   <div
                     key={i}
-                    className={`w-2 h-2 rounded-full transition-colors ${i === trialIndex ? 'bg-primary' : 'bg-muted-foreground/20'}`}
+                    className={`w-2 h-2 rounded-full transition-colors ${i === trialIndex ? 'bg-[#5a4af4]' : 'bg-muted-foreground/20'}`}
                   />
                 ))}
               </div>

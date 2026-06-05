@@ -135,7 +135,7 @@ body {
 .progress-bar-active {
   position: relative;
   overflow: hidden;
-  background-color: color-mix(in oklab, var(--color-primary) 50%, transparent);
+  background-color: #5a4af480;
 }
 
 .progress-bar-active::after {
@@ -146,7 +146,7 @@ body {
   background: linear-gradient(
     90deg,
     transparent,
-    color-mix(in oklab, var(--color-primary) 70%, transparent),
+    rgb(255 255 255 / 0.3),
     transparent
   );
   animation: shimmer-sweep 1.5s ease-in-out infinite;

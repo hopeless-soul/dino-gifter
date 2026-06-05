@@ -31,7 +31,7 @@ export function RiddleTrialPlayer({ data, onSuccess }: Props) {
             background: '#1e1e1e',
             color: '#aaa',
             padding: '16px',
-            fontSize: '13px',
+            fontSize: '21px',
             fontFamily: 'serif',
             borderRadius: '8px',
             justifyContent: 'center',
@@ -62,7 +62,7 @@ export function RiddleTrialPlayer({ data, onSuccess }: Props) {
       {error && (
         <p className="text-destructive text-sm">Wrong answer. Try again.</p>
       )}
-      <Button onClick={submit} variant="success" className="w-full">
+      <Button onClick={submit} className="w-full" style={{ background: '#5a4af4', color: '#fff' }}>
         Submit
       </Button>
     </div>
