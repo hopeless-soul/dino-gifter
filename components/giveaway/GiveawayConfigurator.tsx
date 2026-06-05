@@ -202,6 +202,8 @@ export function GiveawayConfigurator() {
                 type="datetime-local"
                 value={activeAt}
                 onChange={e => setActiveAt(e.target.value)}
+                onClick={e => (e.target as HTMLInputElement).showPicker?.()}
+                className="[color-scheme:dark]"
               />
               <p className="text-xs text-muted-foreground">Leave empty to activate immediately.</p>
             </div>
