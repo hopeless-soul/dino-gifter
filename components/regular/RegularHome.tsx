@@ -17,6 +17,7 @@ import {
   ItemTitle,
 } from '@/components/ui/item'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Countdown } from '@/components/giveaway/CountdownTimer'
 
 const LS_KEY = 'dino-gifter:search-username'
 
@@ -121,6 +122,7 @@ export function RegularHome() {
                           &nbsp;· from {g.creator.username ? `${g.creator.username}` : ''}
                         </ItemDescription>
                       </ItemContent>
+                      <Countdown activeAt={g.activeAt} />
                       <p className="text-xs font-mono text-muted-foreground/60 shrink-0">
                         {new Date(g.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}
                       </p>
@@ -199,6 +201,7 @@ export function RegularHome() {
                         &nbsp;· from {g.creator.username ? `${g.creator.username}` : ''}
                       </ItemDescription>
                     </ItemContent>
+                    <Countdown activeAt={g.activeAt} />
                     <Button
                       size="icon"
                       variant="ghost"

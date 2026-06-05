@@ -28,62 +28,13 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
+import { Countdown } from '@/components/giveaway/CountdownTimer'
 
 const statusBadgeClass: Record<string, string> = {
   not_processed: 'bg-muted text-muted-foreground',
   pending: 'bg-muted text-muted-foreground',
   processed: 'bg-muted text-muted-foreground',
   failed: 'bg-muted text-muted-foreground',
-}
-
-// Used in HoverCard detail view (HH:MM:SS precision). In-list rows use CountdownHHMM.
-function Countdown({ activeAt }: { activeAt: string | null }) {
-  const [remaining, setRemaining] = useState<number | null>(null)
-
-  useEffect(() => {
-    if (!activeAt) return
-    const target = new Date(activeAt).getTime()
-    const tick = () => {
-      const diff = Math.max(0, Math.floor((target - Date.now()) / 1000))
-      setRemaining(diff)
-    }
-    tick()
-    const id = setInterval(tick, 1000)
-    return () => clearInterval(id)
-  }, [activeAt])
-
-  if (remaining === null) return null
-
-  const h = Math.floor(remaining / 3600)
-  const m = Math.floor((remaining % 3600) / 60)
-  const s = remaining % 60
-  const label = h > 0
-    ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
-    : `${m}:${String(s).padStart(2, '0')}`
-
-  return <span className="text-xs font-mono text-muted-foreground">{label}</span>
-}
-
-function CountdownHHMM({ activeAt }: { activeAt: string | null }) {
-  const [label, setLabel] = useState('0:00')
-
-  useEffect(() => {
-    if (!activeAt) return
-    const target = new Date(activeAt).getTime()
-    const tick = () => {
-      const ms = Math.max(0, target - Date.now())
-      const totalMin = Math.floor(ms / 60000)
-      const h = Math.floor(totalMin / 60)
-      const m = totalMin % 60
-      setLabel(`${h}:${String(m).padStart(2, '0')}`)
-    }
-    tick()
-    const id = setInterval(tick, 10000)
-    return () => clearInterval(id)
-  }, [activeAt])
-
-  if (!activeAt) return null
-  return <span className="text-xs font-mono text-muted-foreground">{label}</span>
 }
 
 export function OperatorHome() {

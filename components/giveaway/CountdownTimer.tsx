@@ -1,6 +1,27 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
 
+interface CountdownProps {
+  activeAt: string | null
+  className?: string
+}
+
+export function Countdown({ activeAt, className = 'text-xs font-mono text-muted-foreground' }: CountdownProps) {
+  const [remaining, setRemaining] = useState(0)
+
+  useEffect(() => {
+    if (!activeAt) return
+    const target = new Date(activeAt).getTime()
+    const tick = () => setRemaining(Math.max(0, Math.floor((target - Date.now()) / 1000)))
+    tick()
+    const id = setInterval(tick, 1000)
+    return () => clearInterval(id)
+  }, [activeAt])
+
+  if (!activeAt) return null
+  return <span className={className}>{formatCountdown(remaining * 1000)}</span>
+}
+
 export function formatCountdown(ms: number): string {
   if (ms <= 0) return '00:00:00'
   const totalSec = Math.floor(ms / 1000)
