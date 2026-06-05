@@ -237,7 +237,7 @@ export function OperatorHome() {
                           <span className={`text-xs px-2 py-0.5 rounded-full ${statusBadgeClass[g.completionStatus] ?? 'bg-muted'}`}>
                             {g.completionStatus.replaceAll('_', ' ')}
                           </span>
-                          <CountdownHHMM activeAt={g.activeAt} />
+                          <Countdown activeAt={g.activeAt} />
                           <p className="text-xs text-muted-foreground hidden sm:block">
                             {new Date(g.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
                           </p>
