@@ -74,6 +74,14 @@ export type TrialData =
 
 export type CompletionStatus = 'not_processed' | 'pending' | 'processed' | 'failed'
 
+export interface GiveawayUser {
+  id: string
+  username: string
+  role: Role
+  apiId: string | null
+  isPublic: boolean
+}
+
 export interface Giveaway {
   id: string
   dino: DinoData
@@ -82,8 +90,8 @@ export interface Giveaway {
   completionStatus: CompletionStatus
   isCanceled: boolean
   createdAt: string
-  creator: Partial<{ id: string; username: string }>
-  recipient: { id: string; username: string } | null
+  creator: Partial<GiveawayUser>
+  recipient: Partial<GiveawayUser> | null
   server: string | null
   slot: string | null
 }
@@ -91,7 +99,11 @@ export interface Giveaway {
 // ── API response types ────────────────────────────────────────────────────────
 
 export interface UserMeResponse {
+  id: string
+  username: string
+  role: Role
   apiId: string | null
+  isPublic: boolean
 }
 
 

@@ -144,6 +144,7 @@ export function OperatorHome() {
 
   return (
     <main className="max-w-5xl mx-auto p-4">
+      {/* Top cards */}
       <div className='flex gap-6 mb-6 sm:flex-col md:flex-row'>
         <SessionInput
           value={session}
@@ -175,7 +176,7 @@ export function OperatorHome() {
                 Giveaways — {giveaways.length} items
               </h2>
               <ScrollArea className="h-128 w-full rounded-xl border">
-                <div className="flex w-full flex-col gap-4 overflow-y-auto p-4">
+                <div className="flex w-full flex-col gap-3 overflow-y-auto p-4">
                   {giveaways.map((g) => (
                     <Item className='w-full' variant='muted' key={g.id} style={g.isCanceled ? { opacity: 0.4 } : undefined}>
                       <HoverCard openDelay={10} closeDelay={100}>
@@ -210,6 +211,9 @@ export function OperatorHome() {
                               </div>
                             ))}
                             {!g.trials && <p className='italic'>null</p>}
+                          </div>
+                          <div className="mt-1 text-xs text-muted-foreground">
+                            Recipient:&nbsp;&nbsp;{g.recipient && <Badge variant='default'>{g.recipient?.username}</Badge>}
                           </div>
                           <div className="mt-1 text-xs text-muted-foreground">
                             Gift Status:&nbsp;&nbsp;{g.completionStatus}
