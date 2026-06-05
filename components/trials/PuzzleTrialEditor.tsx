@@ -87,7 +87,7 @@ export function PuzzleTrialEditor({ data, onChange }: Props) {
           variant={mode === 'puzzle' ? 'default' : 'outline'}
           onClick={() => setMode('puzzle')}
         >
-          Set Puzzle
+          Puzzle
         </Button>
         <Button
           type="button"
@@ -95,7 +95,7 @@ export function PuzzleTrialEditor({ data, onChange }: Props) {
           variant={mode === 'solution' ? 'default' : 'outline'}
           onClick={() => setMode('solution')}
         >
-          Set Solution
+          Solution
         </Button>
         <Button
           type="button"
@@ -108,8 +108,8 @@ export function PuzzleTrialEditor({ data, onChange }: Props) {
       </div>
 
       <div
-        className="border border-border"
-        style={{ display: 'grid', gridTemplateColumns: 'repeat(9, 28px)', width: 'fit-content' }}
+        className=""
+        style={{ display: 'grid', gridTemplateColumns: 'repeat(9, 28px)' }}
       >
         {data.grid.map((row, r) =>
           row.map((_, c) => {

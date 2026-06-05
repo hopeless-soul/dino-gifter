@@ -182,13 +182,15 @@ export function OperatorHome() {
                       <HoverCard openDelay={10} closeDelay={100}>
                         <HoverCardTrigger asChild>
                           <ItemMedia variant='image' style={{
-                            background: g.isCanceled
-                              ? 'var(--muted)'
-                              : g.completionStatus === 'failed'
-                                ? 'color-mix(in srgb, #ef4444 30%, transparent)'
-                                : g.completionStatus === 'processed'
-                                  ? 'color-mix(in srgb, #22c55e 30%, transparent)'
-                                  : 'var(--muted)',
+                            background: g.isCanceled && g.completionStatus === 'processed'
+                              ? 'color-mix(in srgb, #22c55e 30%, transparent)'
+                              : g.isCanceled
+                                ? 'var(--muted)'
+                                : g.completionStatus === 'failed'
+                                  ? 'color-mix(in srgb, #ef4444 30%, transparent)'
+                                  : g.completionStatus === 'processed'
+                                    ? 'color-mix(in srgb, #22c55e 30%, transparent)'
+                                    : 'var(--muted)',
                           }}>
                             {g.isCanceled
                               ? <Archive size='21' className="text-white" />
