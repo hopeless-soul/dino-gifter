@@ -216,9 +216,8 @@ export default function GiveawayPage() {
                 {Array.from({ length: trialCount }).map((_, i) => (
                   <div
                     key={i}
-                    className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
-                      i < trialIndex ? 'bg-[#5a4af4]' : i === trialIndex ? 'progress-bar-active' : 'bg-[#222]'
-                    }`}
+                    className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${i < trialIndex ? 'bg-[#5a4af4]' : i === trialIndex ? 'progress-bar-active' : 'bg-[#222]'
+                      }`}
                   />
                 ))}
               </div>
@@ -227,7 +226,7 @@ export default function GiveawayPage() {
 
             {/* State 3: All trials done */}
             <div className={`absolute inset-0 flex flex-col justify-center gap-2 px-6 py-5 transition-opacity duration-300 ${showTrialsDone ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-              {trialCount > 0 ? (
+              {trialCount > 0 && (
                 <>
                   <div className="flex items-baseline justify-between">
                     <span className="text-sm font-medium text-foreground/80">Done</span>
@@ -240,12 +239,23 @@ export default function GiveawayPage() {
                   </div>
                   <p className="text-xs text-muted-foreground/40 uppercase tracking-widest">Complete all trials to unlock</p>
                 </>
-              ) : (
-                <p className="text-sm text-muted-foreground">Ready to redeem</p>
               )}
             </div>
 
-            {/* State 4: Claimed */}
+            {/* State 5: Ready to redeem */}
+            {trialCount <= 0 && (
+              <div
+                className={`absolute inset-0 flex flex-col items-center justify-center gap-2 transition-opacity duration-300 ${showTrialsDone ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                style={{ background: showTrialsDone ? 'linear-gradient(135deg, #0a2e15 0%, #061a0d 100%)' : undefined }}
+              >
+                <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.15)' }}>
+                  <Check size={24} className="text-green-400" />
+                </div>
+                <p className="font-bold text-white text-base">Ready to redeem</p>
+              </div>
+            )}
+
+            {/* State 4: Ready to redeem */}
             <div
               className={`absolute inset-0 flex flex-col items-center justify-center gap-2 transition-opacity duration-300 ${showClaimed ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
               style={{ background: showClaimed ? 'linear-gradient(135deg, #1a0a2e 0%, #0f1a2e 100%)' : undefined }}
