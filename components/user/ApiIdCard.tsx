@@ -33,7 +33,7 @@ export function ApiIdCard() {
           <Input
             value={apiId}
             onChange={e => setApiId(e.target.value)}
-            placeholder="Your in-game user ID"
+            placeholder="Your in-game user ID..."
             className="font-mono"
           />
         </Field>
