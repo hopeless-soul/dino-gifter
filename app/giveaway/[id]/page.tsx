@@ -251,7 +251,7 @@ export default function GiveawayPage() {
                 <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.15)' }}>
                   <Check size={24} className="text-green-400" />
                 </div>
-                <p className="font-bold text-white text-base">Ready to redeem</p>
+                <p className="font-bold text text-base" style={{color: 'var(--success)'}}>Ready to redeem</p>
               </div>
             )}
 
