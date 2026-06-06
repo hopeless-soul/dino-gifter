@@ -34,6 +34,7 @@ export function ApiIdCard() {
             value={apiId}
             onChange={e => setApiId(e.target.value)}
             placeholder="Your in-game user ID"
+            className="font-mono"
           />
         </Field>
         <Button onClick={saveApiId} disabled={saving}>
