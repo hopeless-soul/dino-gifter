@@ -90,8 +90,9 @@ export interface Giveaway {
   completionStatus: CompletionStatus
   isCanceled: boolean
   createdAt: string
-  creator: Partial<GiveawayUser>
-  recipient: Partial<GiveawayUser> | null
+  deletedAt: string | null
+  creator: GiveawayUser
+  recipient: GiveawayUser | null
   server: string | null
   slot: string | null
 }
