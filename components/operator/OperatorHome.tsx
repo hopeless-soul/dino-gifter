@@ -54,7 +54,7 @@ export function OperatorHome() {
   useEffect(() => {
     api.get<Giveaway[]>('/giveaway')
       .then(({ data }) => setGiveaways(data))
-      .catch(() => {})
+      .catch(() => { })
   }, [])
 
   async function toggleCancel(g: Giveaway) {
@@ -123,7 +123,7 @@ export function OperatorHome() {
             <p className="text-sm text-muted-foreground">No giveaways yet.</p>
           ) : (
             <section>
-              <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2 text-left" style={{color: '#444'}}>
+              <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2 text-left" style={{ color: '#444' }}>
                 Giveaways — {giveaways.length} items
               </h2>
               <ScrollArea className="h-128 w-full rounded-xl border">
@@ -189,9 +189,11 @@ export function OperatorHome() {
                             {g.completionStatus.replaceAll('_', ' ')}
                           </span>
                           <Countdown activeAt={g.activeAt} />
-                          <p className="text-xs text-muted-foreground hidden sm:block">
-                            {new Date(g.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
-                          </p>
+                          {g.activeAt && (
+                            <p className="text-xs text-muted-foreground hidden sm:block">
+                              {new Date(g.activeAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
+                            </p>
+                          )}
                           <p className="text-xs text-muted-foreground hidden sm:block">
                             {new Date(g.createdAt).toLocaleDateString()}
                           </p>
@@ -237,7 +239,7 @@ export function OperatorHome() {
           {connected && (
             <div className="flex flex-col gap-6 mt-4">
               <section>
-                <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2 text-left" style={{color: '#444'}}>
+                <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2 text-left" style={{ color: '#444' }}>
                   Inventory — {inventory.length} items
                 </h2>
                 <Card className="overflow-hidden">
@@ -245,7 +247,7 @@ export function OperatorHome() {
                 </Card>
               </section>
               <section>
-                <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2 text-left"  style={{color: '#444'}}>
+                <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2 text-left" style={{ color: '#444' }}>
                   Server Slots
                 </h2>
                 <Card className="overflow-hidden">
