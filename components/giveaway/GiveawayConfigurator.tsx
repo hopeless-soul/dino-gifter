@@ -21,29 +21,40 @@ export function GiveawayConfigurator() {
   const { user } = useAuthUser()
   const [session] = useSession()
 
+  // --- Inventory state ---
   const [inventory, setInventory] = useState<InventoryItem[]>([])
   const [invId, setInvId] = useState('')
 
+  // --- Server / slot state ---
   const [activeServer, setActiveServer] = useState('1')
   const [serverSlots, setServerSlots] = useState<Record<string, SlotCard[]>>({})
   const [loadingSlots, setLoadingSlots] = useState(false)
+  // Slots that already have an active giveaway on them
   const [blockedSlots, setBlockedSlots] = useState<Set<string>>(new Set())
+  // Tracks which servers have already been fetched to avoid duplicate requests
   const loadedServers = useRef(new Set<string>())
 
+  // --- Form state ---
   const [activeAt, setActiveAt] = useState('')
   const [trialsEnabled, setTrialsEnabled] = useState(false)
   const [trials, setTrials] = useState<TrialData[]>([])
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // --- Guards ---
+
+  // Redirect regular users away — this page is admin/host only
   useEffect(() => {
     if (user && user.role === 'Regular') router.replace('/')
   }, [user, router])
 
+  // Pre-fill inventory selection from URL query param (?invId=...)
   useEffect(() => {
     const id = params.get('invId')
     if (id) setInvId(id)
   }, [params])
+
+  // --- Data fetching ---
 
   const fetchInventory = useCallback(async () => {
     if (!session) return
@@ -58,6 +69,7 @@ export function GiveawayConfigurator() {
 
   useEffect(() => { fetchInventory() }, [fetchInventory])
 
+  // Build the blocked-slots set from active (unclaimed, uncanceled) giveaways
   useEffect(() => {
     api.get<Giveaway[]>('/giveaway')
       .then(({ data }) => {
@@ -72,6 +84,7 @@ export function GiveawayConfigurator() {
       .catch(() => {})
   }, [])
 
+  // Lazy-load slots per server; uses a ref to avoid re-fetching already-loaded servers
   const fetchServerSlots = useCallback(async (server: string) => {
     if (!session || loadedServers.current.has(server)) return
     loadedServers.current.add(server)
@@ -95,13 +108,19 @@ export function GiveawayConfigurator() {
 
   useEffect(() => { fetchServerSlots(activeServer) }, [activeServer, fetchServerSlots])
 
+  // --- Derived values ---
+
+  // First available (empty and unblocked) slot on the active server
   const autoSlot = (serverSlots[activeServer] ?? []).find(
     s => s.isEmpty && !blockedSlots.has(`${activeServer}-${s.slotNumber}`)
   ) ?? null
 
   const selectedItem = inventory.find(i => i.id === parseInt(invId, 10))
 
+  // --- Submit ---
+
   async function submit() {
+    // Validate before sending any requests
     if (!invId) { setError('Select a dino.'); return }
     if (!autoSlot) { setError('No available slot on this server — all are reserved.'); return }
     if (trialsEnabled && trials.length === 0) { setError('Add at least one trial or disable Enable Trials.'); return }
@@ -110,6 +129,7 @@ export function GiveawayConfigurator() {
     setSubmitting(true)
     setError(null)
     try {
+      // Step 1: move the dino into a server slot in-game
       const moveRes = await fetch('/api/move-to-slot', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-user-session': session },
@@ -123,6 +143,7 @@ export function GiveawayConfigurator() {
       }
       const { slotNumber } = await moveRes.json() as { slotNumber: number }
 
+      // Step 2: create the giveaway record with the confirmed slot number
       const { data } = await api.post<{ id: string }>('/giveaway', {
         dino: {
           id: String(selectedItem.id),
@@ -144,11 +165,13 @@ export function GiveawayConfigurator() {
     }
   }
 
+  // --- Render ---
+
   return (
     <div className="min-h-screen bg-background flex items-start justify-center pt-12 px-4 pb-12">
       <div className="flex gap-4 w-full max-w-6xl items-stretch">
 
-        {/* Config card — fixed width, Generate Link pinned to bottom */}
+        {/* ── Config card ── fixed width, Generate Link pinned to bottom */}
         <Card className="w-60 shrink-0 flex flex-col">
           <CardHeader className="pb-2">
             <div className="flex items-center gap-3">
@@ -166,6 +189,8 @@ export function GiveawayConfigurator() {
             </div>
           </CardHeader>
           <CardContent className="flex flex-col gap-4 pt-2 flex-1">
+
+            {/* Dino selector — shows status messages while session/inventory loads */}
             <div className="flex flex-col gap-1.5">
               <Label>Dino</Label>
               {!session ? (
@@ -189,6 +214,7 @@ export function GiveawayConfigurator() {
               )}
             </div>
 
+            {/* Auto-selected slot badge — only shown when a free slot is available */}
             {autoSlot !== null && (
               <div className="rounded-md border border-border bg-muted/30 px-3 py-2 text-sm">
                 <p className="text-xs text-muted-foreground mb-0.5">Auto-selected slot</p>
@@ -196,6 +222,7 @@ export function GiveawayConfigurator() {
               </div>
             )}
 
+            {/* Scheduled activation time (empty = activate immediately) */}
             <div className="flex flex-col gap-1.5">
               <Label>Active at (optional)</Label>
               <Input
@@ -208,6 +235,7 @@ export function GiveawayConfigurator() {
               <p className="text-xs text-muted-foreground">Leave empty to activate immediately.</p>
             </div>
 
+            {/* Trials toggle — reveals the TrialConfigurator panel when enabled */}
             <div className="flex items-center gap-2">
               <Switch
                 id="trials"
@@ -219,7 +247,7 @@ export function GiveawayConfigurator() {
 
             {error && <p className="text-destructive text-sm">{error}</p>}
 
-            {/* Pin Generate Link to bottom */}
+            {/* mt-auto pushes this button to the bottom of the card */}
             <Button
               type="button"
               onClick={submit}
@@ -232,7 +260,7 @@ export function GiveawayConfigurator() {
           </CardContent>
         </Card>
 
-        {/* Slots card */}
+        {/* ── Slots card ── scrollable grid of server slots with visual states */}
         <Card className="flex-1 min-w-0 flex flex-col">
           <CardHeader className="pb-2">
             <CardTitle className="text-base">Server Slots</CardTitle>
@@ -251,6 +279,7 @@ export function GiveawayConfigurator() {
                       const isBlocked = blockedSlots.has(`${activeServer}-${slot.slotNumber}`)
                       const isAuto = autoSlot?.slotNumber === slot.slotNumber
                       return (
+                        // Slot card: three visual states — blocked (red), auto-selected (primary), occupied/empty
                         <div
                           key={slot.slotNumber}
                           className={cn(
@@ -287,7 +316,7 @@ export function GiveawayConfigurator() {
           </CardContent>
         </Card>
 
-        {/* Trial card — animated width slide */}
+        {/* ── Trial configurator panel ── slides in/out via CSS width transition */}
         <div
           style={{
             width: trialsEnabled ? '320px' : '0px',

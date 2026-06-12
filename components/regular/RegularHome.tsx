@@ -11,7 +11,6 @@ import { Archive, ExternalLink, Gift, Loader2, PartyPopper, Search, TriangleAler
 import type { Giveaway } from '@/lib/types'
 import {
   Item,
-  ItemActions,
   ItemContent,
   ItemDescription,
   ItemMedia,
