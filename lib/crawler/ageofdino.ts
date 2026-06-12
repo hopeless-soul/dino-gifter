@@ -1,6 +1,8 @@
-// lib/crawler/ageofdino.ts
+// Low-level HTTP client for ageofdino.ru. Every exported function maps 1-to-1
+// to a game AJAX endpoint and returns a plain result object — no parsing here.
 const BASE = 'https://ageofdino.ru'
 
+// Shared headers that mimic a real browser POST to pass the game's basic checks
 function gameHeaders(session: string): Record<string, string> {
   return {
     'Content-Type': 'application/x-www-form-urlencoded',
@@ -11,6 +13,9 @@ function gameHeaders(session: string): Record<string, string> {
   }
 }
 
+// Switches the active server context on the session, then fetches the slots page HTML.
+// The first POST to ajax_server.php is required — without it the slots page
+// always renders the previously selected server regardless of what we pass.
 export async function fetchSlotsPage(session: string, server: string): Promise<string> {
   await fetch(`${BASE}/ajax_server.php`, {
     method: 'POST',
@@ -26,6 +31,8 @@ export async function fetchSlotsPage(session: string, server: string): Promise<s
   return res.text()
 }
 
+// Moves a dino from inventory (identified by invId) to any free slot on the server.
+// The game returns a non-empty error string on failure and an empty body on success.
 export async function moveToSlot(
   session: string,
   server: string,
@@ -40,6 +47,9 @@ export async function moveToSlot(
   return body.length > 0 ? { ok: false, error: body } : { ok: true }
 }
 
+// Gifts the dino on slotNum to friendId via the Gift mode of ajax_changedino.
+// HTTP-level errors are surfaced; game-level errors are handled by the caller
+// via the slot-vacancy check in the send-gift route.
 export async function sendGift(
   session: string,
   server: string,

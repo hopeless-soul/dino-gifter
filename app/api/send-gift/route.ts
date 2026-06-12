@@ -1,8 +1,15 @@
+// POST /api/send-gift
+// Sends a dino as a gift to the specified recipient and confirms delivery by
+// verifying the dino left its slot, even if the game returns an error response.
+// Body: { server, slot, recipientApiId }
+// Requires x-user-session header to authenticate with ageofdino.ru.
+
 import type { NextRequest } from 'next/server'
 import { fetchSlotsPage, sendGift } from '@/lib/crawler/ageofdino'
 import { parseSlots } from '@/lib/crawler/parse-slots'
 
 export async function POST(request: NextRequest) {
+  // Auth guard — session cookie forwarded by the client
   const session = request.headers.get('x-user-session')
   if (!session) {
     return Response.json({ error: 'Missing x-user-session header' }, { status: 401 })
@@ -15,12 +22,14 @@ export async function POST(request: NextRequest) {
       recipientApiId: string
     }
 
+    // Slot must be resolved before gifting; client should run move-to-slot first
     if (!server || !slot) {
       return Response.json({ error: 'Dino has no server/slot assigned', slotMissing: true }, { status: 404 })
     }
 
     const slotNumber = parseInt(slot, 10)
 
+    // Verify the dino is actually present on the slot before attempting the gift
     const htmlBefore = await fetchSlotsPage(session, server)
     const { slots: slotsBefore } = parseSlots(htmlBefore)
     if (!slotsBefore.find(s => s.slotNumber === slotNumber && !s.isEmpty)) {
