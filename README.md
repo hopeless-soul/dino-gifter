@@ -2,12 +2,11 @@
 
 A web application for the community server [Age of Dino](https://ageofdino.ru) (The Isle) that lets operators create dinosaur giveaways and regular users claim them — optionally gated behind interactive trials.
 
-<p style="text-align: center;">
-  <a href="https://dino-gifter.vercel.app/" style="display: inline-flex; align-items: center; gap: 8px;">
-    <img src="docs/ui/Powered%20by%20Vercel%20Badge.png" alt="Powered by Vercel" width="140">
-    https://dino-gifter.vercel.app/
-  </a>
-</p>
+https://dino-gifter.vercel.app/
+
+<a href="https://dino-gifter.vercel.app/" target="_blank">
+  <img src="docs/ui/Powered%20by%20Vercel%20Badge.png" alt="Powered by Vercel" width="140">
+</a>
 
 ---
 
