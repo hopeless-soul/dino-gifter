@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import api from '@/lib/backend/api'
+import { loadSearchQuery, saveSearchQuery } from '@/lib/backend/searchQuery'
 import { ApiIdCard } from '@/components/user/ApiIdCard'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -19,15 +20,11 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Countdown } from '@/components/giveaway/CountdownTimer'
 
-const LS_KEY = 'dino-gifter:search-username'
-
 export function RegularHome() {
   const router = useRouter()
   const [giveaways, setGiveaways] = useState<Giveaway[]>([])
 
-  const [searchQuery, setSearchQuery] = useState(() =>
-    typeof window !== 'undefined' ? (localStorage.getItem(LS_KEY) ?? '') : ''
-  )
+  const [searchQuery, setSearchQuery] = useState(() => loadSearchQuery())
   const [searchResults, setSearchResults] = useState<Giveaway[]>([])
   const [searching, setSearching] = useState(false)
   const [searched, setSearched] = useState(false)
@@ -40,7 +37,7 @@ export function RegularHome() {
 
   function updateQuery(v: string) {
     setSearchQuery(v)
-    localStorage.setItem(LS_KEY, v)
+    saveSearchQuery(v)
   }
 
   async function handleSearch() {
