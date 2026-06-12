@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import api from '@/lib/backend/api'
-import { loadSearchQuery, saveSearchQuery } from '@/lib/backend/searchQuery'
+import { loadSearchQuery, saveSearchQuery } from '@/lib/frontend/searchQuery'
 import { ApiIdCard } from '@/components/user/ApiIdCard'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'

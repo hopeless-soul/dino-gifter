@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import Pusher from 'pusher-js'
 import api from '@/lib/backend/api'
 import { getAuthUser } from '@/lib/backend/auth'
-import { loadSession } from '@/lib/backend/session'
+import { loadSession } from '@/lib/frontend/session'
 import type { GiftDinoPayload } from '@/lib/types'
 
 // Module-level set: survives re-renders and guards against Pusher duplicate delivery

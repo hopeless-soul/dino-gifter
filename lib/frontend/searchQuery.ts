@@ -1,4 +1,3 @@
-// lib/backend/searchQuery.ts
 const KEY = 'dino_user_search_username'
 
 export function loadSearchQuery(): string {
