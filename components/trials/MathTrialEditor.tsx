@@ -24,8 +24,8 @@ export function MathTrialEditor({ data, onChange }: Props) {
         <Label className="text-muted-foreground font-normal text-xs">Answer</Label>
         <Input
           type="number"
-          value={data.answer === 0 ? '' : data.answer}
-          onChange={e => onChange({ ...data, answer: Number(e.target.value) || 0 })}
+          value={data.answer}
+          onChange={e => onChange({ ...data, answer: e.target.value === '' ? 0 : Number(e.target.value) })}
           placeholder="55"
         />
       </div>
