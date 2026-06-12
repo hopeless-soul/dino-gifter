@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'next/navigation'
 import api from '@/lib/backend/api'
 import { CountdownTimer } from '@/components/giveaway/CountdownTimer'
-import { TypingTrial } from '@/components/trials/TypingTrial'
+import { TypingTrialPlayer } from '@/components/trials/TypingTrialPlayer'
 import { MathTrialPlayer } from '@/components/trials/MathTrialPlayer'
 import { PuzzleTrialPlayer } from '@/components/trials/PuzzleTrialPlayer'
 import { RiddleTrialPlayer } from '@/components/trials/RiddleTrialPlayer'
@@ -91,7 +91,7 @@ export default function GiveawayPage() {
   }
 
   function renderTrial(trial: TrialData) {
-    if (trial.type === 'typing') return <TypingTrial phrase={(trial.data as TypingTrialData).phrase} onSuccess={advanceTrial} />
+    if (trial.type === 'typing') return <TypingTrialPlayer data={trial.data as TypingTrialData} onSuccess={advanceTrial} />
     if (trial.type === 'math') return <MathTrialPlayer data={trial.data as MathTrialData} onSuccess={advanceTrial} />
     if (trial.type === 'riddle') return <RiddleTrialPlayer data={trial.data as RiddleTrialData} onSuccess={advanceTrial} />
     return <PuzzleTrialPlayer data={trial.data as PuzzleTrialData} onSuccess={advanceTrial} />

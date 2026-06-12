@@ -4,13 +4,15 @@ import React from 'react'
 
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import type { TypingTrialData } from '@/lib/types'
 
 interface Props {
-  phrase: string
+  data: TypingTrialData
   onSuccess: () => void
 }
 
-export function TypingTrial({ phrase, onSuccess }: Props) {
+export function TypingTrialPlayer({ data, onSuccess }: Props) {
+  const { phrase } = data
   const [input, setInput] = useState('')
   const [error, setError] = useState(false)
 
