@@ -5,8 +5,8 @@ A web application for the community server [Age of Dino](https://ageofdino.ru) (
 > [!WARNING]
 > This site is designed for **desktop view only**. The layout is not responsive, so it will not display correctly on phones or tablets.
 
-Live: [dino-gifter.vercel.app](https://dino-gifter.vercel.app/)
-Demo: [dino-gifter.vercel.app](https://dino-gifter.vercel.app/demo)
+Live: [dino-gifter.vercel.app](https://dino-gifter.vercel.app/)\
+Demo: [dino-gifter.vercel.app/demo](https://dino-gifter.vercel.app/demo)
 
 <a href="https://dino-gifter.vercel.app/" target="_blank">
   <img src="docs/ui/Powered%20by%20Vercel%20Badge.png" alt="Powered by Vercel" width="140">
