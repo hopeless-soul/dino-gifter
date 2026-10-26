@@ -38,7 +38,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-">
       <div className={cn("flex flex-col gap-6", 'w-full max-w-sm')}>
         <Card>
           <CardHeader className="text-center">
