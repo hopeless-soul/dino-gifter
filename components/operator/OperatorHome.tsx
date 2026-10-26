@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import api from '@/lib/backend/api'
 import { Card } from '@/components/ui/card'
@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import type { Giveaway, InventoryItem, SlotCard } from '@/lib/types'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useSession } from '@/lib/hooks/use-session'
+import { loadSession } from '@/lib/frontend/session'
 import { SessionInput } from '@/components/user/SessionInput'
 import { InventoryPanel } from '@/components/game/InventoryPanel'
 import { ServerTabs } from '@/components/game/ServerTabs'
@@ -67,15 +68,25 @@ export function OperatorHome() {
     }
   }
 
-  async function connectInventory() {
-    if (!session.trim()) return
+  // Autoload once with the stored session (the real one, or 'demo' in demo mode).
+  // Reads storage directly: the hook's state is empty on first render and changes on every keystroke.
+  const autoloaded = useRef(false)
+  useEffect(() => {
+    const stored = loadSession()
+    if (autoloaded.current || !stored.trim()) return
+    autoloaded.current = true
+    void connectInventory(stored)
+  }, [])
+
+  async function connectInventory(s = session) {
+    if (!s.trim()) return
     setLoadingInv(true)
     setInvError(null)
     try {
       const results: { slots: SlotCard[]; inventory: InventoryItem[] }[] = []
       for (const server of ['1', '2', '3']) {
         const res = await fetch(`/api/slots?server=${server}`, {
-          headers: { 'x-user-session': session },
+          headers: { 'x-user-session': s },
         })
         if (!res.ok) {
           const d = await res.json() as { error: string }
@@ -100,7 +111,7 @@ export function OperatorHome() {
         <SessionInput
           value={session}
           onChange={setSession}
-          onConnect={connectInventory}
+          onConnect={() => connectInventory()}
           loading={loadingInv}
           error={invError}
         />

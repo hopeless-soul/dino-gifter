@@ -1,5 +1,6 @@
 // lib/backend/auth.ts
 import type { AuthUser } from '../types'
+import { clearDemoStore } from '../demo/store'
 
 const KEY = 'dino_auth_user'
 
@@ -8,7 +9,14 @@ export function getAuthUser(): AuthUser | null {
   const raw = localStorage.getItem(KEY)
   if (!raw) return null
   try {
-    return JSON.parse(raw) as AuthUser
+    const user = JSON.parse(raw) as AuthUser
+    // Demo sessions expire; take their data with them
+    if (user.expiresAt && user.expiresAt < Date.now()) {
+      clearAuthUser()
+      clearDemoStore()
+      return null
+    }
+    return user
   } catch {
     return null
   }

@@ -5,6 +5,8 @@
 import type { NextRequest } from 'next/server'
 import { fetchSlotsPage } from '@/lib/crawler/ageofdino'
 import { parseSlots } from '@/lib/crawler/parse-slots'
+import { demoSlots } from '@/lib/demo/mock-data'
+import { DEMO_SESSION } from '@/lib/demo/store'
 
 export async function GET(request: NextRequest) {
   // Auth guard — session cookie forwarded by the client
@@ -14,6 +16,8 @@ export async function GET(request: NextRequest) {
   }
 
   const server = request.nextUrl.searchParams.get('server') ?? '1'
+
+  if (session === DEMO_SESSION) return Response.json(demoSlots(server))
 
   try {
     // Fetch raw HTML from the game site and parse it into a typed slot list

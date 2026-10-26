@@ -53,7 +53,7 @@ export function PusherProvider({ children }: { children: React.ReactNode }) {
     const user = getAuthUser()
     const key = process.env.NEXT_PUBLIC_PUSHER_KEY
     const cluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER
-    if (!user || !key || !cluster) return
+    if (!user || user.demo || !key || !cluster) return
 
     const pusher = new Pusher(key, {
       cluster,

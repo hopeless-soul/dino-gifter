@@ -8,6 +8,11 @@ https://dino-gifter.vercel.app/
   <img src="docs/ui/Powered%20by%20Vercel%20Badge.png" alt="Powered by Vercel" width="140">
 </a>
 
+<br/>
+
+> [!WARNING]
+> This site is designed for **desktop view only**. The layout is not responsive, so it will not display correctly on phones or tablets.
+
 ---
 
 ## How it works
@@ -21,6 +26,17 @@ https://dino-gifter.vercel.app/
 > Both the **game session ID** (your `UserSession` cookie from ageofdino.ru) and a **community server ID** (your in-game API ID) are required to use this application. Without them, operators cannot manage inventory and regular users cannot receive gifts.
 
 ---
+
+## Demo Mode
+
+Try the operator flow without an account or a game session. Click **Try demo** on the login/register page (or open `/demo`) and flip the switch.
+
+- **Sandboxed** — nothing reaches the real backend or ageofdino.ru. Giveaways and slots are served from a local adapter plus predefined mock dinos and servers (`lib/demo/mock-data.ts`), and the data lives in your browser's `localStorage`.
+- **Expires** — the demo session lasts 2 hours, then everything is erased and you are signed out.
+- **Signs you out** — enabling demo mode logs out of any real session; disabling it returns you to the login page.
+- **Reset** — the `/demo` page has a Reset button that restores the starter data and restarts the timer.
+- **Visible** — a banner on the home page and a "Demo" badge in the navbar show that demo mode is on.
+- **No claiming** — demo giveaways can't be redeemed (the Redeem button is locked), but the countdown and trials still work.
 
 ## Screenshots
 

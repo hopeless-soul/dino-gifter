@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'next/navigation'
 import api from '@/lib/backend/api'
 import { CountdownTimer } from '@/components/giveaway/CountdownTimer'
+import { DemoGiveawayNotice } from '@/components/giveaway/DemoGiveawayNotice'
 import { TypingTrialPlayer } from '@/components/trials/TypingTrialPlayer'
 import { MathTrialPlayer } from '@/components/trials/MathTrialPlayer'
 import { PuzzleTrialPlayer } from '@/components/trials/PuzzleTrialPlayer'
@@ -10,7 +11,8 @@ import { RiddleTrialPlayer } from '@/components/trials/RiddleTrialPlayer'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import type { Giveaway, TrialData, TypingTrialData, MathTrialData, PuzzleTrialData, RiddleTrialData } from '@/lib/types'
-import { Gift, Trophy, ClipboardCopy, Check, TriangleAlert } from 'lucide-react'
+import { Gift, Trophy, ClipboardCopy, Check, TriangleAlert, Lock } from 'lucide-react'
+import { getAuthUser } from '@/lib/backend/auth'
 import type { UserMeResponse } from '@/lib/types'
 
 function trialHeading(type: string): string {
@@ -35,9 +37,11 @@ export default function GiveawayPage() {
   const [copied, setCopied] = useState(false)
   const [shareUrl, setShareUrl] = useState('')
   const [missingApiId, setMissingApiId] = useState(false)
+  const [isDemo, setIsDemo] = useState(false)
 
   useEffect(() => {
     setShareUrl(window.location.href.split('?')[0])
+    setIsDemo(!!getAuthUser()?.demo)
   }, [])
 
   useEffect(() => {
@@ -108,7 +112,7 @@ export default function GiveawayPage() {
   const trialCount = giveaway.trials?.length ?? 0
   const currentTrial = giveaway.trials?.[trialIndex]
 
-  const redeemDisabled = redeeming || !active || (trialCount > 0 && !trialsComplete)
+  const redeemDisabled = isDemo || redeeming || !active || (trialCount > 0 && !trialsComplete)
 
   const showCountdown = !active
   const showTrialProgress = active && trialCount > 0 && !trialsComplete
@@ -123,6 +127,9 @@ export default function GiveawayPage() {
 
         {/* Left column — 320px */}
         <div className="flex flex-col gap-4 w-full md:w-80 shrink-0">
+
+          {/* Demo notice */}
+          {isDemo && <DemoGiveawayNotice />}
 
           {/* API ID warning */}
           {missingApiId && (
@@ -164,14 +171,17 @@ export default function GiveawayPage() {
                   ✓ Claimed
                 </Button>
               ) : (
-                <Button
-                  onClick={redeem}
-                  disabled={redeemDisabled}
-                  className="w-full"
-                  variant={redeemDisabled ? 'secondary' : 'default'}
-                >
-                  {redeeming ? 'Sending…' : '🎁 Redeem'}
-                </Button>
+                // wrapper carries the tooltip: a disabled button swallows pointer events
+                <div className="w-full" title={isDemo ? 'Redeeming is disabled in demo mode' : undefined}>
+                  <Button
+                    onClick={redeem}
+                    disabled={redeemDisabled}
+                    className="w-full"
+                    variant={redeemDisabled ? 'secondary' : 'default'}
+                  >
+                    {redeeming ? 'Sending…' : isDemo ? <><Lock size={14} /> Redeem</> : '🎁 Redeem'}
+                  </Button>
+                </div>
               )}
 
               {redeemError && <p className="text-destructive text-sm text-center">{redeemError}</p>}

@@ -6,6 +6,7 @@
 import type { NextRequest } from 'next/server'
 import { fetchSlotsPage, moveToSlot } from '@/lib/crawler/ageofdino'
 import { parseSlots } from '@/lib/crawler/parse-slots'
+import { DEMO_SESSION } from '@/lib/demo/store'
 
 export async function POST(request: NextRequest) {
   // Auth guard — session cookie forwarded by the client
@@ -13,6 +14,8 @@ export async function POST(request: NextRequest) {
   if (!session) {
     return Response.json({ error: 'Missing x-user-session header' }, { status: 401 })
   }
+
+  if (session === DEMO_SESSION) return Response.json({ slotNumber: 1 }) // the demo adapter assigns the real slot
 
   const { server, invId, dinoName } = await request.json() as {
     server: string

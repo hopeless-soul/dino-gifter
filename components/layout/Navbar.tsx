@@ -18,6 +18,7 @@ export function Navbar() {
       <nav className="flex gap-4 text-sm ml-auto items-center">
         {user ? (
           <>
+            {user.demo && <Badge variant="secondary">Demo</Badge>}
             <Badge>{user.username}</Badge>
             <button
               onClick={async () => { await logout(); router.replace('/login') }}

@@ -9,6 +9,8 @@ export interface AuthUser {
   username: string
   role: Role
   token: string
+  demo?: boolean
+  expiresAt?: number
 }
 
 export interface JwtPayload {

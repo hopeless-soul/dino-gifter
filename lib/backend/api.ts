@@ -1,6 +1,7 @@
 // lib/backend/api.ts
 import axios from 'axios'
 import { getAuthUser, clearAuthUser } from './auth'
+import { demoAdapter } from '../demo/adapter'
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -8,7 +9,8 @@ const api = axios.create({
 
 api.interceptors.request.use(config => {
   const user = getAuthUser()
-  if (user?.token) {
+  if (user?.demo) config.adapter = demoAdapter // demo never reaches the real backend
+  else if (user?.token) {
     config.headers.Authorization = `Bearer ${user.token}`
   }
   return config

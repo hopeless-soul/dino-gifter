@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { Sparkles } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { jwtDecode } from 'jwt-decode'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -96,6 +97,13 @@ export default function RegisterPage() {
             </form>
           </CardContent>
         </Card>
+        <Button
+          asChild
+          variant="outline"
+          className="w-full h-11 border-dashed text-muted-foreground hover:text-foreground hover:border-solid"
+        >
+          <a href="/demo"><Sparkles size={16} /> Try demo</a>
+        </Button>
       </div>
     </div>
   )
